@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import en from '../locales/en.json';
 import useAssessmentStore from '../hooks/useAssessmentStore';
 import TosModal from '../components/TosModal';
@@ -48,9 +48,13 @@ function validateInputs(inputs, profile) {
     }
   }
 
-  // Fairness section
-  errors.demographic_parity_diff = validateFloat(inputs.demographic_parity_diff, -1, 1);
-  errors.equalized_odds_diff = validateFloat(inputs.equalized_odds_diff, -1, 1);
+  // Fairness section - skip NOT_PROVIDED_REQUIRED values (user declared metrics unavailable)
+  if (inputs.demographic_parity_diff !== 'NOT_PROVIDED_REQUIRED') {
+    errors.demographic_parity_diff = validateFloat(inputs.demographic_parity_diff, -1, 1);
+  }
+  if (inputs.equalized_odds_diff !== 'NOT_PROVIDED_REQUIRED') {
+    errors.equalized_odds_diff = validateFloat(inputs.equalized_odds_diff, -1, 1);
+  }
   if (inputs.disparate_impact_ratio !== null && inputs.disparate_impact_ratio !== undefined &&
       inputs.disparate_impact_ratio !== 'NOT_PROVIDED_REQUIRED') {
     const n = parseFloat(inputs.disparate_impact_ratio);
@@ -65,8 +69,9 @@ function validateInputs(inputs, profile) {
   // Explainability section
   errors.explanation_coverage = validateFloat(inputs.explanation_coverage, 0, 1);
 
-  // Bias mitigation method min length
-  if (inputs.bias_mitigation_applied && inputs.bias_mitigation_method &&
+  // Bias mitigation method min length - only validate when field is visible
+  if (inputs.bias_mitigation_applied === true &&
+      inputs.bias_mitigation_method != null &&
       inputs.bias_mitigation_method.length > 0 && inputs.bias_mitigation_method.length < 20) {
     errors.bias_mitigation_method = t.validation.min_length.replace('{min}', '20');
   }
@@ -102,28 +107,41 @@ function findSectionForError(field, formSections) {
 }
 
 export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTosAccept, onTosExit }) {
-  const { profile, inputs, restored, setProfile, setInput, setInputs, dismissRestored } = useAssessmentStore();
+  const { profile, inputs, restored, setProfile, setInput, setInputs, resetAssessment, dismissRestored } = useAssessmentStore();
   const [step, setStep] = useState(STEPS.DEPLOYMENT);
   const [formSection, setFormSection] = useState(0);
   const [errors, setErrors] = useState({});
   const [errorBanner, setErrorBanner] = useState('');
   const [showRestoredBanner, setShowRestoredBanner] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isFresh = location.state?.fresh === true;
 
-  // Show restored banner
+  // Clear previous data on fresh start
   useEffect(() => {
-    if (restored && profile.role) {
-      setShowRestoredBanner(true);
-      // Jump to form step if profile is complete
-      if (profile.deployment_status && profile.role && profile.risk_category !== null && profile.gpai_flag !== null) {
-        setStep(STEPS.FORM);
-      } else if (profile.deployment_status && profile.frameworks_selected) {
-        setStep(STEPS.ONBOARDING);
-      } else if (profile.deployment_status) {
-        setStep(STEPS.FRAMEWORKS);
-      }
+    if (isFresh) {
+      resetAssessment();
+      setStep(STEPS.DEPLOYMENT);
+      setFormSection(0);
+      setErrors({});
+      setErrorBanner('');
+      // Clear the fresh flag from location state so a page refresh resumes normally
+      navigate('/assessment', { replace: true, state: {} });
     }
-  }, [restored, profile]);
+  }, [isFresh, resetAssessment, navigate]);
+
+  // Show restored banner and jump to last step (only for returning users, not fresh starts)
+  useEffect(() => {
+    if (isFresh || !restored || !profile.role) return;
+    setShowRestoredBanner(true);
+    if (profile.deployment_status && profile.role && profile.risk_category !== null && profile.gpai_flag !== null) {
+      setStep(STEPS.FORM);
+    } else if (profile.deployment_status && profile.frameworks_selected) {
+      setStep(STEPS.ONBOARDING);
+    } else if (profile.deployment_status) {
+      setStep(STEPS.FRAMEWORKS);
+    }
+  }, [restored, profile, isFresh]);
 
   const showGpai = profile.gpai_flag === true;
 
@@ -205,21 +223,22 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
 
   const renderFormSection = () => {
     const section = formSections[formSection];
+    const num = formSection + 1;
     switch (section) {
       case 'accuracy':
-        return <SectionAccuracy inputs={inputs} onInput={setInput} errors={errors} />;
+        return <SectionAccuracy inputs={inputs} onInput={setInput} errors={errors} sectionNumber={num} />;
       case 'fairness':
-        return <SectionFairness inputs={inputs} onInput={setInput} onInputs={setInputs} profile={profile} errors={errors} />;
+        return <SectionFairness inputs={inputs} onInput={setInput} onInputs={setInputs} profile={profile} errors={errors} sectionNumber={num} />;
       case 'robustness':
-        return <SectionRobustness inputs={inputs} onInput={setInput} errors={errors} />;
+        return <SectionRobustness inputs={inputs} onInput={setInput} errors={errors} sectionNumber={num} />;
       case 'explainability':
-        return <SectionExplainability inputs={inputs} onInput={setInput} profile={profile} errors={errors} />;
+        return <SectionExplainability inputs={inputs} onInput={setInput} profile={profile} errors={errors} sectionNumber={num} />;
       case 'human_oversight':
-        return <SectionHumanOversight inputs={inputs} onInput={setInput} />;
+        return <SectionHumanOversight inputs={inputs} onInput={setInput} sectionNumber={num} />;
       case 'gpai':
-        return <SectionGPAI inputs={inputs} onInput={setInput} errors={errors} profile={profile} />;
+        return <SectionGPAI inputs={inputs} onInput={setInput} errors={errors} profile={profile} sectionNumber={num} />;
       case 'governance':
-        return <SectionGovernance inputs={inputs} onInput={setInput} profile={profile} errors={errors} />;
+        return <SectionGovernance inputs={inputs} onInput={setInput} profile={profile} errors={errors} sectionNumber={num} />;
       default:
         return null;
     }

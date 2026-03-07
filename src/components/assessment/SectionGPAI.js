@@ -17,7 +17,7 @@ const NOTIFICATION_OPTIONS = [
   { value: 'not_applicable', label: en.assessment.enum_labels.not_applicable },
 ];
 
-export default function SectionGPAI({ inputs, onInput, errors, profile }) {
+export default function SectionGPAI({ inputs, onInput, errors, profile, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const flopsVal = inputs.training_flops ? parseFloat(inputs.training_flops) : 0;
   const isSystemicRisk = flopsVal >= 1e25;
@@ -29,7 +29,7 @@ export default function SectionGPAI({ inputs, onInput, errors, profile }) {
   };
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       <div className="space-y-1">
         <label htmlFor="training_flops" className="block text-sm font-medium text-gray-700">
           {t.fields.training_flops}

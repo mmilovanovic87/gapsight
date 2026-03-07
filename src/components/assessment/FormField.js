@@ -26,7 +26,7 @@ export function FloatInput({ id, label, value, onChange, min, max, threshold, di
       />
       {passAt !== undefined && (
         <p className="text-xs text-gray-400">
-          {dirLabel} <span className="italic">— {thresholdText}</span>
+          {dirLabel} <span className="italic">- {thresholdText}</span>
         </p>
       )}
       {error && <p className="text-xs text-red-500">{error}</p>}
@@ -68,7 +68,7 @@ export function EnumSelect({ id, label, value, onChange, options, error }) {
         onChange={(e) => onChange(e.target.value || null)}
         className={`block w-full rounded border px-3 py-2 text-sm ${error ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
       >
-        <option value="">— Select —</option>
+        <option value="">- Select -</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
@@ -172,11 +172,11 @@ export function TextArea({ id, label, value, onChange, placeholder, minLength, e
   );
 }
 
-export function SectionWrapper({ title, subtitle, children }) {
+export function SectionWrapper({ title, subtitle, sectionNumber, children }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">{title}</h2>
+        <h2 className="text-xl font-semibold">{sectionNumber ? `Section ${sectionNumber}: ${title}` : title}</h2>
         {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
       </div>
       <div className="space-y-5">

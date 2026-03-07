@@ -4,24 +4,24 @@ import en from '../locales/en.json';
 const t = en.landing;
 
 const STEP_ICONS = [
-  /* 1 — Profile */
+  /* 1 - Profile */
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
     <circle cx="9" cy="7" r="4" />
     <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>,
-  /* 2 — Metrics */
+  /* 2 - Metrics */
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
     <path d="M3 3v18h18" />
     <path d="M7 16l4-8 4 4 4-6" />
   </svg>,
-  /* 3 — Report */
+  /* 3 - Report */
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
     <path d="M9 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4" />
     <path d="M12 15l-3 6h6l-3-6z" />
   </svg>,
-  /* 4 — Export */
+  /* 4 - Export */
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
     <polyline points="16 6 12 2 8 6" />
@@ -50,7 +50,7 @@ export default function LandingPage() {
             {t.hero_subheadline}
           </p>
           <button
-            onClick={() => navigate('/assessment')}
+            onClick={() => navigate('/assessment', { state: { fresh: true } })}
             className="mt-10 inline-block px-8 py-3.5 text-base font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25"
           >
             {t.hero_cta}

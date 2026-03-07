@@ -4,11 +4,11 @@ import { FloatInput, BooleanToggle, DateInput, SectionWrapper } from './FormFiel
 const t = en.assessment;
 const sec = t.sections.robustness_drift;
 
-export default function SectionRobustness({ inputs, onInput, errors }) {
+export default function SectionRobustness({ inputs, onInput, errors, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       <FloatInput
         id="data_drift_score"
         label={t.fields.data_drift_score}

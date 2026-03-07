@@ -57,16 +57,16 @@ export function generateHtmlExport(results, session) {
 
   // Metric results HTML
   const metricRows = results.metricResults.map((r) =>
-    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value !== null && r.value !== undefined ? esc(String(r.value)) : '—'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
+    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value !== null && r.value !== undefined ? esc(String(r.value)) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
   ).join('\n');
 
   // Process results HTML
   const processRows = results.processResults.map((r) =>
-    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value ? esc(r.value) : '—'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
+    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value ? esc(r.value) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
   ).join('\n');
 
   // Action items HTML
-  const urgencyLabels = { CRITICAL: 'Critical — Before Deployment', HIGH: 'High Priority — Within 30 Days', MEDIUM: 'Medium Priority — Within 90 Days', ONGOING: 'Ongoing' };
+  const urgencyLabels = { CRITICAL: 'Critical: Before Deployment', HIGH: 'High Priority: Within 30 Days', MEDIUM: 'Medium Priority: Within 90 Days', ONGOING: 'Ongoing' };
   const urgencyColors = { CRITICAL: '#dc2626', HIGH: '#ea580c', MEDIUM: '#ca8a04', ONGOING: '#2563eb' };
   let actionHtml = '';
   for (const [urgency, items] of Object.entries(results.actionItems)) {
@@ -124,7 +124,7 @@ ${warningsHtml}
 ${results.oversightResult ? `
 <h2 style="font-size:16px;margin:24px 0 10px">Human Oversight</h2>
 <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px">
-<p>Weighted Score: <strong>${(results.oversightResult.value * 100).toFixed(0)}%</strong> — ${badge(results.oversightResult.status)}</p>
+<p>Weighted Score: <strong>${(results.oversightResult.value * 100).toFixed(0)}%</strong> - ${badge(results.oversightResult.status)}</p>
 ${results.oversightResult.message ? `<p style="color:#991b1b;font-size:13px">${esc(results.oversightResult.message)}</p>` : ''}
 </div>
 ` : ''}

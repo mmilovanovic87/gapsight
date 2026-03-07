@@ -4,11 +4,11 @@ import { FloatInput, IntegerInput, EnumSelect, SectionWrapper } from './FormFiel
 const t = en.assessment;
 const sec = t.sections.accuracy_performance;
 
-export default function SectionAccuracy({ inputs, onInput, errors }) {
+export default function SectionAccuracy({ inputs, onInput, errors, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       <FloatInput
         id="overall_accuracy"
         label={t.fields.overall_accuracy}

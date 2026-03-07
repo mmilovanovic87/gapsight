@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Language policy for GapSight — AI regulatory self-assessment for ML teams. Enforced by CI via check-language-policy.sh.",
+  "description": "Language policy for GapSight: AI regulatory self-assessment for ML teams. Enforced by CI via check-language-policy.sh.",
   "forbidden": [
     "compliance platform",
     "certify your compliance",
@@ -27,8 +27,8 @@
     "based on publicly available regulatory frameworks",
     "not legal advice",
     "consult a qualified professional",
-    "GapSight default — not a regulatory requirement",
+    "GapSight default, not a regulatory requirement",
     "informational only"
   ],
-  "notes": "Applies to: src/locales/en.json, export templates, meta tags, og tags, About page. Marketing copy must follow this policy but is not CI-checked. Review manually before publishing."
+  "notes": "Applies to: src/locales/en.json, export templates (HTML, JSON, PDF), meta tags, og tags, About page. Marketing copy must follow this policy but is not CI-checked. Review manually before publishing."
 }

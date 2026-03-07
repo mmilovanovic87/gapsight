@@ -4,10 +4,10 @@ import knowledgeBase from '../data/knowledge-base.json';
  * Generates action items grouped by urgency from assessment results.
  *
  * Urgency groups:
- *   CRITICAL — before deployment / immediately
- *   HIGH — within 30 days
- *   MEDIUM — within 90 days
- *   ONGOING — monitoring and maintenance
+ *   CRITICAL - before deployment / immediately
+ *   HIGH - within 30 days
+ *   MEDIUM - within 90 days
+ *   ONGOING - monitoring and maintenance
  */
 function filterFwStrings(fwStrings, selected) {
   if (!selected || selected.length === 0) return fwStrings;

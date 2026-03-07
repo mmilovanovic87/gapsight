@@ -36,7 +36,7 @@ function getOptionsForReq(req) {
   return STATUS_OPTIONS_2;
 }
 
-export default function SectionGovernance({ inputs, onInput, profile, errors }) {
+export default function SectionGovernance({ inputs, onInput, profile, errors, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const requirements = getProcessRequirementsForProfile(profile);
 
@@ -58,7 +58,14 @@ export default function SectionGovernance({ inputs, onInput, profile, errors }) 
   const showAnnexIv = governanceData.technical_documentation?.status === 'partial';
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
+      {requirements.length === 0 && (
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
+          {t.section_not_applicable
+            .replace('{risk}', profile.risk_category || 'Unknown')
+            .replace('{role}', profile.role || 'Unknown')}
+        </div>
+      )}
       {requirements.map((req) => {
         const data = governanceData[req.id] || {};
         const options = getOptionsForReq(req);

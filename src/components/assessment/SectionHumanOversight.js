@@ -18,7 +18,7 @@ const ANSWERS = [
   { value: 'no', label: sec.answer_no },
 ];
 
-export default function SectionHumanOversight({ inputs, onInput }) {
+export default function SectionHumanOversight({ inputs, onInput, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const oversight = inputs.human_oversight || {};
 
@@ -27,7 +27,7 @@ export default function SectionHumanOversight({ inputs, onInput }) {
   };
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       <div className="space-y-4">
         {QUESTIONS.map((q) => (
           <div key={q.key} className="p-4 border border-gray-200 rounded-lg space-y-2">

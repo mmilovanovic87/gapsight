@@ -5,7 +5,7 @@ import { FloatInput, BooleanToggle, MultiSelect, TextArea, SectionWrapper } from
 const t = en.assessment;
 const sec = t.sections.fairness_bias;
 
-export default function SectionFairness({ inputs, onInput, onInputs, profile, errors }) {
+export default function SectionFairness({ inputs, onInput, onInputs, profile, errors, sectionNumber }) {
   const [noMetrics, setNoMetrics] = useState(false);
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const isHighRisk = profile.risk_category === 'high-risk';
@@ -20,7 +20,7 @@ export default function SectionFairness({ inputs, onInput, onInputs, profile, er
   };
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       {isHighRisk && (
         <div className="p-3 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
           {sec.blocker_message}

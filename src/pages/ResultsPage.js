@@ -6,6 +6,7 @@ import useAssessmentStore from '../hooks/useAssessmentStore';
 import { computeResults } from '../logic/compute-results';
 import { downloadJsonExport } from '../logic/export-json';
 import { downloadHtmlExport } from '../logic/export-html';
+import { downloadPdfExport } from '../logic/export-pdf';
 import ShareModal from '../components/ShareModal';
 import FeedbackForm from '../components/FeedbackForm';
 
@@ -48,43 +49,61 @@ const URGENCY_LABELS = { CRITICAL: t.urgency_critical, HIGH: t.urgency_high, MED
 function ActionItem({ item }) {
   const [expanded, setExpanded] = useState(false);
   const rem = item.remediation;
+  const hasRemediation = rem && Array.isArray(rem.how) && rem.how.length > 0;
   return (
     <li className="px-4 py-3">
-      <div className="text-sm font-medium">{item.label}</div>
+      <div className="text-sm font-medium text-gray-900">{item.label}</div>
       <div className="text-sm text-gray-600 mt-0.5">{item.action}</div>
       {item.frameworks && item.frameworks.length > 0 && (
         <div className="text-xs text-gray-400 mt-1">
           {Array.isArray(item.frameworks) ? item.frameworks.join(', ') : ''}
         </div>
       )}
-      {rem && (
+      {hasRemediation && (
         <div className="mt-2">
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="text-xs text-blue-600 hover:text-blue-800"
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
           >
             {expanded ? t.hide_details : t.show_details}
           </button>
           {expanded && (
-            <div className="mt-2 p-3 bg-gray-50 rounded text-xs space-y-2">
-              <div><span className="font-semibold">{t.remediation_how}:</span></div>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
+            <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded text-xs">
+              {rem.what && (
+                <p className="text-gray-700 mb-2">{rem.what}</p>
+              )}
+              <div className="font-semibold text-gray-900 mb-1">{t.remediation_how}:</div>
+              <ol className="list-decimal list-inside space-y-1 text-gray-700 mb-3">
                 {rem.how.map((step, i) => <li key={i}>{step}</li>)}
-              </ul>
-              {rem.tools && rem.tools.length > 0 && (
-                <div>
-                  <span className="font-semibold">{t.remediation_tools}: </span>
+              </ol>
+              {Array.isArray(rem.tools) && rem.tools.length > 0 && (
+                <div className="mb-2">
+                  <span className="font-semibold text-gray-900">{t.remediation_tools}: </span>
                   {rem.tools.map((tool, i) => (
                     <span key={i}>
                       {i > 0 && ', '}
-                      <a href={tool.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{tool.name}</a>
+                      {tool.url ? (
+                        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{tool.name}</a>
+                      ) : (
+                        <span>{tool.name}</span>
+                      )}
                     </span>
                   ))}
                 </div>
               )}
-              <div><span className="font-semibold">{t.remediation_effort}: </span>{rem.estimated_effort}</div>
-              <div><span className="font-semibold">{t.remediation_docs}: </span>{rem.documentation_required}</div>
+              {rem.estimated_effort && (
+                <div className="mb-1">
+                  <span className="font-semibold text-gray-900">{t.remediation_effort}: </span>
+                  <span className="text-gray-700">{rem.estimated_effort}</span>
+                </div>
+              )}
+              {rem.documentation_required && (
+                <div>
+                  <span className="font-semibold text-gray-900">{t.remediation_docs}: </span>
+                  <span className="text-gray-700">{rem.documentation_required}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -97,6 +116,7 @@ export default function ResultsPage({ onShowRiskModal }) {
   const { profile, inputs } = useAssessmentStore();
   const navigate = useNavigate();
   const [showShareModal, setShowShareModal] = useState(false);
+  const [pdfGenerating, setPdfGenerating] = useState(false);
 
   const results = useMemo(() => computeResults(inputs, profile), [inputs, profile]);
 
@@ -194,7 +214,7 @@ export default function ResultsPage({ onShowRiskModal }) {
                   <td className="py-2 text-green-700">{counts.pass}/{counts.total}</td>
                   <td className="py-2 text-yellow-700">{counts.review}</td>
                   <td className="py-2 text-red-700">{counts.fail}</td>
-                  <td className="py-2 text-red-700 font-bold">{counts.critical || '—'}</td>
+                  <td className="py-2 text-red-700 font-bold">{counts.critical || '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -231,7 +251,7 @@ export default function ResultsPage({ onShowRiskModal }) {
               {results.metricResults.map((r) => (
                 <tr key={r.id} className="border-t border-gray-100">
                   <td className="py-2 px-3">{r.label}</td>
-                  <td className="py-2 px-3 font-mono text-xs">{r.value !== null && r.value !== undefined ? String(r.value) : '—'}</td>
+                  <td className="py-2 px-3 font-mono text-xs">{r.value !== null && r.value !== undefined ? String(r.value) : '-'}</td>
                   <td className="py-2 px-3"><StatusBadge status={r.status} /></td>
                 </tr>
               ))}
@@ -256,7 +276,7 @@ export default function ResultsPage({ onShowRiskModal }) {
               {results.processResults.map((r) => (
                 <tr key={r.id} className="border-t border-gray-100">
                   <td className="py-2 px-3">{r.label}</td>
-                  <td className="py-2 px-3 text-xs">{r.value || '—'}</td>
+                  <td className="py-2 px-3 text-xs">{r.value || '-'}</td>
                   <td className="py-2 px-3"><StatusBadge status={r.status} /></td>
                 </tr>
               ))}
@@ -325,6 +345,20 @@ export default function ResultsPage({ onShowRiskModal }) {
             className="px-4 py-2 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             {t.export_html}
+          </button>
+          <button
+            disabled={pdfGenerating}
+            onClick={async () => {
+              setPdfGenerating(true);
+              try {
+                await downloadPdfExport(results, session);
+              } finally {
+                setPdfGenerating(false);
+              }
+            }}
+            className={`px-4 py-2 text-sm rounded border border-gray-300 text-gray-700 ${pdfGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
+          >
+            {pdfGenerating ? t.export_pdf_generating : t.export_pdf}
           </button>
           <button
             onClick={() => setShowShareModal(true)}

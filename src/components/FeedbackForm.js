@@ -56,7 +56,7 @@ export default function FeedbackForm() {
         <p className="text-sm text-green-700">{t.success_message}</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Honeypot — hidden from users, bots fill it */}
+          {/* Honeypot - hidden from users, bots fill it */}
           <input
             type="text"
             name="website"
@@ -77,7 +77,7 @@ export default function FeedbackForm() {
               className="block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
-              <option value="">— Select —</option>
+              <option value="">- Select -</option>
               {ISSUE_TYPES.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}

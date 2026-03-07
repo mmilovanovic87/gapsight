@@ -11,7 +11,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.80,
       "review_threshold": 0.65,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "limited", "gpai"],
         "roles": ["provider", "both"],
@@ -62,7 +62,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.75,
       "review_threshold": 0.60,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "limited", "gpai"],
         "roles": ["provider", "both"],
@@ -113,7 +113,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.80,
       "review_threshold": 0.65,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "limited", "gpai"],
         "roles": ["provider", "both"],
@@ -164,7 +164,7 @@
       "direction": "lower_better",
       "pass_threshold": 0.05,
       "review_threshold": 0.10,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -215,7 +215,7 @@
       "direction": "lower_better",
       "pass_threshold": 0.05,
       "review_threshold": 0.10,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -266,7 +266,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.80,
       "review_threshold": 0.60,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -291,7 +291,7 @@
       ],
       "evidence_required": "Disparate impact analysis per protected group",
       "tooltip": "Ratio of positive prediction rates between protected and reference groups. Values closer to 1.0 indicate parity.",
-      "calculation_guide": "fairlearn.metrics.selection_rate(y_pred, sensitive_features=group) — compute ratio between groups",
+      "calculation_guide": "fairlearn.metrics.selection_rate(y_pred, sensitive_features=group) - compute ratio between groups",
       "tool_link": "https://fairlearn.org",
       "remediation": {
         "what": "Bring disparate impact ratio closer to 1.0 by removing discriminatory patterns from data or predictions.",
@@ -317,7 +317,7 @@
       "direction": "lower_better",
       "pass_threshold": 0.10,
       "review_threshold": 0.20,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -368,7 +368,7 @@
       "direction": "lower_better",
       "pass_threshold": 0.10,
       "review_threshold": 0.20,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -419,7 +419,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.70,
       "review_threshold": 0.50,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk", "gpai"],
         "roles": ["provider", "both"],
@@ -444,7 +444,7 @@
       ],
       "evidence_required": "Adversarial robustness test report with attack scenarios and results",
       "tooltip": "Model accuracy under adversarial attack conditions (e.g., FGSM, PGD). Higher is better.",
-      "calculation_guide": "art.attacks.evasion.FastGradientMethod — measure accuracy under attack",
+      "calculation_guide": "art.attacks.evasion.FastGradientMethod - measure accuracy under attack",
       "tool_link": "https://github.com/Trusted-AI/adversarial-robustness-toolbox",
       "remediation": {
         "what": "Improve adversarial robustness through adversarial training and input validation.",
@@ -470,7 +470,7 @@
       "direction": "higher_better",
       "pass_threshold": 0.90,
       "review_threshold": 0.70,
-      "threshold_note": "GapSight default — not a regulatory requirement",
+      "threshold_note": "GapSight default, not a regulatory requirement",
       "required_for_profiles": {
         "risk_categories": ["high-risk"],
         "roles": ["provider", "both"],
@@ -495,7 +495,7 @@
       ],
       "evidence_required": "Model card with SHAP values or feature importance documentation",
       "tooltip": "Proportion of model predictions for which valid SHAP or feature importance explanations are available.",
-      "calculation_guide": "shap.Explainer(model) — compute coverage as explained/total predictions",
+      "calculation_guide": "shap.Explainer(model) - compute coverage as explained/total predictions",
       "tool_link": "https://shap.readthedocs.io",
       "remediation": {
         "what": "Add SHAP or LIME explanations to increase prediction explainability coverage.",

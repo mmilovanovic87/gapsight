@@ -10,18 +10,24 @@ import { monthsSinceDate } from './scoring';
  */
 export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   const warnings = [];
+  const hasEuAiAct = profile.frameworks_selected?.includes('eu_ai_act') ?? true;
+  const hasNist = profile.frameworks_selected?.includes('nist_ai_rmf') ?? true;
 
-  // RULE 1 — Accuracy-Fairness Tradeoff
+  // RULE 1 - Accuracy-Fairness Tradeoff
   if (toNum(inputs.overall_accuracy) >= 0.90 &&
       toNum(inputs.demographic_parity_diff) >= 0.15) {
+    const refs = [];
+    if (hasEuAiAct) refs.push('EU AI Act Article 10');
+    if (hasNist) refs.push('NIST MEASURE 2.11');
+    const refText = refs.length > 0 ? ` ${refs.join(' and ')} require` : ' Best practices require';
     warnings.push({
       id: 'accuracy_fairness_tradeoff',
       severity: 'WARNING',
-      message: 'High accuracy with significant fairness gap detected. EU AI Act Article 10 and NIST MEASURE 2.11 require explicit analysis and documentation of this tradeoff.',
+      message: `High accuracy with significant fairness gap detected.${refText} explicit analysis and documentation of this tradeoff.`,
     });
   }
 
-  // RULE 2 — Robustness Without Monitoring
+  // RULE 2 - Robustness Without Monitoring
   if (toNum(inputs.adversarial_robustness_score) >= 0.80 &&
       inputs.drift_monitoring_active === false) {
     warnings.push({
@@ -31,7 +37,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
     });
   }
 
-  // RULE 3 — High Drift Without Retraining
+  // RULE 3 - High Drift Without Retraining
   const monthsSinceRetrain = monthsSinceDate(inputs.last_retrain_date);
   if (toNum(inputs.data_drift_score) >= 0.20 &&
       monthsSinceRetrain !== null && monthsSinceRetrain >= 12) {
@@ -42,17 +48,19 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
     });
   }
 
-  // RULE 4 — Fairness Without Mitigation
+  // RULE 4 - Fairness Without Mitigation
   if (toNum(inputs.equalized_odds_diff) >= 0.10 &&
       inputs.bias_mitigation_applied === false) {
     warnings.push({
       id: 'fairness_without_mitigation',
       severity: 'CRITICAL',
-      message: 'Bias detected without applied mitigation. Direct EU AI Act Article 10 violation.',
+      message: hasEuAiAct
+        ? 'Bias detected without applied mitigation. Direct EU AI Act Article 10 violation.'
+        : 'Bias detected without applied mitigation. Immediate remediation required.',
     });
   }
 
-  // RULE 5 — Explainability-Oversight Gap
+  // RULE 5 - Explainability-Oversight Gap
   if (inputs.explainability_method === 'None' &&
       humanOversightScore !== null && humanOversightScore < 0.80) {
     warnings.push({
@@ -62,8 +70,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
     });
   }
 
-  // RULE 6 — GPAI Systemic Risk Notification (EU AI Act only)
-  const hasEuAiAct = profile.frameworks_selected?.includes('eu_ai_act') ?? true;
+  // RULE 6 - GPAI Systemic Risk Notification (EU AI Act only)
   if (hasEuAiAct &&
       profile.gpai_flag === true &&
       toNum(inputs.training_flops) >= 1e25 &&
@@ -75,14 +82,16 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
     });
   }
 
-  // RULE 7 — High-Risk Post-Deployment Without Logging
+  // RULE 7 - High-Risk Post-Deployment Without Logging
   if (profile.risk_category === 'high-risk' &&
       profile.deployment_status === 'post-deployment' &&
       inputs.automated_logging === 'no') {
     warnings.push({
       id: 'high_risk_post_deploy_no_logging',
       severity: 'CRITICAL',
-      message: 'EU AI Act Article 12 requires automated logging for high-risk systems in production.',
+      message: hasEuAiAct
+        ? 'EU AI Act Article 12 requires automated logging for high-risk systems in production.'
+        : 'Automated logging is required for high-risk systems in production.',
     });
   }
 

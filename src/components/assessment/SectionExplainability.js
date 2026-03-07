@@ -4,12 +4,12 @@ import { FloatInput, EnumSelect, BooleanToggle, SectionWrapper } from './FormFie
 const t = en.assessment;
 const sec = t.sections.explainability_transparency;
 
-export default function SectionExplainability({ inputs, onInput, profile, errors }) {
+export default function SectionExplainability({ inputs, onInput, profile, errors, sectionNumber }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const isHighRisk = profile.risk_category === 'high-risk';
 
   return (
-    <SectionWrapper title={sec.title} subtitle={subtitle}>
+    <SectionWrapper title={sec.title} subtitle={subtitle} sectionNumber={sectionNumber}>
       <EnumSelect
         id="explainability_method"
         label={t.fields.explainability_method}

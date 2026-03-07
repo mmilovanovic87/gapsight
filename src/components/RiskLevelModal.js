@@ -28,7 +28,7 @@ export default function RiskLevelModal({ onClose }) {
           </div>
         </div>
         <p className="text-xs text-gray-500 mt-4 border-t pt-3">
-          GapSight default — not a regulatory requirement. These thresholds are informational only.
+          GapSight default, not a regulatory requirement. These thresholds are informational only.
         </p>
       </div>
       <div className="mt-6 flex justify-end">
