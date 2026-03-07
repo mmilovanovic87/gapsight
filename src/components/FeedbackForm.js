@@ -125,7 +125,7 @@ export default function FeedbackForm() {
             type="submit"
             disabled={disabled || status === 'loading' || !issueType || description.length < 20}
             className={`px-4 py-2 text-sm rounded text-white ${
-              disabled || status === 'loading'
+              disabled || status === 'loading' || !issueType || description.length < 20
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
