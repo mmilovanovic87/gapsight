@@ -62,8 +62,10 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
     });
   }
 
-  // RULE 6 — GPAI Systemic Risk Notification
-  if (profile.gpai_flag === true &&
+  // RULE 6 — GPAI Systemic Risk Notification (EU AI Act only)
+  const hasEuAiAct = profile.frameworks_selected?.includes('eu_ai_act') ?? true;
+  if (hasEuAiAct &&
+      profile.gpai_flag === true &&
       toNum(inputs.training_flops) >= 1e25 &&
       inputs.systemic_risk_notification_sent === 'no') {
     warnings.push({

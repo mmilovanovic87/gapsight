@@ -74,10 +74,13 @@ export function getRiskLevel(results, crossMetricWarnings) {
  * Counts statuses grouped by framework for the summary panel.
  *
  * @param {Array<{ status: string, framework_mappings: Array<{ framework: string }> }>} results
+ * @param {string[]} [selectedFrameworks] - If provided, only include these frameworks.
  * @returns {object} e.g. { eu_ai_act: { pass: 3, review: 1, fail: 0, critical: 0, total: 4 }, ... }
  */
-export function getFrameworkSummary(results) {
-  const frameworks = ['eu_ai_act', 'nist_ai_rmf', 'iso_42001'];
+export function getFrameworkSummary(results, selectedFrameworks) {
+  const frameworks = selectedFrameworks && selectedFrameworks.length > 0
+    ? selectedFrameworks
+    : ['eu_ai_act', 'nist_ai_rmf', 'iso_42001'];
   const summary = {};
 
   for (const fw of frameworks) {

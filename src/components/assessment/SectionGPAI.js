@@ -17,10 +17,11 @@ const NOTIFICATION_OPTIONS = [
   { value: 'not_applicable', label: en.assessment.enum_labels.not_applicable },
 ];
 
-export default function SectionGPAI({ inputs, onInput, errors }) {
+export default function SectionGPAI({ inputs, onInput, errors, profile }) {
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const flopsVal = inputs.training_flops ? parseFloat(inputs.training_flops) : 0;
   const isSystemicRisk = flopsVal >= 1e25;
+  const hasEuAiAct = profile?.frameworks_selected?.includes('eu_ai_act') ?? true;
 
   const copyrightChecklist = inputs.gpai_copyright_checklist || {};
   const setCopyrightItem = (id, checked) => {
@@ -41,10 +42,11 @@ export default function SectionGPAI({ inputs, onInput, errors }) {
           placeholder="e.g. 1e24"
           className="block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <p className="text-xs text-gray-500 mt-1">{t.fields.training_flops_tooltip}</p>
         {errors.training_flops && <p className="text-xs text-red-500">{errors.training_flops}</p>}
       </div>
 
-      {isSystemicRisk && (
+      {isSystemicRisk && hasEuAiAct && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
           {sec.systemic_risk_warning}
         </div>
@@ -99,14 +101,16 @@ export default function SectionGPAI({ inputs, onInput, errors }) {
         onChange={(v) => onInput('adversarial_testing_conducted', v)}
       />
 
-      <EnumSelect
-        id="systemic_risk_notification_sent"
-        label={t.fields.systemic_risk_notification_sent}
-        value={inputs.systemic_risk_notification_sent}
-        onChange={(v) => onInput('systemic_risk_notification_sent', v)}
-        options={NOTIFICATION_OPTIONS}
-        error={errors.systemic_risk_notification_sent}
-      />
+      {hasEuAiAct && (
+        <EnumSelect
+          id="systemic_risk_notification_sent"
+          label={t.fields.systemic_risk_notification_sent}
+          value={inputs.systemic_risk_notification_sent}
+          onChange={(v) => onInput('systemic_risk_notification_sent', v)}
+          options={NOTIFICATION_OPTIONS}
+          error={errors.systemic_risk_notification_sent}
+        />
+      )}
     </SectionWrapper>
   );
 }

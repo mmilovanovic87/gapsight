@@ -53,6 +53,60 @@ Effect on output:
 
 ---
 
+## Step 1b: Framework Selection
+
+Decision tree to determine which regulatory frameworks apply.
+
+### Questions
+
+```
+Q1: Do users of your system currently reside in the EU,
+    or is your company registered in the EU?
+    → Yes → EU AI Act flagged (mandatory, legal obligation)
+    → No  → Q2
+
+Q2: Is your company based in the US, or do you work with
+    US federal agencies or US-regulated clients?
+    → Yes → NIST AI RMF flagged (recommended)
+    → No  → Q3
+
+Q3: Do your clients or partners require ISO certification,
+    or is it a contractual requirement in your industry?
+    → Yes → ISO/IEC 42001 flagged
+    → No  → Q4
+
+Q4: Are you looking for a globally recognized framework
+    for internal AI risk governance, without certification
+    requirements?
+    → Yes → NIST AI RMF flagged (de facto global standard)
+    → No  → Q5
+
+Q5: Do you plan to expand to the EU market within the
+    next 12 months?
+    → Yes → EU AI Act flagged (proactive)
+    → No  → NIST AI RMF flagged as default starting point
+```
+
+### Rules
+
+- Multiple frameworks can be flagged simultaneously.
+- User sees a result card for each flagged framework with a one-sentence
+  explanation of why it applies.
+- User can override: add or remove any framework with acknowledgment:
+  "You are manually adjusting the suggested frameworks. GapSight will
+  assess against all selected frameworks."
+- If EU AI Act is flagged, show note:
+  "The EU AI Act applies extraterritorially — if your users are in the EU,
+  the regulation applies regardless of where your company is based."
+- Selected frameworks stored in profile as:
+  `frameworks_selected: ["eu_ai_act", "nist_ai_rmf", "iso_42001"]`
+- If user skips this step or selects all: all three frameworks included
+  (current behavior preserved).
+- This step appears after Step 1 (Deployment context) and before
+  Step 2 (Onboarding).
+
+---
+
 ## Step 2: Onboarding
 
 ### Role (mandatory)

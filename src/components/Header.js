@@ -11,7 +11,7 @@ export default function Header({ onClearSession, onNewAssessment }) {
         </Link>
         <div className="flex items-center gap-4">
           <nav className="flex gap-4 text-sm text-gray-600">
-            <button onClick={() => { onNewAssessment(); navigate('/'); }} className="hover:text-gray-900">{en.header.nav_new_assessment}</button>
+            <button onClick={() => { onNewAssessment(); navigate('/assessment'); }} className="hover:text-gray-900">{en.header.nav_new_assessment}</button>
             <Link to="/kb-changelog" className="hover:text-gray-900">{en.header.nav_kb_changelog}</Link>
             <Link to="/about" className="hover:text-gray-900">{en.header.nav_about}</Link>
             <Link to="/privacy" className="hover:text-gray-900">{en.header.nav_privacy}</Link>

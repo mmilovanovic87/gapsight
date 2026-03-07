@@ -1,4 +1,44 @@
 {
+  "landing": {
+    "hero_headline": "Know your AI compliance gaps before regulators do.",
+    "hero_subheadline": "GapSight is a free self-assessment tool for ML teams. Enter your evaluation metrics, get a structured gap report relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001.",
+    "hero_cta": "Start Free Assessment",
+    "hero_disclaimer": "Informative self-assessment tool. Not legal advice. Informational only.",
+    "how_title": "How it works",
+    "how_steps": [
+      {
+        "title": "Set your profile",
+        "description": "Role, risk category, deployment status."
+      },
+      {
+        "title": "Enter your metrics",
+        "description": "Accuracy, fairness, drift, explainability, oversight."
+      },
+      {
+        "title": "Get your gap report",
+        "description": "CRITICAL / HIGH / MEDIUM / LOW risk level with action items."
+      },
+      {
+        "title": "Export or share",
+        "description": "HTML and JSON export, shareable link."
+      }
+    ],
+    "frameworks_title": "Frameworks covered",
+    "frameworks": [
+      {
+        "name": "EU AI Act",
+        "description": "The European regulation establishing harmonized rules for artificial intelligence systems based on risk classification."
+      },
+      {
+        "name": "NIST AI RMF",
+        "description": "The U.S. framework for managing risks throughout the AI system lifecycle across govern, map, measure, and manage functions."
+      },
+      {
+        "name": "ISO/IEC 42001",
+        "description": "The international standard specifying requirements for establishing and maintaining an AI management system."
+      }
+    ]
+  },
   "meta": {
     "title": "GapSight — AI Regulatory Self-Assessment for ML Teams",
     "description": "GapSight is an informative self-assessment tool that helps AI teams identify potential gaps relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001."
@@ -123,6 +163,7 @@
   "assessment": {
     "continuing_previous": "Continuing previous assessment. Your inputs have been restored.",
     "step_deployment": "Deployment Context",
+    "step_frameworks": "Framework Selection",
     "step_onboarding": "Onboarding",
     "step_form": "Assessment Form",
     "next": "Next",
@@ -136,6 +177,32 @@
         "post": "Yes, already in production",
         "pilot": "Partially, pilot or beta phase"
       }
+    },
+    "frameworks": {
+      "title": "Framework Selection",
+      "subtitle": "Answer a few questions to determine which regulatory frameworks apply to your system.",
+      "q1": "Do users of your system currently reside in the EU, or is your company registered in the EU?",
+      "q2": "Is your company based in the US, or do you work with US federal agencies or US-regulated clients?",
+      "q3": "Do your clients or partners require ISO certification, or is it a contractual requirement in your industry?",
+      "q4": "Are you looking for a globally recognized framework for internal AI risk governance, without certification requirements?",
+      "q5": "Do you plan to expand to the EU market within the next 12 months?",
+      "answer_yes": "Yes",
+      "answer_no": "No",
+      "results_title": "Suggested Frameworks",
+      "reason_eu_mandatory": "The EU AI Act applies to your system as a legal obligation.",
+      "reason_eu_proactive": "Proactive preparation for EU market expansion.",
+      "reason_nist_us": "NIST AI RMF is recommended for US-based or US-regulated operations.",
+      "reason_nist_global": "NIST AI RMF serves as a de facto global standard for AI risk governance.",
+      "reason_nist_default": "NIST AI RMF is recommended as a starting point for AI risk governance.",
+      "reason_iso": "ISO/IEC 42001 is flagged based on your certification or contractual requirements.",
+      "eu_extraterritorial_note": "The EU AI Act applies extraterritorially \u2014 if your users are in the EU, the regulation applies regardless of where your company is based.",
+      "override_label": "Adjust frameworks",
+      "override_warning": "You are manually adjusting the suggested frameworks. GapSight will assess against all selected frameworks.",
+      "locked_tooltip": "Required based on your answers",
+      "additional_label": "You can also include these frameworks:",
+      "fw_eu_ai_act": "EU AI Act",
+      "fw_nist_ai_rmf": "NIST AI RMF",
+      "fw_iso_42001": "ISO/IEC 42001"
     },
     "onboarding": {
       "title": "Onboarding",
@@ -249,7 +316,8 @@
       "explanations_available_to_users": "Are explanations available to end users?",
       "model_card_exists": "Does a model card exist?",
       "instructions_for_use_documented": "Are instructions for use documented?",
-      "training_flops": "Training FLOPs (scientific notation, e.g. 1e24)",
+      "training_flops": "Training FLOPs (e.g. 1e24)",
+      "training_flops_tooltip": "FLOPs (Floating Point Operations) measure the total compute used to train your model. Find this value in your training logs, model card, or cloud provider billing dashboard. The EU AI Act systemic risk threshold is 1e25 FLOPs (Article 51). If you trained on a cluster, sum FLOPs across all nodes and the full training run.",
       "training_data_summary_published": "Training data summary published?",
       "copyright_policy_status": "Copyright policy status",
       "model_evaluations_conducted": "Model evaluations conducted?",
@@ -276,7 +344,8 @@
       "min_length": "Minimum {min} characters required.",
       "positive_integer": "Must be a positive integer.",
       "small_test_set": "Metrics may not be reliable with small test sets.",
-      "very_small_test_set": "Test set below 30 samples — all accuracy metrics will be marked REVIEW regardless of value."
+      "very_small_test_set": "Test set below 30 samples — all accuracy metrics will be marked REVIEW regardless of value.",
+      "errors_in_section": "Please fix errors in section: {section}"
     }
   },
   "results": {

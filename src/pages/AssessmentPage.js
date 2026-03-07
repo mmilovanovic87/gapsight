@@ -2,7 +2,9 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import en from '../locales/en.json';
 import useAssessmentStore from '../hooks/useAssessmentStore';
+import TosModal from '../components/TosModal';
 import DeploymentStep from '../components/assessment/DeploymentStep';
+import FrameworkSelectionStep from '../components/assessment/FrameworkSelectionStep';
 import OnboardingStep from '../components/assessment/OnboardingStep';
 import SectionAccuracy from '../components/assessment/SectionAccuracy';
 import SectionFairness from '../components/assessment/SectionFairness';
@@ -16,12 +18,14 @@ const t = en.assessment;
 
 const STEPS = {
   DEPLOYMENT: 0,
-  ONBOARDING: 1,
-  FORM: 2,
+  FRAMEWORKS: 1,
+  ONBOARDING: 2,
+  FORM: 3,
 };
 
 function validateFloat(value, min, max) {
   if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number' && isNaN(value)) return null; // treat NaN as empty
   const n = parseFloat(value);
   if (isNaN(n)) return t.validation.range.replace('{min}', min).replace('{max}', max);
   if (min !== undefined && n < min) return t.validation.range.replace('{min}', min).replace('{max}', max);
@@ -37,7 +41,8 @@ function validateInputs(inputs, profile) {
   errors.f1_score = validateFloat(inputs.f1_score, 0, 1);
   errors.auc_roc = validateFloat(inputs.auc_roc, 0, 1);
 
-  if (inputs.test_set_size !== null && inputs.test_set_size !== undefined) {
+  if (inputs.test_set_size !== null && inputs.test_set_size !== undefined &&
+      !(typeof inputs.test_set_size === 'number' && isNaN(inputs.test_set_size))) {
     if (!Number.isInteger(inputs.test_set_size) || inputs.test_set_size <= 0) {
       errors.test_set_size = t.validation.positive_integer;
     }
@@ -74,11 +79,34 @@ function validateInputs(inputs, profile) {
   return errors;
 }
 
-export default function AssessmentPage({ onTriggerDisclaimer }) {
+const FIELD_TO_SECTION = {
+  overall_accuracy: 'accuracy',
+  f1_score: 'accuracy',
+  auc_roc: 'accuracy',
+  test_set_size: 'accuracy',
+  demographic_parity_diff: 'fairness',
+  equalized_odds_diff: 'fairness',
+  disparate_impact_ratio: 'fairness',
+  bias_mitigation_method: 'fairness',
+  data_drift_score: 'robustness',
+  concept_drift_score: 'robustness',
+  adversarial_robustness_score: 'robustness',
+  explanation_coverage: 'explainability',
+};
+
+function findSectionForError(field, formSections) {
+  const section = FIELD_TO_SECTION[field];
+  if (!section) return null;
+  const idx = formSections.indexOf(section);
+  return idx >= 0 ? idx : null;
+}
+
+export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTosAccept, onTosExit }) {
   const { profile, inputs, restored, setProfile, setInput, setInputs, dismissRestored } = useAssessmentStore();
   const [step, setStep] = useState(STEPS.DEPLOYMENT);
   const [formSection, setFormSection] = useState(0);
   const [errors, setErrors] = useState({});
+  const [errorBanner, setErrorBanner] = useState('');
   const [showRestoredBanner, setShowRestoredBanner] = useState(false);
   const navigate = useNavigate();
 
@@ -89,8 +117,10 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
       // Jump to form step if profile is complete
       if (profile.deployment_status && profile.role && profile.risk_category !== null && profile.gpai_flag !== null) {
         setStep(STEPS.FORM);
-      } else if (profile.deployment_status) {
+      } else if (profile.deployment_status && profile.frameworks_selected) {
         setStep(STEPS.ONBOARDING);
+      } else if (profile.deployment_status) {
+        setStep(STEPS.FRAMEWORKS);
       }
     }
   }, [restored, profile]);
@@ -111,10 +141,13 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
   }, [showGpai]);
 
   const canAdvanceDeployment = !!profile.deployment_status;
+  const canAdvanceFrameworks = !!(profile.frameworks_selected && profile.frameworks_selected.length > 0);
   const canAdvanceOnboarding = !!(profile.role && profile.gpai_flag !== null && profile.risk_category);
 
   const handleNext = useCallback(() => {
     if (step === STEPS.DEPLOYMENT && canAdvanceDeployment) {
+      setStep(STEPS.FRAMEWORKS);
+    } else if (step === STEPS.FRAMEWORKS && canAdvanceFrameworks) {
       setStep(STEPS.ONBOARDING);
     } else if (step === STEPS.ONBOARDING && canAdvanceOnboarding) {
       setStep(STEPS.FORM);
@@ -124,7 +157,7 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
         setFormSection((s) => s + 1);
       }
     }
-  }, [step, canAdvanceDeployment, canAdvanceOnboarding, formSection, formSections.length]);
+  }, [step, canAdvanceDeployment, canAdvanceFrameworks, canAdvanceOnboarding, formSection, formSections.length]);
 
   const handleBack = useCallback(() => {
     if (step === STEPS.FORM && formSection > 0) {
@@ -132,6 +165,8 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
     } else if (step === STEPS.FORM && formSection === 0) {
       setStep(STEPS.ONBOARDING);
     } else if (step === STEPS.ONBOARDING) {
+      setStep(STEPS.FRAMEWORKS);
+    } else if (step === STEPS.FRAMEWORKS) {
       setStep(STEPS.DEPLOYMENT);
     }
   }, [step, formSection]);
@@ -140,8 +175,19 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
     const validationErrors = validateInputs(inputs, profile);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) {
+      // Navigate to the first section that has an error
+      const firstErrorField = Object.keys(validationErrors)[0];
+      const errorSection = findSectionForError(firstErrorField, formSections);
+      if (errorSection !== null && errorSection !== formSection) {
+        const sectionName = formSections[errorSection].replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        setErrorBanner(t.validation.errors_in_section.replace('{section}', sectionName));
+        setFormSection(errorSection);
+      } else {
+        setErrorBanner('');
+      }
       return;
     }
+    setErrorBanner('');
 
     // Trigger inline disclaimer (once per session)
     const alreadyShown = onTriggerDisclaimer();
@@ -151,9 +197,9 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
       return;
     }
 
-    // Navigate to results (Phase 5 will build the results page)
+    // Navigate to results
     navigate('/results');
-  }, [inputs, profile, onTriggerDisclaimer, navigate]);
+  }, [inputs, profile, onTriggerDisclaimer, navigate, formSections, formSection]);
 
   const isLastSection = formSection === formSections.length - 1;
 
@@ -171,7 +217,7 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
       case 'human_oversight':
         return <SectionHumanOversight inputs={inputs} onInput={setInput} />;
       case 'gpai':
-        return <SectionGPAI inputs={inputs} onInput={setInput} errors={errors} />;
+        return <SectionGPAI inputs={inputs} onInput={setInput} errors={errors} profile={profile} />;
       case 'governance':
         return <SectionGovernance inputs={inputs} onInput={setInput} profile={profile} errors={errors} />;
       default:
@@ -180,10 +226,15 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
   };
 
   // Progress indicator
-  const totalSteps = 2 + formSections.length; // deployment + onboarding + form sections
+  const totalSteps = 3 + formSections.length; // deployment + frameworks + onboarding + form sections
   const currentProgress = step === STEPS.DEPLOYMENT ? 1
-    : step === STEPS.ONBOARDING ? 2
-    : 2 + formSection + 1;
+    : step === STEPS.FRAMEWORKS ? 2
+    : step === STEPS.ONBOARDING ? 3
+    : 3 + formSection + 1;
+
+  if (!tosAccepted) {
+    return <TosModal onAccept={onTosAccept} onExit={onTosExit} />;
+  }
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-8">
@@ -206,6 +257,7 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
           <span>Step {currentProgress} of {totalSteps}</span>
           <span>
             {step === STEPS.DEPLOYMENT && t.step_deployment}
+            {step === STEPS.FRAMEWORKS && t.step_frameworks}
             {step === STEPS.ONBOARDING && t.step_onboarding}
             {step === STEPS.FORM && t.step_form}
           </span>
@@ -226,6 +278,15 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
         />
       )}
 
+      {step === STEPS.FRAMEWORKS && (
+        <FrameworkSelectionStep
+          value={{ frameworks_selected: profile.frameworks_selected, frameworks_answers: profile.frameworks_answers }}
+          onChange={({ frameworks_selected, frameworks_answers }) =>
+            setProfile({ frameworks_selected, frameworks_answers })
+          }
+        />
+      )}
+
       {step === STEPS.ONBOARDING && (
         <OnboardingStep
           profile={profile}
@@ -241,7 +302,7 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
               <button
                 key={sec}
                 type="button"
-                onClick={() => setFormSection(i)}
+                onClick={() => { setFormSection(i); setErrorBanner(''); }}
                 className={`px-3 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
                   i === formSection
                     ? 'bg-blue-600 text-white'
@@ -254,6 +315,12 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
           </div>
           {renderFormSection()}
         </>
+      )}
+
+      {errorBanner && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+          {errorBanner}
+        </div>
       )}
 
       {/* Navigation */}
@@ -277,10 +344,12 @@ export default function AssessmentPage({ onTriggerDisclaimer }) {
             onClick={handleNext}
             disabled={
               (step === STEPS.DEPLOYMENT && !canAdvanceDeployment) ||
+              (step === STEPS.FRAMEWORKS && !canAdvanceFrameworks) ||
               (step === STEPS.ONBOARDING && !canAdvanceOnboarding)
             }
             className={`px-6 py-2 text-sm rounded ${
               (step === STEPS.DEPLOYMENT && !canAdvanceDeployment) ||
+              (step === STEPS.FRAMEWORKS && !canAdvanceFrameworks) ||
               (step === STEPS.ONBOARDING && !canAdvanceOnboarding)
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'

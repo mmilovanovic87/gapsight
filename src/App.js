@@ -4,7 +4,6 @@ import './App.css';
 import Header from './components/Header';
 import DisclaimerBar from './components/DisclaimerBar';
 import Footer from './components/Footer';
-import TosModal from './components/TosModal';
 import InlineDisclaimerModal from './components/InlineDisclaimerModal';
 import ClearSessionModal from './components/ClearSessionModal';
 import RiskLevelModal from './components/RiskLevelModal';
@@ -12,6 +11,7 @@ import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import KBChangelogPage from './pages/KBChangelogPage';
+import LandingPage from './pages/LandingPage';
 import AssessmentPage from './pages/AssessmentPage';
 import ResultsPage from './pages/ResultsPage';
 import SharedViewPage from './pages/SharedViewPage';
@@ -113,16 +113,21 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
-        {!tosAccepted && (
-          <TosModal onAccept={handleTosAccept} onExit={handleTosExit} />
-        )}
-
         <Header onClearSession={handleClearSession} onNewAssessment={handleNewAssessment} />
         <DisclaimerBar />
 
         <div className="flex-1">
           <Routes>
-            <Route path="/" element={<AssessmentPage key={assessmentKey} onTriggerDisclaimer={triggerInlineDisclaimer} />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/assessment" element={
+              <AssessmentPage
+                key={assessmentKey}
+                onTriggerDisclaimer={triggerInlineDisclaimer}
+                tosAccepted={tosAccepted}
+                onTosAccept={handleTosAccept}
+                onTosExit={handleTosExit}
+              />
+            } />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />

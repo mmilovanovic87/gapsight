@@ -92,7 +92,7 @@ export function computeResults(inputs, profile) {
   const riskLevel = getRiskLevel(allResults, crossMetricWarnings);
 
   // Framework summary
-  const frameworkSummary = getFrameworkSummary(allResults);
+  const frameworkSummary = getFrameworkSummary(allResults, profile.frameworks_selected);
 
   // Action items
   const actionItems = generateActionItems(allResults, crossMetricWarnings, profile, inputs, contextFlags);

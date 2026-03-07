@@ -71,7 +71,7 @@ export default function ResultsPage({ onShowRiskModal }) {
           <p className="text-sm text-gray-500 mt-1">{t.subtitle}</p>
         </div>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/assessment')}
           className="text-sm text-blue-600 hover:text-blue-800"
         >
           {t.back_to_form}
