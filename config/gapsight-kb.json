@@ -1,0 +1,522 @@
+{
+  "meta": {
+    "name": "GapSight Knowledge Base",
+    "version": "1.0",
+    "description": "Metrics-driven regulatory gap mapping for EU AI Act, NIST AI RMF, and ISO/IEC 42001. GapSight \u2014 AI regulatory self-assessment for ML teams. Use this as context when building GapSight compliance checklist logic. For each metric the user inputs, map it to the requirements below and return pass/review/fail status.",
+    "frameworks": [
+      "EU_AI_Act",
+      "NIST_AI_RMF",
+      "ISO_42001"
+    ],
+    "threshold_policy": "None of the three frameworks prescribe numeric thresholds. GapSight uses industry-reasonable defaults. Users can override thresholds.",
+    "target_user": "Small ML teams, AI startups, freelance ML engineers building or deploying AI systems",
+    "tagline": "AI regulatory self-assessment for ML teams.",
+    "disclaimer": "GapSight is an informative self-assessment tool. Not legal advice. Not a compliance platform. Thresholds are GapSight industry defaults, not regulatory requirements."
+  },
+  "metrics": [
+    {
+      "metric_id": "accuracy",
+      "label": "Overall Accuracy",
+      "description": "Proportion of correct predictions over total predictions.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.8,
+      "default_review_threshold": 0.65,
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15",
+          "requirement": "High-risk AI systems must achieve appropriate levels of accuracy. Providers must declare accuracy metrics in instructions for use.",
+          "evidence_required": "Test report showing accuracy on representative test set",
+          "status_logic": "pass if >= pass_threshold, review if >= review_threshold, fail if below"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.3",
+          "requirement": "Performance criteria are measured quantitatively under deployment-like conditions and results are documented.",
+          "evidence_required": "Metrics report with accuracy, F1, AUC in deployment-representative conditions"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Clause 9, Annex A.5.5",
+          "requirement": "Organisations must monitor KPIs including accuracy. Verification and validation must test against performance metrics.",
+          "evidence_required": "Documented KPI monitoring and test results"
+        }
+      ]
+    },
+    {
+      "metric_id": "f1_score",
+      "label": "F1 Score (weighted)",
+      "description": "Harmonic mean of precision and recall. Especially relevant for imbalanced datasets.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.75,
+      "default_review_threshold": 0.6,
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15, Annex IV",
+          "requirement": "Validation and testing must document metrics for accuracy. Annex IV requires documentation of metrics used.",
+          "evidence_required": "Test report including F1 score by class and overall"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.3, MEASURE 1.1",
+          "requirement": "Risk-appropriate metrics are selected and implemented. F1 score is listed as an example metric for performance evaluation.",
+          "evidence_required": "Metric selection justification and test results"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Clause 9, Annex A.5.5",
+          "requirement": "Performance monitoring must use valid metrics. F1 score supports verification and validation requirements.",
+          "evidence_required": "Performance evaluation report"
+        }
+      ]
+    },
+    {
+      "metric_id": "auc_roc",
+      "label": "AUC-ROC",
+      "description": "Area under the receiver operating characteristic curve. Measures discriminative ability.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.8,
+      "default_review_threshold": 0.65,
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15, Annex IV",
+          "requirement": "Providers must document metrics used for accuracy and robustness in Annex IV technical documentation.",
+          "evidence_required": "ROC curve and AUC value in test report"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.3, MEASURE 2.5",
+          "requirement": "Validity and reliability must be demonstrated. AUC is an accepted metric for classification model reliability.",
+          "evidence_required": "Test documentation with AUC and interpretation"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Clause 9, Annex A.5.5",
+          "requirement": "KPI monitoring must use robust methodologies and valid metrics.",
+          "evidence_required": "Documented evaluation methodology including AUC"
+        }
+      ]
+    },
+    {
+      "metric_id": "demographic_parity_difference",
+      "label": "Demographic Parity Difference",
+      "description": "Difference in positive prediction rates between protected and reference groups. Closer to 0 is better.",
+      "input_type": "float",
+      "input_range": [
+        -1,
+        1
+      ],
+      "default_pass_threshold": 0.05,
+      "default_review_threshold": 0.1,
+      "threshold_direction": "lower_is_better",
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 10, Annex IV",
+          "requirement": "Training, validation and testing datasets must be bias-free. Providers must detect and mitigate bias. Annex IV requires documenting validation metrics for discriminatory impacts.",
+          "evidence_required": "Fairness audit report showing demographic parity difference per protected group"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.11",
+          "requirement": "Fairness and bias are evaluated and results documented. Demographic parity difference is an explicit example metric.",
+          "evidence_required": "Bias evaluation report with demographic parity results and mitigation actions"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.6.4, Annex A.5.5",
+          "requirement": "Bias assessment is required during data preparation. Testing and validation must include fairness metrics.",
+          "evidence_required": "Data preparation bias assessment and fairness test results"
+        }
+      ]
+    },
+    {
+      "metric_id": "equalized_odds_difference",
+      "label": "Equalized Odds Difference",
+      "description": "Difference in true positive and false positive rates between groups. Closer to 0 is better.",
+      "input_type": "float",
+      "input_range": [
+        -1,
+        1
+      ],
+      "default_pass_threshold": 0.05,
+      "default_review_threshold": 0.1,
+      "threshold_direction": "lower_is_better",
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 10, Article 13, Annex IV",
+          "requirement": "Providers must detect and mitigate bias. Article 13 requires reporting performance for specific groups.",
+          "evidence_required": "Fairness report showing equalized odds per protected group"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.11",
+          "requirement": "Equalized odds difference is an explicit example metric for fairness evaluation.",
+          "evidence_required": "Fairness metrics report with equalized odds and mitigation plan"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.6.4, Annex A.5.4, Annex A.5.5",
+          "requirement": "Bias testing and validation against fairness metrics are required. Clause 9 expects fairness KPI monitoring.",
+          "evidence_required": "Fairness evaluation documented in performance monitoring"
+        }
+      ]
+    },
+    {
+      "metric_id": "data_drift_score",
+      "label": "Data Drift Score",
+      "description": "Statistical distance between training data distribution and live data distribution. Lower means less drift.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.1,
+      "default_review_threshold": 0.2,
+      "threshold_direction": "lower_is_better",
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15, Article 12",
+          "requirement": "High-risk systems must prevent feedback loops and perform consistently throughout their lifecycle. Logging must enable post-market monitoring.",
+          "evidence_required": "Drift monitoring logs and alert thresholds"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 3.1, MEASURE 3.2, MEASURE 2.4",
+          "requirement": "Risks are tracked over time. System behavior is monitored in production. Drift detection is implicitly required for consistent performance.",
+          "evidence_required": "Continuous monitoring plan and drift score logs"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.5.7, Clause 9",
+          "requirement": "Deployment and operation controls must detect drift and ensure fairness and robustness over time.",
+          "evidence_required": "Drift monitoring evidence and response procedures"
+        }
+      ]
+    },
+    {
+      "metric_id": "concept_drift_score",
+      "label": "Concept Drift Score",
+      "description": "Measure of change in the relationship between input features and target labels over time.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.1,
+      "default_review_threshold": 0.2,
+      "threshold_direction": "lower_is_better",
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15",
+          "requirement": "Systems that continue to learn after deployment must prevent biased feedback loops. Consistent performance throughout lifecycle is required.",
+          "evidence_required": "Concept drift monitoring logs and retraining procedures"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 3.1, MEASURE 3.3",
+          "requirement": "Track emergent risks including concept drift. User feedback must be integrated into evaluation.",
+          "evidence_required": "Drift tracking plan and corrective action records"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.5.7, Clause 9",
+          "requirement": "Performance monitoring must detect concept drift as part of deployment and operation controls.",
+          "evidence_required": "Documented monitoring methodology and drift response plan"
+        }
+      ]
+    },
+    {
+      "metric_id": "adversarial_robustness_score",
+      "label": "Adversarial Robustness Score",
+      "description": "Model accuracy under adversarial attack conditions (e.g., FGSM, PGD). Higher is better.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.7,
+      "default_review_threshold": 0.5,
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 15",
+          "requirement": "Providers must implement cybersecurity measures against adversarial inputs, data poisoning and model evasion attacks.",
+          "evidence_required": "Adversarial robustness test report with attack scenarios and results"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.7, MEASURE 2.9",
+          "requirement": "Security and resilience are evaluated. Adversarial testing results are an explicit evidence requirement.",
+          "evidence_required": "Penetration testing and adversarial evaluation reports"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.5.5, Annex A.5.7",
+          "requirement": "Verification and validation must include robustness testing. Operation controls must ensure robustness.",
+          "evidence_required": "Robustness test documentation including adversarial scenarios"
+        }
+      ]
+    },
+    {
+      "metric_id": "explainability_coverage",
+      "label": "Explainability Coverage (SHAP)",
+      "description": "Proportion of model predictions for which valid SHAP or feature importance explanations are available.",
+      "input_type": "float",
+      "input_range": [
+        0,
+        1
+      ],
+      "default_pass_threshold": 0.9,
+      "default_review_threshold": 0.7,
+      "unit": "ratio",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 13, Annex IV",
+          "requirement": "Providers must state whether the system can be explained and provide information for deployers. Annex IV requires documentation of model logic and assumptions.",
+          "evidence_required": "Model card with SHAP values or feature importance documentation"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.9, MEASURE 2.6",
+          "requirement": "Model is explained, validated and documented. Outputs are interpreted in context. SHAP values are an explicit example.",
+          "evidence_required": "Explainability report with SHAP values and user-facing interpretation"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.5.8, Annex A.7.3",
+          "requirement": "Technical documentation must include model architecture, assumptions and limitations. Transparency to stakeholders is required.",
+          "evidence_required": "Model card and stakeholder documentation with explanations"
+        }
+      ]
+    },
+    {
+      "metric_id": "human_oversight",
+      "label": "Human Oversight Documented",
+      "description": "Whether human oversight procedures are formally documented including override and intervention mechanisms.",
+      "input_type": "boolean",
+      "covers": [
+        {
+          "framework": "EU_AI_Act",
+          "reference": "Article 14",
+          "requirement": "High-risk systems must be designed for effective human oversight. Operators must be able to understand, monitor, override and halt the system. Automation bias must be addressed.",
+          "evidence_required": "Human oversight plan, operator training records, documented override procedures"
+        },
+        {
+          "framework": "NIST_AI_RMF",
+          "reference": "MEASURE 2.7, MAP 3.5",
+          "requirement": "Safety risks are evaluated. Human oversight processes are defined and documented.",
+          "evidence_required": "Oversight procedure documentation and training evidence"
+        },
+        {
+          "framework": "ISO_42001",
+          "reference": "Annex A.5.6, Annex A.5.7, Annex A.8.3",
+          "requirement": "Human oversight must be incorporated in design, deployment and operation. Human review is required for high-stakes decisions.",
+          "evidence_required": "Documented oversight procedures and evidence of operator training"
+        }
+      ]
+    }
+  ],
+  "process_requirements": {
+    "description": "These requirements cannot be satisfied by metrics alone. They require documentation, policies or organisational processes. GapSight should flag these as separate action items.",
+    "items": [
+      {
+        "id": "risk_management_system",
+        "label": "Risk Management System",
+        "description": "Formal risk management process with risk identification, analysis, evaluation, mitigation and iterative updates.",
+        "frameworks": [
+          "EU_AI_Act Article 9",
+          "NIST MAP & MANAGE",
+          "ISO 42001 Clause 6 & Annex A.5"
+        ],
+        "evidence_required": "Risk register, impact assessment reports, hazard analysis, mitigation measures"
+      },
+      {
+        "id": "technical_documentation",
+        "label": "Technical Documentation (Annex IV)",
+        "description": "Complete technical documentation including system description, architecture, data governance, validation reports, and post-market monitoring plan.",
+        "frameworks": [
+          "EU_AI_Act Article 11 & Annex IV",
+          "NIST GOVERN 5",
+          "ISO 42001 Annex A.5.8 & A.7"
+        ],
+        "evidence_required": "Completed Annex IV document, model cards, data lineage records, architecture diagrams"
+      },
+      {
+        "id": "ai_policy",
+        "label": "AI Governance Policy",
+        "description": "Documented AI policy approved by leadership covering fairness, transparency, human oversight and safety.",
+        "frameworks": [
+          "EU_AI_Act Articles 16-17",
+          "NIST GOVERN 2",
+          "ISO 42001 Clause 5 & Annex A.2"
+        ],
+        "evidence_required": "Signed AI policy document, role assignments, accountability framework"
+      },
+      {
+        "id": "data_governance",
+        "label": "Data Governance Policy",
+        "description": "Documented procedures for data collection, quality, provenance, preparation and bias mitigation.",
+        "frameworks": [
+          "EU_AI_Act Article 10",
+          "NIST MEASURE 2.10",
+          "ISO 42001 Annex A.6"
+        ],
+        "evidence_required": "Data governance policy, data lineage records, bias mitigation procedures"
+      },
+      {
+        "id": "record_keeping",
+        "label": "Automated Logging and Record Keeping",
+        "description": "Automatic logging of events to enable risk identification, post-market monitoring and traceability.",
+        "frameworks": [
+          "EU_AI_Act Article 12",
+          "NIST MEASURE 3",
+          "ISO 42001 Annex A.5.7 & A.7.2"
+        ],
+        "evidence_required": "Logging architecture, stored logs, incident records"
+      },
+      {
+        "id": "quality_management",
+        "label": "Quality Management System",
+        "description": "Documented quality management system covering design, development, testing, validation, risk management, post-market monitoring and incident reporting.",
+        "frameworks": [
+          "EU_AI_Act Article 17",
+          "NIST MANAGE 4",
+          "ISO 42001 Clauses 9-10"
+        ],
+        "evidence_required": "Quality management manual, internal audit reports, corrective action logs"
+      },
+      {
+        "id": "third_party_management",
+        "label": "Third-Party and Supply Chain Management",
+        "description": "Assessment and monitoring of third-party AI systems, pre-trained models and data suppliers.",
+        "frameworks": [
+          "NIST GOVERN 6 & MANAGE 3",
+          "ISO 42001 Annex A.9"
+        ],
+        "evidence_required": "Vendor assessments, contracts with AI responsibilities, supplier performance reviews"
+      }
+    ]
+  },
+  "checklist_topics": [
+    {
+      "topic": "Accuracy & Performance",
+      "metrics": [
+        "accuracy",
+        "f1_score",
+        "auc_roc"
+      ],
+      "process_items": []
+    },
+    {
+      "topic": "Fairness & Bias",
+      "metrics": [
+        "demographic_parity_difference",
+        "equalized_odds_difference"
+      ],
+      "process_items": [
+        "data_governance"
+      ]
+    },
+    {
+      "topic": "Robustness, Drift & Cybersecurity",
+      "metrics": [
+        "data_drift_score",
+        "concept_drift_score",
+        "adversarial_robustness_score"
+      ],
+      "process_items": [
+        "record_keeping"
+      ]
+    },
+    {
+      "topic": "Explainability & Transparency",
+      "metrics": [
+        "explainability_coverage"
+      ],
+      "process_items": [
+        "technical_documentation"
+      ]
+    },
+    {
+      "topic": "Human Oversight",
+      "metrics": [
+        "human_oversight"
+      ],
+      "process_items": []
+    },
+    {
+      "topic": "Governance & Risk Management",
+      "metrics": [],
+      "process_items": [
+        "risk_management_system",
+        "ai_policy",
+        "quality_management",
+        "third_party_management"
+      ]
+    }
+  ],
+  "status_logic": {
+    "pass": "Metric meets or exceeds pass threshold. Requirement is covered with appropriate evidence.",
+    "review": "Metric is between review and pass threshold. Requirement is partially addressed but needs attention.",
+    "fail": "Metric is below review threshold or not provided. Requirement is not covered.",
+    "not_applicable": "Metric or requirement does not apply to this system type.",
+    "process_required": "This requirement cannot be satisfied by metrics alone. Documentation or organisational process is needed."
+  },
+  "sme_provisions": {
+    "description": "EU AI Act includes simplified provisions for SMEs and startups.",
+    "items": [
+      "SMEs may use simplified Annex IV technical documentation template.",
+      "Micro-enterprises may adopt simplified quality management system.",
+      "SMEs have priority access to regulatory sandboxes at reduced fees.",
+      "Penalties are proportional: whichever is lower between fixed amount and percentage of turnover."
+    ]
+  },
+  "compliance_deadlines": [
+    {
+      "date": "2025-02-02",
+      "obligation": "Prohibited AI practices banned. AI literacy obligations in effect."
+    },
+    {
+      "date": "2025-08-02",
+      "obligation": "GPAI model obligations apply. Technical documentation, training data summaries, copyright policy required for GPAI providers."
+    },
+    {
+      "date": "2026-08-02",
+      "obligation": "Full EU AI Act applies. High-risk system requirements (Articles 8-15) mandatory. Transparency obligations for limited-risk systems."
+    },
+    {
+      "date": "2027-08-02",
+      "obligation": "Extended transition deadline for high-risk AI in regulated products."
+    }
+  ],
+  "tool_name": "GapSight",
+  "tagline": "AI regulatory self-assessment for ML teams.",
+  "kb_version": "1.0"
+}

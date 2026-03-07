@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  language-policy:
+    name: Language Policy Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test language policy script
+        run: bash scripts/test-language-policy.sh
+      - name: Check language policy
+        run: bash scripts/check-language-policy.sh
+
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    needs: language-policy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test -- --watchAll=false
+      - run: npm run build

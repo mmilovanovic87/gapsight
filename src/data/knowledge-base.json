@@ -1,0 +1,711 @@
+{
+  "kb_version": "1.0",
+  "kb_date": "2026-03",
+  "metrics": [
+    {
+      "id": "accuracy",
+      "label": "Overall Accuracy",
+      "section": "accuracy_performance",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "higher_better",
+      "pass_threshold": 0.80,
+      "review_threshold": 0.65,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "limited", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15",
+          "description": "Accuracy, robustness and cybersecurity"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.1, MEASURE 2.3",
+          "description": "AI system performance metrics"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Clause 9, Annex A.5.5",
+          "description": "Performance evaluation and validation"
+        }
+      ],
+      "evidence_required": "Test set results with accuracy score and test set description",
+      "tooltip": "Proportion of correct predictions over total predictions.",
+      "calculation_guide": "sklearn.metrics.accuracy_score(y_true, y_pred)",
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html"
+    },
+    {
+      "id": "f1_score",
+      "label": "F1 Score (weighted)",
+      "section": "accuracy_performance",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "higher_better",
+      "pass_threshold": 0.75,
+      "review_threshold": 0.60,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "limited", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15, Annex IV",
+          "description": "Validation and testing metrics documentation"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.1, MEASURE 2.3",
+          "description": "Risk-appropriate performance metrics"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.5",
+          "description": "Performance monitoring with valid metrics"
+        }
+      ],
+      "evidence_required": "Test report including F1 score by class and overall",
+      "tooltip": "Harmonic mean of precision and recall. Especially relevant for imbalanced datasets.",
+      "calculation_guide": "sklearn.metrics.f1_score(y_true, y_pred, average='weighted')",
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html"
+    },
+    {
+      "id": "auc_roc",
+      "label": "AUC-ROC",
+      "section": "accuracy_performance",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "higher_better",
+      "pass_threshold": 0.80,
+      "review_threshold": 0.65,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "limited", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15, Annex IV",
+          "description": "Metrics for accuracy and robustness in technical documentation"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.3, MEASURE 2.5",
+          "description": "Validity and reliability demonstration"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Clause 9, Annex A.5.5",
+          "description": "KPI monitoring with robust methodologies"
+        }
+      ],
+      "evidence_required": "ROC curve and AUC value in test report",
+      "tooltip": "Area under the receiver operating characteristic curve. Measures discriminative ability.",
+      "calculation_guide": "sklearn.metrics.roc_auc_score(y_true, y_score)",
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html"
+    },
+    {
+      "id": "demographic_parity_diff",
+      "label": "Demographic Parity Difference",
+      "section": "fairness_bias",
+      "input_type": "float",
+      "input_range": [-1, 1],
+      "direction": "lower_better",
+      "pass_threshold": 0.05,
+      "review_threshold": 0.10,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 10, Annex IV",
+          "description": "Bias detection and mitigation in training data"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.11",
+          "description": "Fairness and bias evaluation"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.6.4, Annex A.5.5",
+          "description": "Bias assessment during data preparation"
+        }
+      ],
+      "evidence_required": "Fairness audit report showing demographic parity difference per protected group",
+      "tooltip": "Difference in positive prediction rates between protected and reference groups. Closer to 0 is better.",
+      "calculation_guide": "fairlearn.metrics.demographic_parity_difference(y_true, y_pred, sensitive_features=group)",
+      "tool_link": "https://fairlearn.org"
+    },
+    {
+      "id": "equalized_odds_diff",
+      "label": "Equalized Odds Difference",
+      "section": "fairness_bias",
+      "input_type": "float",
+      "input_range": [-1, 1],
+      "direction": "lower_better",
+      "pass_threshold": 0.05,
+      "review_threshold": 0.10,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 10, Article 13, Annex IV",
+          "description": "Bias detection and group-specific performance reporting"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.11",
+          "description": "Equalized odds as fairness evaluation metric"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.6.4, Annex A.5.4, Annex A.5.5",
+          "description": "Bias testing and fairness KPI monitoring"
+        }
+      ],
+      "evidence_required": "Fairness report showing equalized odds per protected group",
+      "tooltip": "Difference in true positive and false positive rates between groups. Closer to 0 is better.",
+      "calculation_guide": "fairlearn.metrics.equalized_odds_difference(y_true, y_pred, sensitive_features=group)",
+      "tool_link": "https://fairlearn.org"
+    },
+    {
+      "id": "disparate_impact_ratio",
+      "label": "Disparate Impact Ratio",
+      "section": "fairness_bias",
+      "input_type": "float",
+      "input_range": [0, null],
+      "direction": "higher_better",
+      "pass_threshold": 0.80,
+      "review_threshold": 0.60,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 10",
+          "description": "Bias detection and mitigation"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.11",
+          "description": "Fairness evaluation"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.6.4",
+          "description": "Bias assessment"
+        }
+      ],
+      "evidence_required": "Disparate impact analysis per protected group",
+      "tooltip": "Ratio of positive prediction rates between protected and reference groups. Values closer to 1.0 indicate parity.",
+      "calculation_guide": "fairlearn.metrics.selection_rate(y_pred, sensitive_features=group) — compute ratio between groups",
+      "tool_link": "https://fairlearn.org"
+    },
+    {
+      "id": "data_drift_score",
+      "label": "Data Drift Score",
+      "section": "robustness_drift",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "lower_better",
+      "pass_threshold": 0.10,
+      "review_threshold": 0.20,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15, Article 12",
+          "description": "Lifecycle consistency and post-market monitoring"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 3.1, MEASURE 3.2, MEASURE 2.4",
+          "description": "Risk tracking and production monitoring"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.7, Clause 9",
+          "description": "Deployment and operation controls for drift"
+        }
+      ],
+      "evidence_required": "Drift monitoring logs and alert thresholds",
+      "tooltip": "Statistical distance between training and live data distributions. Lower means less drift.",
+      "calculation_guide": "evidently.metrics.DataDriftPreset() or scipy.stats.ks_2samp",
+      "tool_link": "https://github.com/evidentlyai/evidently"
+    },
+    {
+      "id": "concept_drift_score",
+      "label": "Concept Drift Score",
+      "section": "robustness_drift",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "lower_better",
+      "pass_threshold": 0.10,
+      "review_threshold": 0.20,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15",
+          "description": "Prevention of biased feedback loops and lifecycle consistency"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 3.1, MEASURE 3.3",
+          "description": "Emergent risk tracking including concept drift"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.7, Clause 9",
+          "description": "Performance monitoring for concept drift"
+        }
+      ],
+      "evidence_required": "Concept drift monitoring logs and retraining procedures",
+      "tooltip": "Measure of change in the relationship between input features and target labels over time.",
+      "calculation_guide": "Compare model performance on rolling windows or use ADWIN/DDM detectors",
+      "tool_link": "https://github.com/evidentlyai/evidently"
+    },
+    {
+      "id": "adversarial_robustness_score",
+      "label": "Adversarial Robustness Score",
+      "section": "robustness_drift",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "higher_better",
+      "pass_threshold": 0.70,
+      "review_threshold": 0.50,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 15",
+          "description": "Cybersecurity measures against adversarial inputs"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.7, MEASURE 2.9",
+          "description": "Security and resilience evaluation"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.5, Annex A.5.7",
+          "description": "Robustness testing in verification and validation"
+        }
+      ],
+      "evidence_required": "Adversarial robustness test report with attack scenarios and results",
+      "tooltip": "Model accuracy under adversarial attack conditions (e.g., FGSM, PGD). Higher is better.",
+      "calculation_guide": "art.attacks.evasion.FastGradientMethod — measure accuracy under attack",
+      "tool_link": "https://github.com/Trusted-AI/adversarial-robustness-toolbox"
+    },
+    {
+      "id": "explanation_coverage",
+      "label": "Explanation Coverage (SHAP/LIME)",
+      "section": "explainability_transparency",
+      "input_type": "float",
+      "input_range": [0, 1],
+      "direction": "higher_better",
+      "pass_threshold": 0.90,
+      "review_threshold": 0.70,
+      "threshold_note": "GapSight default — not a regulatory requirement",
+      "required_for_profiles": {
+        "risk_categories": ["high-risk"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 13, Annex IV",
+          "description": "Transparency and documentation of model logic"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.5, MEASURE 2.6",
+          "description": "Model explanation, validation and documentation"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.8, Annex A.7.3",
+          "description": "Technical documentation and stakeholder transparency"
+        }
+      ],
+      "evidence_required": "Model card with SHAP values or feature importance documentation",
+      "tooltip": "Proportion of model predictions for which valid SHAP or feature importance explanations are available.",
+      "calculation_guide": "shap.Explainer(model) — compute coverage as explained/total predictions",
+      "tool_link": "https://shap.readthedocs.io"
+    }
+  ],
+  "process_requirements": [
+    {
+      "id": "risk_management_system",
+      "label": "Risk Management System",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "in_progress", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "limited", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 9",
+          "description": "Risk management system"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MAP, MANAGE",
+          "description": "Risk mapping and management"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Clause 6, Annex A.5",
+          "description": "Planning and AI system lifecycle"
+        }
+      ],
+      "evidence_required": "Risk register, impact assessment reports, hazard analysis, mitigation measures",
+      "if_no_guidance": "Use ISO 31000 or NIST AI RMF templates. Estimated effort: 2-4 business days."
+    },
+    {
+      "id": "ai_policy",
+      "label": "AI Governance Policy",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "in_progress", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "limited", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Articles 16-17",
+          "description": "Provider obligations and quality management"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "GOVERN 1.2, GOVERN 2",
+          "description": "Organizational AI governance"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Clause 5, Annex A.2",
+          "description": "Leadership and AI policy"
+        }
+      ],
+      "evidence_required": "Signed AI policy document, role assignments, accountability framework",
+      "if_no_guidance": "Document covering fairness, transparency, human oversight, and safety. Approved by leadership."
+    },
+    {
+      "id": "technical_documentation",
+      "label": "Technical Documentation (Annex IV)",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "partial", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 11, Annex IV",
+          "description": "Technical documentation requirements"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "GOVERN 1.1, GOVERN 5",
+          "description": "Documentation and transparency"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.8, Annex A.7",
+          "description": "Technical documentation and interested parties"
+        }
+      ],
+      "evidence_required": "Completed Annex IV document, model cards, data lineage records, architecture diagrams",
+      "if_no_guidance": "Use the 15-element Annex IV checklist to identify gaps."
+    },
+    {
+      "id": "data_governance_policy",
+      "label": "Data Governance Policy",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "in_progress", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 10",
+          "description": "Data and data governance"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 2.10",
+          "description": "Privacy and data governance"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.6",
+          "description": "Data for AI systems"
+        }
+      ],
+      "evidence_required": "Data governance policy, data lineage records, bias mitigation procedures",
+      "if_no_guidance": "Document covering data collection, quality, provenance, preparation, and bias mitigation."
+    },
+    {
+      "id": "automated_logging",
+      "label": "Automated Logging and Record Keeping",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 12",
+          "description": "Record-keeping and logging"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MEASURE 3.2",
+          "description": "Post-deployment monitoring"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.5.7, Annex A.7.2",
+          "description": "Operation controls and documented information"
+        }
+      ],
+      "evidence_required": "Logging architecture, stored logs, incident records",
+      "if_no_guidance": "Critical for post-deployment high-risk systems. EU AI Act Article 12 mandatory."
+    },
+    {
+      "id": "quality_management_system",
+      "label": "Quality Management System",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "in_progress", "no"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk"],
+        "roles": ["provider", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 17",
+          "description": "Quality management system"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "MANAGE 4",
+          "description": "Risk management processes"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Clauses 9-10",
+          "description": "Performance evaluation and improvement"
+        }
+      ],
+      "evidence_required": "Quality management manual, internal audit reports, corrective action logs",
+      "if_no_guidance": "Note: micro-enterprises may use a simplified QMS per EU AI Act SME provisions."
+    },
+    {
+      "id": "third_party_vendor_assessment",
+      "label": "Third-Party and Supply Chain Management",
+      "section": "governance",
+      "input_type": "enum",
+      "options": ["yes", "no", "not_applicable"],
+      "required_for_profiles": {
+        "risk_categories": ["high-risk", "gpai"],
+        "roles": ["provider", "deployer", "both"],
+        "deployment_statuses": ["pre-deployment", "post-deployment", "pilot"]
+      },
+      "framework_mappings": [
+        {
+          "framework": "eu_ai_act",
+          "reference": "Article 25",
+          "description": "Obligations of deployers"
+        },
+        {
+          "framework": "nist_ai_rmf",
+          "reference": "GOVERN 6, MANAGE 3",
+          "description": "Third-party risk management"
+        },
+        {
+          "framework": "iso_42001",
+          "reference": "Annex A.9",
+          "description": "Third-party and customer relationships"
+        }
+      ],
+      "evidence_required": "Vendor assessments, contracts with AI responsibilities, supplier performance reviews",
+      "if_no_guidance": "Assess third-party AI systems, pre-trained models, and data suppliers."
+    }
+  ],
+  "annex_iv_elements": [
+    { "id": 1, "label": "General system description" },
+    { "id": 2, "label": "Provider identity and contact information" },
+    { "id": 3, "label": "System version and update history" },
+    { "id": 4, "label": "Hardware and software requirements" },
+    { "id": 5, "label": "System architecture description" },
+    { "id": 6, "label": "Data sources and governance procedures" },
+    { "id": 7, "label": "Data pre-processing procedures" },
+    { "id": 8, "label": "Bias detection and mitigation procedures" },
+    { "id": 9, "label": "Validation methodology" },
+    { "id": 10, "label": "Testing metrics (accuracy, robustness, etc.)" },
+    { "id": 11, "label": "Cybersecurity measures" },
+    { "id": 12, "label": "Human oversight arrangements" },
+    { "id": 13, "label": "Post-market monitoring plan" },
+    { "id": 14, "label": "Risk management system description" },
+    { "id": 15, "label": "EU Declaration of Conformity" }
+  ],
+  "gpai_copyright_checklist": [
+    { "id": 1, "label": "List of training data sources with licenses" },
+    { "id": 2, "label": "Opt-out mechanism for rights holders" },
+    { "id": 3, "label": "DMCA/copyright takedown procedure" },
+    { "id": 4, "label": "Policy on AI-generated content and copyright liability" }
+  ],
+  "cross_metric_rules": [
+    {
+      "id": "accuracy_fairness_tradeoff",
+      "severity": "WARNING",
+      "conditions": {
+        "accuracy": { "gte": 0.90 },
+        "demographic_parity_diff": { "gte": 0.15 }
+      },
+      "message": "High accuracy with significant fairness gap detected. EU AI Act Article 10 and NIST MEASURE 2.11 require explicit analysis and documentation of this tradeoff."
+    },
+    {
+      "id": "robustness_without_monitoring",
+      "severity": "WARNING",
+      "conditions": {
+        "adversarial_robustness_score": { "gte": 0.80 },
+        "drift_monitoring_active": { "eq": false }
+      },
+      "message": "Robustness measured during development does not guarantee runtime robustness without active production monitoring."
+    },
+    {
+      "id": "high_drift_without_retraining",
+      "severity": "CRITICAL",
+      "conditions": {
+        "data_drift_score": { "gte": 0.20 },
+        "months_since_retrain": { "gte": 12 }
+      },
+      "message": "High drift score combined with stale model requires immediate retraining plan."
+    },
+    {
+      "id": "fairness_without_mitigation",
+      "severity": "CRITICAL",
+      "conditions": {
+        "equalized_odds_diff": { "gte": 0.10 },
+        "bias_mitigation_applied": { "eq": false }
+      },
+      "message": "Bias detected without applied mitigation. Direct EU AI Act Article 10 violation."
+    },
+    {
+      "id": "explainability_oversight_gap",
+      "severity": "WARNING",
+      "conditions": {
+        "explainability_method": { "eq": "None" },
+        "human_oversight_weighted_score": { "lt": 0.80 }
+      },
+      "message": "Absence of explainability combined with weak human oversight increases automation bias risk."
+    },
+    {
+      "id": "gpai_systemic_risk_notification",
+      "severity": "CRITICAL",
+      "conditions": {
+        "gpai_flag": { "eq": true },
+        "training_flops": { "gte": 1e25 },
+        "systemic_risk_notification_sent": { "eq": "no" }
+      },
+      "message": "GPAI systemic risk threshold exceeded. Notification to EU AI Office is mandatory immediately."
+    },
+    {
+      "id": "high_risk_post_deploy_no_logging",
+      "severity": "CRITICAL",
+      "conditions": {
+        "risk_category": { "eq": "high-risk" },
+        "deployment_status": { "eq": "post-deployment" },
+        "automated_logging": { "eq": "no" }
+      },
+      "message": "EU AI Act Article 12 requires automated logging for high-risk systems in production."
+    }
+  ],
+  "risk_level_criteria": {
+    "CRITICAL": {
+      "condition": "Any CRITICAL_FAIL status in required metrics",
+      "message": "Deployment is not permitted until critical issues are resolved."
+    },
+    "HIGH": {
+      "condition": "Fail rate >= 30% of required metrics OR >= 2 cross-metric CRITICAL warnings",
+      "message": "Significant gaps identified. Address before deployment. Consult a qualified legal professional."
+    },
+    "MEDIUM": {
+      "condition": "Fail rate < 30% AND review rate >= 20% of required metrics",
+      "message": "Some areas require attention. A review with a qualified professional is recommended."
+    },
+    "LOW": {
+      "condition": "All other cases",
+      "message": "Profile shows a good baseline. Periodic reassessment is recommended."
+    }
+  },
+  "compliance_deadlines": {
+    "eu_ai_act": {
+      "prohibited_practices": "2025-02-02",
+      "gpai_obligations": "2025-08-02",
+      "high_risk_requirements": "2026-08-02",
+      "regulated_products_transition": "2027-08-02"
+    }
+  }
+}

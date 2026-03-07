@@ -1,0 +1,345 @@
+{
+  "meta": {
+    "title": "GapSight — AI Regulatory Self-Assessment for ML Teams",
+    "description": "GapSight is an informative self-assessment tool that helps AI teams identify potential gaps relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001."
+  },
+  "header": {
+    "logo": "GapSight",
+    "nav_new_assessment": "New Assessment",
+    "nav_kb_changelog": "KB Changelog",
+    "nav_about": "About",
+    "nav_privacy": "Privacy",
+    "nav_terms": "Terms",
+    "clear_session": "Clear Session"
+  },
+  "disclaimer_bar": {
+    "text": "GapSight — AI regulatory self-assessment for ML teams. Results are not legal advice.",
+    "kb_version": "KB v{version} | {date}"
+  },
+  "footer": {
+    "tagline": "GapSight — AI regulatory self-assessment for ML teams.",
+    "positioning": "Not legal advice. Informational only.",
+    "kb_version": "KB v{version} | {date}",
+    "nav_privacy": "Privacy Policy",
+    "nav_terms": "Terms of Service",
+    "nav_about": "About",
+    "nav_kb_changelog": "KB Changelog",
+    "nav_report_issue": "Report an Issue",
+    "copyright": "© 2026 GapSight"
+  },
+  "about": {
+    "title": "GapSight",
+    "subtitle": "AI regulatory self-assessment for ML teams.",
+    "what_title": "What is GapSight?",
+    "what_body": "GapSight is an informative self-assessment tool that helps AI teams identify potential gaps in their evaluation practices relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001 requirements.",
+    "what_not_title": "What GapSight is not:",
+    "what_not_items": [
+      "Not a platform for regulatory compliance",
+      "Not legal advice",
+      "Not a certification system",
+      "Not a substitute for qualified legal counsel"
+    ],
+    "who_title": "Who is it for?",
+    "who_body": "ML engineers and AI product teams who want a structured starting point for understanding which regulatory requirements may apply to their system, based on their own evaluation metrics.",
+    "how_title": "How should results be used?",
+    "how_body": "As a checklist to identify areas that may need attention, not as a certificate of regulatory compliance. Always consult a qualified professional before making deployment decisions.",
+    "kb_version": "Knowledge Base version: v{version}, {date}",
+    "next_review": "Next scheduled review: {date}"
+  },
+  "tos": {
+    "title": "Terms of Service",
+    "definition": "GapSight is an informative self-assessment tool. It does not provide legal advice and is not a certification system.",
+    "liability": "Liability is limited to the accuracy of the knowledge base at the time of assessment generation.",
+    "user_responsibility": "You are solely responsible for all decisions based on the results provided by GapSight. Always consult a qualified professional before making deployment decisions.",
+    "kb_currency": "GapSight does not guarantee real-time accuracy of regulatory information. The knowledge base version is always visible in the interface and in all exports.",
+    "language": "GapSight is available in English only.",
+    "accept_button": "I Accept",
+    "version_label": "ToS version: 1.0 — March 2026"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "data_collected_title": "Data Collected",
+    "data_collected_body": "GapSight stores session data in your browser's localStorage. Server-side storage occurs only when you explicitly create a share link, using Vercel KV with a 12-month TTL. No personally identifiable information is collected.",
+    "third_parties_title": "Third Parties",
+    "third_parties_body": "GapSight does not share your data with any third parties.",
+    "user_rights_title": "Your Rights",
+    "user_rights_body": "You may delete any share link at any time. For GDPR-related inquiries, contact us at the email below.",
+    "role_title": "Data Processing",
+    "role_body": "GapSight acts as data processor. You, the user, are the data controller.",
+    "contact_email": "privacy@gapsight.dev"
+  },
+  "kb_changelog": {
+    "title": "Knowledge Base Changelog",
+    "description": "History of changes to the GapSight knowledge base, including framework references, thresholds, and metrics.",
+    "version_label": "Version {version}",
+    "date_label": "Date: {date}",
+    "changes_label": "Changes",
+    "frameworks_label": "Framework References",
+    "gpai_threshold_label": "GPAI Threshold (FLOPs)",
+    "next_review_label": "Next Review",
+    "breaking_changes_label": "Breaking Changes",
+    "breaking_yes": "Yes — re-run assessments recommended",
+    "breaking_no": "No"
+  },
+  "threshold_label": "GapSight default — not a regulatory requirement",
+  "inline_disclaimer": {
+    "title": "Before you view results",
+    "body": "GapSight is an informative self-assessment tool. Results are based on publicly available regulatory frameworks and the metrics you provide. This is not legal advice and not a certificate of regulatory compliance. Always consult a qualified professional.",
+    "confirm_button": "I Understand"
+  },
+  "clear_session_modal": {
+    "title": "Clear Session",
+    "body": "This will delete all assessment data stored in your browser. This action cannot be undone.",
+    "confirm_button": "Clear All Data",
+    "cancel_button": "Cancel"
+  },
+  "exports": {
+    "disclaimer": "This report is an informative self-assessment generated by GapSight. It is not legal advice and not a certificate of regulatory compliance. Always consult a qualified professional before making deployment decisions.",
+    "canonical_note": "Generated by GapSight — AI regulatory self-assessment for ML teams. Based on publicly available regulatory frameworks."
+  },
+  "feedback": {
+    "title": "Report an Issue",
+    "issue_type_label": "Issue Type",
+    "issue_types": {
+      "wrong_mapping": "Wrong mapping",
+      "outdated_requirement": "Outdated requirement",
+      "unclear_description": "Unclear description",
+      "technical_problem": "Technical problem",
+      "other": "Other"
+    },
+    "reference_label": "Reference (optional)",
+    "reference_placeholder": "e.g. EU AI Act Article 10",
+    "description_label": "Description",
+    "description_placeholder": "Describe the issue (minimum 20 characters)",
+    "submit_button": "Submit",
+    "success_message": "Thank you. Your feedback has been received.",
+    "error_message": "Something went wrong. Please try again or contact us at feedback@gapsight.dev.",
+    "timeout_message": "The request timed out. Please try again or contact us directly at feedback@gapsight.dev."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection and try again."
+  },
+  "assessment": {
+    "continuing_previous": "Continuing previous assessment. Your inputs have been restored.",
+    "step_deployment": "Deployment Context",
+    "step_onboarding": "Onboarding",
+    "step_form": "Assessment Form",
+    "next": "Next",
+    "back": "Back",
+    "generate_results": "Generate Results",
+    "deployment": {
+      "title": "Deployment Context",
+      "question": "Is your AI system already in production?",
+      "options": {
+        "pre": "Not yet, preparing for deployment",
+        "post": "Yes, already in production",
+        "pilot": "Partially, pilot or beta phase"
+      }
+    },
+    "onboarding": {
+      "title": "Onboarding",
+      "role_label": "Your Role",
+      "role_options": {
+        "provider": "Provider — builds and places AI system on market",
+        "deployer": "Deployer — uses third-party AI system in own business",
+        "both": "Both — provider and deployer"
+      },
+      "gpai_title": "General-Purpose AI (GPAI)",
+      "gpai_question": "Is your system a foundation model, large language model, or other general-purpose AI model that you place on the market for downstream use by third parties?",
+      "gpai_yes": "Yes",
+      "gpai_no": "No",
+      "risk_title": "Risk Category",
+      "risk_subtitle": "Answer the following questions to determine your system's risk category.",
+      "risk_p1": "Does your system make or directly influence decisions that affect natural persons?",
+      "risk_p2": "Is the system used in: employment, education, healthcare, justice, critical infrastructure, migration, biometrics, or access to essential services?",
+      "risk_p3": "Does the system generate content or interact with users in a way that could mislead them about the nature of the interaction?",
+      "risk_p4": "Is the system a safety component of a product regulated by EU product safety law (medical devices, vehicles, aviation, etc.)?",
+      "risk_result_minimal": "Minimal Risk",
+      "risk_result_limited": "Limited Risk",
+      "risk_result_high_annex_i": "High-Risk (Annex I)",
+      "risk_result_high_annex_iii": "High-Risk (Annex III)",
+      "risk_suggested": "Suggested classification: {category}",
+      "risk_override_label": "Override classification",
+      "risk_override_warning": "You are overriding the suggested classification. Responsibility for incorrect classification rests with you."
+    },
+    "section_subtitle": "This section helps identify potential gaps relative to {framework} requirements. Thresholds shown are GapSight industry defaults, not regulatory requirements.",
+    "sections": {
+      "accuracy_performance": {
+        "title": "Section 1: Accuracy & Performance",
+        "framework": "EU AI Act Article 15, NIST AI RMF, ISO 42001"
+      },
+      "fairness_bias": {
+        "title": "Section 2: Fairness & Bias",
+        "framework": "EU AI Act Article 10, NIST AI RMF, ISO 42001",
+        "blocker_message": "EU AI Act Article 10 requires bias detection for high-risk systems. This section is mandatory for your profile.",
+        "no_metrics_title": "How to get these metrics",
+        "no_metrics_body": "Use Fairlearn or AIF360 to calculate fairness metrics for your model.",
+        "no_metrics_button": "I have not calculated these metrics",
+        "fairlearn_link": "https://fairlearn.org",
+        "aif360_link": "https://aif360.readthedocs.io"
+      },
+      "robustness_drift": {
+        "title": "Section 3: Robustness, Drift & Cybersecurity",
+        "framework": "EU AI Act Article 15, NIST AI RMF, ISO 42001"
+      },
+      "explainability_transparency": {
+        "title": "Section 4: Explainability & Transparency",
+        "framework": "EU AI Act Article 13, NIST AI RMF, ISO 42001",
+        "model_card_help": "Consider using Google Model Cards or HuggingFace Model Card templates.",
+        "instructions_critical": "Instructions for use documentation is required before deployment for high-risk systems."
+      },
+      "human_oversight": {
+        "title": "Section 5: Human Oversight",
+        "framework": "EU AI Act Article 14, NIST AI RMF, ISO 42001",
+        "q1": "Can operators understand outputs and limitations?",
+        "q2": "Is there an override or stop mechanism?",
+        "q3": "Have operators completed training?",
+        "q4": "Are escalation procedures documented?",
+        "q5": "Does system actively prevent automation bias?",
+        "answer_yes": "Yes",
+        "answer_partially": "Partially",
+        "answer_no": "No"
+      },
+      "gpai": {
+        "title": "Section 6: GPAI Obligations",
+        "framework": "EU AI Act Chapter V",
+        "systemic_risk_warning": "Your model exceeds the GPAI systemic risk threshold (10^25 FLOPs). Additional obligations apply from 2 Aug 2025: model evaluations, adversarial testing, incident reporting, cybersecurity measures, notification to EU AI Office.",
+        "copyright_checklist_title": "Copyright Policy Checklist",
+        "copyright_guidance_link": "EU AI Office Copyright Guidelines"
+      },
+      "governance": {
+        "title": "Section 7: Governance",
+        "framework": "EU AI Act Articles 9-17, NIST AI RMF, ISO 42001",
+        "annex_iv_title": "Annex IV Technical Documentation Checklist",
+        "annex_iv_subtitle": "Check each element that is documented. Unchecked items will generate action items.",
+        "evidence_label": "Evidence description (minimum 20 characters)",
+        "evidence_placeholder": "Describe the evidence or documentation available",
+        "completion_date_label": "Expected completion date",
+        "guidance_label": "Guidance"
+      }
+    },
+    "fields": {
+      "overall_accuracy": "Overall Accuracy",
+      "f1_score": "F1 Score (weighted)",
+      "auc_roc": "AUC-ROC",
+      "test_set_size": "Test Set Size",
+      "test_set_representative": "Is the test set representative of production data?",
+      "test_set_representative_options": {
+        "yes": "Yes",
+        "partial": "Partially",
+        "no": "No"
+      },
+      "demographic_parity_diff": "Demographic Parity Difference",
+      "equalized_odds_diff": "Equalized Odds Difference",
+      "disparate_impact_ratio": "Disparate Impact Ratio",
+      "protected_attributes_tested": "Protected Attributes Tested",
+      "protected_attributes_options": ["Gender", "Race", "Age", "Disability", "Religion", "Other"],
+      "bias_mitigation_applied": "Bias mitigation applied?",
+      "bias_mitigation_method": "Bias mitigation method",
+      "data_drift_score": "Data Drift Score",
+      "concept_drift_score": "Concept Drift Score",
+      "adversarial_robustness_score": "Adversarial Robustness Score",
+      "drift_monitoring_active": "Is drift monitoring active in production?",
+      "failsafe_mechanism_documented": "Is a failsafe mechanism documented?",
+      "last_retrain_date": "Last retrain date",
+      "explainability_method": "Explainability method",
+      "explainability_method_options": ["SHAP", "LIME", "Integrated Gradients", "Feature Importance", "None"],
+      "explanation_coverage": "Explanation Coverage",
+      "explanations_available_to_users": "Are explanations available to end users?",
+      "model_card_exists": "Does a model card exist?",
+      "instructions_for_use_documented": "Are instructions for use documented?",
+      "training_flops": "Training FLOPs (scientific notation, e.g. 1e24)",
+      "training_data_summary_published": "Training data summary published?",
+      "copyright_policy_status": "Copyright policy status",
+      "model_evaluations_conducted": "Model evaluations conducted?",
+      "adversarial_testing_conducted": "Adversarial testing conducted?",
+      "systemic_risk_notification_sent": "Systemic risk notification sent to EU AI Office?",
+      "risk_management_system": "Risk Management System",
+      "ai_policy": "AI Governance Policy",
+      "technical_documentation": "Technical Documentation (Annex IV)",
+      "data_governance_policy": "Data Governance Policy",
+      "automated_logging": "Automated Logging and Record Keeping",
+      "quality_management_system": "Quality Management System",
+      "third_party_vendor_assessment": "Third-Party and Supply Chain Management"
+    },
+    "enum_labels": {
+      "yes": "Yes",
+      "no": "No",
+      "in_progress": "In Progress",
+      "partial": "Partial",
+      "not_applicable": "Not Applicable"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "range": "Value must be between {min} and {max}.",
+      "min_length": "Minimum {min} characters required.",
+      "positive_integer": "Must be a positive integer.",
+      "small_test_set": "Metrics may not be reliable with small test sets.",
+      "very_small_test_set": "Test set below 30 samples — all accuracy metrics will be marked REVIEW regardless of value."
+    }
+  },
+  "results": {
+    "title": "Assessment Results",
+    "subtitle": "Based on your inputs and the GapSight knowledge base.",
+    "cross_metric_title": "Cross-Metric Warnings",
+    "summary_title": "Assessment Summary",
+    "profile_label": "Profile",
+    "generated_label": "Generated",
+    "thresholds_label": "Thresholds",
+    "thresholds_value": "GapSight defaults, not regulatory requirements",
+    "critical_issues": "{count} Critical Issues",
+    "risk_level_label": "Overall Risk Level",
+    "how_calculated": "How is this calculated?",
+    "framework_summary_title": "Framework Summary",
+    "fw_pass": "PASS",
+    "fw_review": "REVIEW",
+    "fw_fail": "FAIL",
+    "fw_critical": "CRITICAL",
+    "metric_results_title": "Metric Results",
+    "process_results_title": "Governance & Process",
+    "oversight_title": "Human Oversight",
+    "oversight_score": "Weighted Score: {score}%",
+    "action_items_title": "Action Items",
+    "urgency_critical": "Critical — Before Deployment / Immediately",
+    "urgency_high": "High Priority — Within 30 Days",
+    "urgency_medium": "Medium Priority — Within 90 Days",
+    "urgency_ongoing": "Ongoing",
+    "no_action_items": "No action items generated.",
+    "export_title": "Export",
+    "export_json": "Download JSON",
+    "export_html": "Download HTML",
+    "back_to_form": "Back to Assessment",
+    "share_button": "Share"
+  },
+  "share": {
+    "title": "Share Assessment",
+    "pin_label": "Protect with PIN",
+    "pin_description": "Recipients will need this PIN to view the assessment. Share it separately.",
+    "pin_placeholder": "4-8 digit PIN",
+    "pin_validation": "PIN must be 4-8 digits.",
+    "no_pin_warning": "Anyone with the link will be able to view this assessment without a PIN.",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "create_button": "Create Share Link",
+    "create_error": "Failed to create share link. Please try again.",
+    "success": "Share link created.",
+    "copy": "Copy",
+    "pin_reminder": "Remember to share the PIN separately with your recipient.",
+    "expires_at": "This link expires on {date}.",
+    "close": "Close"
+  },
+  "shared_view": {
+    "title": "Shared Assessment",
+    "loading": "Loading assessment...",
+    "not_found": "This shared assessment was not found or has expired.",
+    "back_home": "Go to GapSight",
+    "pin_title": "This assessment is PIN-protected",
+    "pin_placeholder": "Enter PIN",
+    "pin_submit": "Verify",
+    "pin_error": "Incorrect PIN. Please try again.",
+    "kb_version_warning": "This assessment was generated with KB v{version}. Thresholds and mappings may have changed. Consider re-running your assessment.",
+    "expires_at": "This assessment expires on {date}.",
+    "disclaimer": "Informative self-assessment only. Not legal advice. Not a certificate of regulatory compliance."
+  }
+}

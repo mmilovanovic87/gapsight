@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "current_version": "1.0",
+  "versions": [
+    {
+      "version": "1.0",
+      "semver": "1.0.0",
+      "date": "2026-03",
+      "changes": "Initial release.",
+      "frameworks": {
+        "eu_ai_act": "EU 2024/1689, Aug 2026 deadline",
+        "nist_ai_rmf": "v1.0, January 2023",
+        "iso_42001": "Published 2023"
+      },
+      "gpai_threshold_flops": "1e25",
+      "next_review": "2026-06",
+      "breaking_changes": false
+    }
+  ]
+}
