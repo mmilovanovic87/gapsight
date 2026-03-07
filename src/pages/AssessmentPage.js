@@ -143,14 +143,16 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
     }
   }, [restored, profile, isFresh]);
 
-  // Clear stale validation errors when user edits any field
+  // Re-validate when user edits any field so fixed errors clear immediately
   useEffect(() => {
     if (prevInputsRef.current !== inputs && Object.keys(errors).length > 0) {
-      setErrors({});
-      setErrorBanner('');
+      const newErrors = validateInputs(inputs, profile);
+      setErrors(newErrors);
+      if (Object.keys(newErrors).length === 0) setErrorBanner('');
     }
     prevInputsRef.current = inputs;
-  }, [inputs, errors]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputs]);
 
   const showGpai = profile.gpai_flag === true;
 

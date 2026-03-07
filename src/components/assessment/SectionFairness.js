@@ -7,8 +7,18 @@ const sec = t.sections.fairness_bias;
 
 export default function SectionFairness({ inputs, onInput, onInputs, profile, errors, sectionNumber }) {
   const [noMetrics, setNoMetrics] = useState(false);
+  const [methodTouched, setMethodTouched] = useState(false);
   const subtitle = t.section_subtitle.replace('{framework}', sec.framework);
   const isHighRisk = profile.risk_category === 'high-risk';
+
+  // Real-time error for bias_mitigation_method: show on blur or from parent (Generate click)
+  const methodValue = inputs.bias_mitigation_method;
+  const methodLength = methodValue?.length || 0;
+  const methodError = methodLength >= 20
+    ? null
+    : (errors.bias_mitigation_method || (methodTouched && methodLength > 0 && methodLength < 20
+      ? t.validation.min_length.replace('{min}', '20')
+      : null));
 
   const handleNoMetrics = () => {
     setNoMetrics(true);
@@ -106,9 +116,10 @@ export default function SectionFairness({ inputs, onInput, onInputs, profile, er
           label={t.fields.bias_mitigation_method}
           value={inputs.bias_mitigation_method}
           onChange={(v) => onInput('bias_mitigation_method', v)}
+          onBlur={() => setMethodTouched(true)}
           placeholder="Describe the method used"
           minLength={20}
-          error={errors.bias_mitigation_method}
+          error={methodError}
         />
       )}
     </SectionWrapper>
