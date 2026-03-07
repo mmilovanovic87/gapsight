@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import en from '../locales/en.json';
 import useAssessmentStore from '../hooks/useAssessmentStore';
@@ -75,7 +75,6 @@ function validateInputs(inputs, profile) {
       inputs.bias_mitigation_method.length > 0 && inputs.bias_mitigation_method.length < 20) {
     errors.bias_mitigation_method = t.validation.min_length.replace('{min}', '20');
   }
-
   // Clean out null errors
   Object.keys(errors).forEach((k) => {
     if (!errors[k]) delete errors[k];
@@ -113,6 +112,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
   const [errors, setErrors] = useState({});
   const [errorBanner, setErrorBanner] = useState('');
   const [showRestoredBanner, setShowRestoredBanner] = useState(false);
+  const prevInputsRef = useRef(inputs);
   const navigate = useNavigate();
   const location = useLocation();
   const isFresh = location.state?.fresh === true;
@@ -142,6 +142,15 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
       setStep(STEPS.FRAMEWORKS);
     }
   }, [restored, profile, isFresh]);
+
+  // Clear stale validation errors when user edits any field
+  useEffect(() => {
+    if (prevInputsRef.current !== inputs && Object.keys(errors).length > 0) {
+      setErrors({});
+      setErrorBanner('');
+    }
+    prevInputsRef.current = inputs;
+  }, [inputs, errors]);
 
   const showGpai = profile.gpai_flag === true;
 
