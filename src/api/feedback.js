@@ -1,9 +1,10 @@
 import en from '../locales/en.json';
 
 const TIMEOUT_MS = 10_000;
+const FORMSPREE_URL = 'https://formspree.io/f/mjgakgzn';
 
 /**
- * Submits feedback with a 10-second AbortController timeout.
+ * Submits feedback via Formspree with a 10-second AbortController timeout.
  *
  * Returns: { success: boolean, message?: string, timedOut?: boolean }
  *
@@ -15,22 +16,26 @@ export async function submitFeedback({ issue_type, reference, description, honey
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   try {
-    const res = await fetch('/api/feedback', {
+    const res = await fetch(FORMSPREE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ issue_type, reference, description, honeypot }),
+      body: JSON.stringify({
+        issue_type,
+        reference,
+        description,
+        _gotcha: honeypot, // Formspree native honeypot field
+      }),
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
 
-    const data = await res.json();
-
-    if (res.ok && data.success) {
+    if (res.ok) {
       return { success: true };
     }
 
-    return { success: false, message: data.message || en.feedback.error_message };
+    const data = await res.json().catch(() => null);
+    return { success: false, message: data?.error || en.feedback.error_message };
   } catch (err) {
     clearTimeout(timeoutId);
 
