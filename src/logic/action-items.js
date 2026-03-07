@@ -25,6 +25,7 @@ function getRemediation(metricId) {
   if (metric?.remediation) return metric.remediation;
   const proc = knowledgeBase.process_requirements.find((p) => p.id === metricId);
   if (proc?.remediation) return proc.remediation;
+  if (knowledgeBase.computed_remediations?.[metricId]) return knowledgeBase.computed_remediations[metricId];
   return null;
 }
 

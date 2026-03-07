@@ -853,6 +853,23 @@
     { "id": 3, "label": "DMCA/copyright takedown procedure" },
     { "id": 4, "label": "Policy on AI-generated content and copyright liability" }
   ],
+  "computed_remediations": {
+    "human_oversight": {
+      "what": "Strengthen human oversight mechanisms and operator training.",
+      "how": [
+        "Document the override and stop mechanism and ensure operators are trained to use it.",
+        "Create escalation procedures with clear decision trees for edge cases.",
+        "Conduct and document operator training sessions with competency verification.",
+        "Implement automation bias prevention measures such as confidence score displays and mandatory human review for high-stakes decisions."
+      ],
+      "tools": [
+        { "name": "EU AI Act Article 14 guidance", "url": "https://artificialintelligenceact.eu/article/14/" },
+        { "name": "NIST AI RMF GOVERN 1 / MEASURE 2.8", "url": "https://airc.nist.gov/AI_RMF_Playbook" }
+      ],
+      "estimated_effort": "3-5 days",
+      "documentation_required": "Override mechanism documentation, escalation procedures, operator training records with competency sign-off."
+    }
+  },
   "cross_metric_rules": [
     {
       "id": "accuracy_fairness_tradeoff",
