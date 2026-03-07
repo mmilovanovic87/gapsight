@@ -351,12 +351,12 @@ export async function downloadPdfExport(results, session) {
         y += 3.5;
         doc.setFont(undefined, 'normal');
         doc.setTextColor(75, 85, 99);
-        rem.how.forEach((step, i) => {
-          const stepLines = doc.splitTextToSize(`${i + 1}. ${step}`, CONTENT_WIDTH - 14);
+        for (let i = 0; i < rem.how.length; i++) {
+          const stepLines = doc.splitTextToSize(`${i + 1}. ${rem.how[i]}`, CONTENT_WIDTH - 14);
           y = checkPage(doc, y, stepLines.length * 3 + 1);
           doc.text(stepLines, MARGIN + 8, y);
           y += stepLines.length * 3 + 1;
-        });
+        }
 
         if (rem.tools && rem.tools.length > 0) {
           y = checkPage(doc, y, 6);
