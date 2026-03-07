@@ -1,41 +1,61 @@
 {
   "landing": {
     "hero_headline": "Know your AI compliance gaps before regulators do.",
-    "hero_subheadline": "GapSight is a free self-assessment tool for ML teams. Enter your evaluation metrics, get a structured gap report relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001.",
+    "hero_subheadline": "Free self-assessment tool for ML teams. Enter your evaluation metrics, get a structured gap report relative to EU AI Act, NIST AI RMF, and ISO/IEC 42001.",
     "hero_cta": "Start Free Assessment",
     "hero_disclaimer": "Informative self-assessment tool. Not legal advice. Informational only.",
+    "trust_badges": [
+      "Free, no registration",
+      "No data stored on our servers",
+      "PDF, HTML and JSON export"
+    ],
     "how_title": "How it works",
     "how_steps": [
       {
         "title": "Set your profile",
-        "description": "Role, risk category, deployment status."
+        "description": "Select your deployment context, risk category, and applicable frameworks. GapSight tailors the assessment to your specific situation."
       },
       {
         "title": "Enter your metrics",
-        "description": "Accuracy, fairness, drift, explainability, oversight."
+        "description": "Input your model's accuracy, fairness, robustness, and explainability scores. Add governance and human oversight details for a complete picture."
       },
       {
         "title": "Get your gap report",
-        "description": "CRITICAL / HIGH / MEDIUM / LOW risk level with action items."
+        "description": "Receive a structured risk level with prioritized action items. Each gap maps directly to framework requirements with remediation steps."
       },
       {
-        "title": "Export or share",
-        "description": "HTML and JSON export, shareable link."
+        "title": "Export and share",
+        "description": "Download your report as PDF, HTML, or JSON. Share a PIN-protected link with your team or auditors."
       }
     ],
     "frameworks_title": "Frameworks covered",
     "frameworks": [
       {
         "name": "EU AI Act",
-        "description": "The European regulation establishing harmonized rules for artificial intelligence systems based on risk classification."
+        "description": "The European regulation establishing harmonized rules for AI systems based on risk classification.",
+        "examples": [
+          "Article 9: Risk management system",
+          "Article 10: Data governance requirements",
+          "Article 15: Accuracy, robustness, cybersecurity"
+        ]
       },
       {
         "name": "NIST AI RMF",
-        "description": "The U.S. framework for managing risks throughout the AI system lifecycle across govern, map, measure, and manage functions."
+        "description": "The U.S. framework for managing AI risks across govern, map, measure, and manage functions.",
+        "examples": [
+          "MEASURE 2.1: Fairness evaluation",
+          "MEASURE 3.1: Drift monitoring",
+          "MAP 1.5: Deployment context assessment"
+        ]
       },
       {
         "name": "ISO/IEC 42001",
-        "description": "The international standard specifying requirements for establishing and maintaining an AI management system."
+        "description": "The international standard for establishing and maintaining an AI management system.",
+        "examples": [
+          "Clause 6: Planning and risk assessment",
+          "Clause 8: Operational controls",
+          "Clause 9: Performance evaluation"
+        ]
       }
     ]
   },
