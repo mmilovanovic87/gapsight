@@ -9,10 +9,16 @@ import { generateActionItems } from './action-items';
  *
  * Returns the complete result object needed by ResultsPage and exports.
  */
+function filterMappings(mappings, selected) {
+  if (!selected || selected.length === 0 || !mappings) return mappings;
+  return mappings.filter((m) => selected.includes(m.framework));
+}
+
 export function computeResults(inputs, profile) {
   const contextFlags = deriveContextFlags(inputs, profile);
   const metrics = getMetricsForProfile(profile);
   const processReqs = getProcessRequirementsForProfile(profile);
+  const selectedFw = profile.frameworks_selected;
 
   // Score each metric
   const metricResults = metrics.map((metric) => {
@@ -25,7 +31,7 @@ export function computeResults(inputs, profile) {
       value,
       status,
       required_for_profile: true,
-      framework_mappings: metric.framework_mappings,
+      framework_mappings: filterMappings(metric.framework_mappings, selectedFw),
       threshold_note: metric.threshold_note,
       pass_threshold: metric.pass_threshold,
       review_threshold: metric.review_threshold,
@@ -47,7 +53,7 @@ export function computeResults(inputs, profile) {
       completion_date: data.completion_date,
       status,
       required_for_profile: true,
-      framework_mappings: req.framework_mappings,
+      framework_mappings: filterMappings(req.framework_mappings, selectedFw),
       if_no_guidance: req.if_no_guidance,
     };
   });
@@ -70,11 +76,11 @@ export function computeResults(inputs, profile) {
       status: oversight.status,
       message: oversight.message,
       required_for_profile: true,
-      framework_mappings: [
+      framework_mappings: filterMappings([
         { framework: 'eu_ai_act', reference: 'Article 14', description: 'Human oversight requirements' },
         { framework: 'nist_ai_rmf', reference: 'GOVERN 1, MEASURE 2.8', description: 'Human-AI interaction' },
         { framework: 'iso_42001', reference: 'Annex A.8', description: 'Human oversight controls' },
-      ],
+      ], selectedFw),
     };
   }
 

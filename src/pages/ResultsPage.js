@@ -45,6 +45,54 @@ const URGENCY_STYLES = {
 };
 const URGENCY_LABELS = { CRITICAL: t.urgency_critical, HIGH: t.urgency_high, MEDIUM: t.urgency_medium, ONGOING: t.urgency_ongoing };
 
+function ActionItem({ item }) {
+  const [expanded, setExpanded] = useState(false);
+  const rem = item.remediation;
+  return (
+    <li className="px-4 py-3">
+      <div className="text-sm font-medium">{item.label}</div>
+      <div className="text-sm text-gray-600 mt-0.5">{item.action}</div>
+      {item.frameworks && item.frameworks.length > 0 && (
+        <div className="text-xs text-gray-400 mt-1">
+          {Array.isArray(item.frameworks) ? item.frameworks.join(', ') : ''}
+        </div>
+      )}
+      {rem && (
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="text-xs text-blue-600 hover:text-blue-800"
+          >
+            {expanded ? t.hide_details : t.show_details}
+          </button>
+          {expanded && (
+            <div className="mt-2 p-3 bg-gray-50 rounded text-xs space-y-2">
+              <div><span className="font-semibold">{t.remediation_how}:</span></div>
+              <ul className="list-disc list-inside space-y-1 text-gray-700">
+                {rem.how.map((step, i) => <li key={i}>{step}</li>)}
+              </ul>
+              {rem.tools && rem.tools.length > 0 && (
+                <div>
+                  <span className="font-semibold">{t.remediation_tools}: </span>
+                  {rem.tools.map((tool, i) => (
+                    <span key={i}>
+                      {i > 0 && ', '}
+                      <a href={tool.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{tool.name}</a>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div><span className="font-semibold">{t.remediation_effort}: </span>{rem.estimated_effort}</div>
+              <div><span className="font-semibold">{t.remediation_docs}: </span>{rem.documentation_required}</div>
+            </div>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
 export default function ResultsPage({ onShowRiskModal }) {
   const { profile, inputs } = useAssessmentStore();
   const navigate = useNavigate();
@@ -252,15 +300,7 @@ export default function ResultsPage({ onShowRiskModal }) {
                   </div>
                   <ul className="divide-y divide-gray-100">
                     {items.map((item) => (
-                      <li key={item.id} className="px-4 py-3">
-                        <div className="text-sm font-medium">{item.label}</div>
-                        <div className="text-sm text-gray-600 mt-0.5">{item.action}</div>
-                        {item.frameworks && item.frameworks.length > 0 && (
-                          <div className="text-xs text-gray-400 mt-1">
-                            {Array.isArray(item.frameworks) ? item.frameworks.join(', ') : ''}
-                          </div>
-                        )}
-                      </li>
+                      <ActionItem key={item.id} item={item} />
                     ))}
                   </ul>
                 </div>

@@ -37,7 +37,21 @@
       "evidence_required": "Test set results with accuracy score and test set description",
       "tooltip": "Proportion of correct predictions over total predictions.",
       "calculation_guide": "sklearn.metrics.accuracy_score(y_true, y_pred)",
-      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html"
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html",
+      "remediation": {
+        "what": "Improve model accuracy through better data, features, or model architecture.",
+        "how": [
+          "Run k-fold cross-validation to identify high-variance splits and diagnose overfitting or data quality issues.",
+          "Apply data augmentation or collect additional representative training samples for underperforming segments.",
+          "Experiment with ensemble methods (Random Forest, Gradient Boosting) or hyperparameter tuning via grid/random search."
+        ],
+        "tools": [
+          { "name": "scikit-learn cross_val_score", "url": "https://scikit-learn.org/stable/modules/cross_validation.html" },
+          { "name": "Optuna (hyperparameter tuning)", "url": "https://optuna.org/" }
+        ],
+        "estimated_effort": "3-5 days",
+        "documentation_required": "Updated test report with accuracy scores, cross-validation results, and description of changes made."
+      }
     },
     {
       "id": "f1_score",
@@ -74,7 +88,21 @@
       "evidence_required": "Test report including F1 score by class and overall",
       "tooltip": "Harmonic mean of precision and recall. Especially relevant for imbalanced datasets.",
       "calculation_guide": "sklearn.metrics.f1_score(y_true, y_pred, average='weighted')",
-      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html"
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html",
+      "remediation": {
+        "what": "Address class imbalance and improve per-class precision/recall balance.",
+        "how": [
+          "Analyze per-class precision and recall to identify which classes underperform.",
+          "Apply SMOTE oversampling or class weights in your model training to handle imbalanced data.",
+          "Re-evaluate with stratified cross-validation to confirm improvement is robust."
+        ],
+        "tools": [
+          { "name": "imbalanced-learn (SMOTE)", "url": "https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html" },
+          { "name": "scikit-learn class_weight", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.utils.class_weight.compute_class_weight.html" }
+        ],
+        "estimated_effort": "2-3 days",
+        "documentation_required": "Per-class F1 scores before and after remediation, description of balancing technique applied."
+      }
     },
     {
       "id": "auc_roc",
@@ -111,7 +139,21 @@
       "evidence_required": "ROC curve and AUC value in test report",
       "tooltip": "Area under the receiver operating characteristic curve. Measures discriminative ability.",
       "calculation_guide": "sklearn.metrics.roc_auc_score(y_true, y_score)",
-      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html"
+      "tool_link": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html",
+      "remediation": {
+        "what": "Improve model discrimination through threshold tuning and probability calibration.",
+        "how": [
+          "Plot the ROC curve to identify the optimal operating point for your use case.",
+          "Apply probability calibration (Platt scaling or isotonic regression) to improve score reliability.",
+          "Tune the decision threshold to balance sensitivity and specificity for your deployment context."
+        ],
+        "tools": [
+          { "name": "scikit-learn CalibratedClassifierCV", "url": "https://scikit-learn.org/stable/modules/calibration.html" },
+          { "name": "scikit-learn RocCurveDisplay", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.RocCurveDisplay.html" }
+        ],
+        "estimated_effort": "1-2 days",
+        "documentation_required": "ROC curve plot, selected threshold justification, calibration report."
+      }
     },
     {
       "id": "demographic_parity_diff",
@@ -148,7 +190,21 @@
       "evidence_required": "Fairness audit report showing demographic parity difference per protected group",
       "tooltip": "Difference in positive prediction rates between protected and reference groups. Closer to 0 is better.",
       "calculation_guide": "fairlearn.metrics.demographic_parity_difference(y_true, y_pred, sensitive_features=group)",
-      "tool_link": "https://fairlearn.org"
+      "tool_link": "https://fairlearn.org",
+      "remediation": {
+        "what": "Reduce demographic parity difference using reweighing or adversarial debiasing techniques.",
+        "how": [
+          "Use Fairlearn's ExponentiatedGradient with DemographicParity constraint to retrain with fairness constraints.",
+          "Apply pre-processing reweighing to adjust sample weights before training.",
+          "Evaluate tradeoffs between accuracy and fairness using Fairlearn's dashboard."
+        ],
+        "tools": [
+          { "name": "Fairlearn", "url": "https://fairlearn.org" },
+          { "name": "AIF360 Reweighing", "url": "https://aif360.readthedocs.io/en/latest/modules/generated/aif360.algorithms.preprocessing.Reweighing.html" }
+        ],
+        "estimated_effort": "2-5 days",
+        "documentation_required": "Fairness metrics before and after mitigation, description of protected attributes tested, mitigation method used."
+      }
     },
     {
       "id": "equalized_odds_diff",
@@ -185,7 +241,21 @@
       "evidence_required": "Fairness report showing equalized odds per protected group",
       "tooltip": "Difference in true positive and false positive rates between groups. Closer to 0 is better.",
       "calculation_guide": "fairlearn.metrics.equalized_odds_difference(y_true, y_pred, sensitive_features=group)",
-      "tool_link": "https://fairlearn.org"
+      "tool_link": "https://fairlearn.org",
+      "remediation": {
+        "what": "Equalize error rates across groups using post-processing threshold optimization.",
+        "how": [
+          "Use Fairlearn's ThresholdOptimizer to find group-specific decision thresholds that equalize odds.",
+          "If threshold tuning is insufficient, retrain with EqualizedOdds constraint via ExponentiatedGradient.",
+          "Document the accuracy-fairness tradeoff for each approach tested."
+        ],
+        "tools": [
+          { "name": "Fairlearn ThresholdOptimizer", "url": "https://fairlearn.org/v0.10/api_reference/generated/fairlearn.postprocessing.ThresholdOptimizer.html" },
+          { "name": "Fairlearn ExponentiatedGradient", "url": "https://fairlearn.org/v0.10/api_reference/generated/fairlearn.reductions.ExponentiatedGradient.html" }
+        ],
+        "estimated_effort": "2-3 days",
+        "documentation_required": "Equalized odds metrics before and after per group, threshold values or constraint parameters used."
+      }
     },
     {
       "id": "disparate_impact_ratio",
@@ -222,7 +292,21 @@
       "evidence_required": "Disparate impact analysis per protected group",
       "tooltip": "Ratio of positive prediction rates between protected and reference groups. Values closer to 1.0 indicate parity.",
       "calculation_guide": "fairlearn.metrics.selection_rate(y_pred, sensitive_features=group) — compute ratio between groups",
-      "tool_link": "https://fairlearn.org"
+      "tool_link": "https://fairlearn.org",
+      "remediation": {
+        "what": "Bring disparate impact ratio closer to 1.0 by removing discriminatory patterns from data or predictions.",
+        "how": [
+          "Use AIF360's DisparateImpactRemover to transform features and reduce proxy discrimination.",
+          "Apply in-processing techniques such as adversarial debiasing during model training.",
+          "Validate improvement with four-fifths rule (ratio >= 0.80) across all protected groups."
+        ],
+        "tools": [
+          { "name": "AIF360 DisparateImpactRemover", "url": "https://aif360.readthedocs.io/en/latest/modules/generated/aif360.algorithms.preprocessing.DisparateImpactRemover.html" },
+          { "name": "AIF360 AdversarialDebiasing", "url": "https://aif360.readthedocs.io/en/latest/modules/generated/aif360.algorithms.inprocessing.AdversarialDebiasing.html" }
+        ],
+        "estimated_effort": "2-4 days",
+        "documentation_required": "Disparate impact ratios per group before and after, method applied, four-fifths rule assessment."
+      }
     },
     {
       "id": "data_drift_score",
@@ -259,7 +343,21 @@
       "evidence_required": "Drift monitoring logs and alert thresholds",
       "tooltip": "Statistical distance between training and live data distributions. Lower means less drift.",
       "calculation_guide": "evidently.metrics.DataDriftPreset() or scipy.stats.ks_2samp",
-      "tool_link": "https://github.com/evidentlyai/evidently"
+      "tool_link": "https://github.com/evidentlyai/evidently",
+      "remediation": {
+        "what": "Reduce data drift by retraining on recent data or updating preprocessing pipelines.",
+        "how": [
+          "Set up continuous data drift monitoring using statistical tests (KS test, PSI) on incoming data vs. training distribution.",
+          "Retrain the model on a recent representative data sample that captures current distribution shifts.",
+          "Update feature preprocessing pipelines to handle new data patterns and validate with A/B testing."
+        ],
+        "tools": [
+          { "name": "Evidently AI", "url": "https://github.com/evidentlyai/evidently" },
+          { "name": "scipy.stats.ks_2samp", "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html" }
+        ],
+        "estimated_effort": "1 week",
+        "documentation_required": "Drift monitoring logs, retraining report with before/after distribution comparisons, and updated model card."
+      }
     },
     {
       "id": "concept_drift_score",
@@ -296,7 +394,21 @@
       "evidence_required": "Concept drift monitoring logs and retraining procedures",
       "tooltip": "Measure of change in the relationship between input features and target labels over time.",
       "calculation_guide": "Compare model performance on rolling windows or use ADWIN/DDM detectors",
-      "tool_link": "https://github.com/evidentlyai/evidently"
+      "tool_link": "https://github.com/evidentlyai/evidently",
+      "remediation": {
+        "what": "Address concept drift by retraining with updated labels and validating target-feature relationships.",
+        "how": [
+          "Monitor model performance on rolling time windows to detect degradation indicating concept drift.",
+          "Retrain the model with recently labeled data that reflects the current relationship between features and targets.",
+          "Implement ADWIN or DDM drift detectors in your inference pipeline for automated concept drift alerts."
+        ],
+        "tools": [
+          { "name": "Evidently AI", "url": "https://github.com/evidentlyai/evidently" },
+          { "name": "River (online ML with drift detection)", "url": "https://riverml.xyz/" }
+        ],
+        "estimated_effort": "1 week",
+        "documentation_required": "Concept drift detection logs, retraining report with performance comparison, and updated monitoring thresholds."
+      }
     },
     {
       "id": "adversarial_robustness_score",
@@ -333,7 +445,21 @@
       "evidence_required": "Adversarial robustness test report with attack scenarios and results",
       "tooltip": "Model accuracy under adversarial attack conditions (e.g., FGSM, PGD). Higher is better.",
       "calculation_guide": "art.attacks.evasion.FastGradientMethod — measure accuracy under attack",
-      "tool_link": "https://github.com/Trusted-AI/adversarial-robustness-toolbox"
+      "tool_link": "https://github.com/Trusted-AI/adversarial-robustness-toolbox",
+      "remediation": {
+        "what": "Improve adversarial robustness through adversarial training and input validation.",
+        "how": [
+          "Generate adversarial examples using FGSM, PGD, or AutoAttack and include them in the training set (adversarial training).",
+          "Apply input preprocessing defenses such as feature squeezing, spatial smoothing, or JPEG compression.",
+          "Implement runtime adversarial detection to flag suspicious inputs before they reach the model."
+        ],
+        "tools": [
+          { "name": "IBM Adversarial Robustness Toolbox (ART)", "url": "https://github.com/Trusted-AI/adversarial-robustness-toolbox" },
+          { "name": "CleverHans", "url": "https://github.com/cleverhans-lab/cleverhans" }
+        ],
+        "estimated_effort": "1-2 weeks",
+        "documentation_required": "Adversarial robustness test report with attack scenarios, defense methods applied, and before/after accuracy under attack."
+      }
     },
     {
       "id": "explanation_coverage",
@@ -370,7 +496,21 @@
       "evidence_required": "Model card with SHAP values or feature importance documentation",
       "tooltip": "Proportion of model predictions for which valid SHAP or feature importance explanations are available.",
       "calculation_guide": "shap.Explainer(model) — compute coverage as explained/total predictions",
-      "tool_link": "https://shap.readthedocs.io"
+      "tool_link": "https://shap.readthedocs.io",
+      "remediation": {
+        "what": "Add SHAP or LIME explanations to increase prediction explainability coverage.",
+        "how": [
+          "Integrate SHAP TreeExplainer (tree models) or KernelExplainer (any model) to generate feature importance for each prediction.",
+          "For models where SHAP is too slow, use LIME as a lightweight local explanation alternative.",
+          "Create a model card documenting global feature importance, sample local explanations, and coverage metrics."
+        ],
+        "tools": [
+          { "name": "SHAP", "url": "https://shap.readthedocs.io" },
+          { "name": "LIME", "url": "https://github.com/marcotcr/lime" }
+        ],
+        "estimated_effort": "2-4 days",
+        "documentation_required": "Model card with SHAP/LIME values, feature importance rankings, and explanation coverage percentage."
+      }
     }
   ],
   "process_requirements": [
@@ -403,7 +543,21 @@
         }
       ],
       "evidence_required": "Risk register, impact assessment reports, hazard analysis, mitigation measures",
-      "if_no_guidance": "Use ISO 31000 or NIST AI RMF templates. Estimated effort: 2-4 business days."
+      "if_no_guidance": "Use ISO 31000 or NIST AI RMF templates. Estimated effort: 2-4 business days.",
+      "remediation": {
+        "what": "Establish a formal risk management system covering AI-specific risks.",
+        "how": [
+          "Use ISO 31000 or NIST AI RMF as a template to create a risk register with identified AI risks, likelihood, and impact.",
+          "Conduct a risk assessment workshop with technical and business stakeholders to identify AI-specific hazards.",
+          "Define mitigation measures for each identified risk and assign owners with review timelines."
+        ],
+        "tools": [
+          { "name": "ISO 31000 Risk Management", "url": "https://www.iso.org/iso-31000-risk-management.html" },
+          { "name": "NIST AI RMF Playbook", "url": "https://airc.nist.gov/AI_RMF_Playbook" }
+        ],
+        "estimated_effort": "2-4 days",
+        "documentation_required": "Risk register, impact assessment reports, mitigation plan with assigned owners."
+      }
     },
     {
       "id": "ai_policy",
@@ -434,7 +588,21 @@
         }
       ],
       "evidence_required": "Signed AI policy document, role assignments, accountability framework",
-      "if_no_guidance": "Document covering fairness, transparency, human oversight, and safety. Approved by leadership."
+      "if_no_guidance": "Document covering fairness, transparency, human oversight, and safety. Approved by leadership.",
+      "remediation": {
+        "what": "Draft and adopt a formal AI governance policy approved by leadership.",
+        "how": [
+          "Use sample AI policy templates from OECD or IBM as a starting point.",
+          "Cover key principles: fairness, transparency, accountability, human oversight, safety, and privacy.",
+          "Obtain sign-off from executive leadership and assign a responsible AI governance officer."
+        ],
+        "tools": [
+          { "name": "OECD AI Policy Observatory", "url": "https://oecd.ai/" },
+          { "name": "IBM AI Ethics", "url": "https://www.ibm.com/artificial-intelligence/ethics" }
+        ],
+        "estimated_effort": "1-2 days",
+        "documentation_required": "Signed AI governance policy document, role assignments, and accountability framework."
+      }
     },
     {
       "id": "technical_documentation",
@@ -465,7 +633,21 @@
         }
       ],
       "evidence_required": "Completed Annex IV document, model cards, data lineage records, architecture diagrams",
-      "if_no_guidance": "Use the 15-element Annex IV checklist to identify gaps."
+      "if_no_guidance": "Use the 15-element Annex IV checklist to identify gaps.",
+      "remediation": {
+        "what": "Complete technical documentation covering all Annex IV elements.",
+        "how": [
+          "Work through the 15-element Annex IV checklist systematically, documenting each element.",
+          "Use Google's Model Card template to structure model documentation including intended use, performance, and limitations.",
+          "Create data lineage records and architecture diagrams to complement the written documentation."
+        ],
+        "tools": [
+          { "name": "Google Model Cards", "url": "https://modelcards.withgoogle.com/" },
+          { "name": "Hugging Face Model Card Guide", "url": "https://huggingface.co/docs/hub/model-cards" }
+        ],
+        "estimated_effort": "3-7 days",
+        "documentation_required": "Completed Annex IV document, model cards, data lineage records, and architecture diagrams."
+      }
     },
     {
       "id": "data_governance_policy",
@@ -496,7 +678,21 @@
         }
       ],
       "evidence_required": "Data governance policy, data lineage records, bias mitigation procedures",
-      "if_no_guidance": "Document covering data collection, quality, provenance, preparation, and bias mitigation."
+      "if_no_guidance": "Document covering data collection, quality, provenance, preparation, and bias mitigation.",
+      "remediation": {
+        "what": "Establish a data governance policy covering collection, quality, provenance, and bias mitigation.",
+        "how": [
+          "Use the DAMA-DMBOK framework as a reference for structuring data governance across the AI lifecycle.",
+          "Document data sources, collection methods, quality checks, and preprocessing steps for all training data.",
+          "Define bias detection and mitigation procedures for training data and establish data quality KPIs."
+        ],
+        "tools": [
+          { "name": "DAMA-DMBOK Framework", "url": "https://www.dama.org/cpages/body-of-knowledge" },
+          { "name": "Great Expectations (data quality)", "url": "https://greatexpectations.io/" }
+        ],
+        "estimated_effort": "2-3 days",
+        "documentation_required": "Data governance policy, data lineage records, data quality reports, and bias mitigation procedures."
+      }
     },
     {
       "id": "automated_logging",
@@ -527,7 +723,21 @@
         }
       ],
       "evidence_required": "Logging architecture, stored logs, incident records",
-      "if_no_guidance": "Critical for post-deployment high-risk systems. EU AI Act Article 12 mandatory."
+      "if_no_guidance": "Critical for post-deployment high-risk systems. EU AI Act Article 12 mandatory.",
+      "remediation": {
+        "what": "Implement automated logging for model inputs, outputs, and system events.",
+        "how": [
+          "Set up MLflow or Weights & Biases to log model experiments, parameters, metrics, and artifacts.",
+          "Implement inference logging to capture model inputs, outputs, and confidence scores in production.",
+          "Configure log retention policies and access controls aligned with regulatory requirements."
+        ],
+        "tools": [
+          { "name": "MLflow", "url": "https://mlflow.org/" },
+          { "name": "Weights & Biases", "url": "https://wandb.ai/" }
+        ],
+        "estimated_effort": "1-3 days",
+        "documentation_required": "Logging architecture documentation, log retention policy, and sample log outputs."
+      }
     },
     {
       "id": "quality_management_system",
@@ -558,7 +768,21 @@
         }
       ],
       "evidence_required": "Quality management manual, internal audit reports, corrective action logs",
-      "if_no_guidance": "Note: micro-enterprises may use a simplified QMS per EU AI Act SME provisions."
+      "if_no_guidance": "Note: micro-enterprises may use a simplified QMS per EU AI Act SME provisions.",
+      "remediation": {
+        "what": "Establish a quality management system covering AI development and operations.",
+        "how": [
+          "Use a simplified ISO 9001 template adapted for AI systems as the foundation for your QMS.",
+          "Define processes for internal audits, corrective actions, and continuous improvement specific to AI systems.",
+          "Document testing procedures, acceptance criteria, and change management processes for model updates."
+        ],
+        "tools": [
+          { "name": "ISO 9001 (Quality Management)", "url": "https://www.iso.org/iso-9001-quality-management.html" },
+          { "name": "NIST AI RMF MANAGE Function", "url": "https://airc.nist.gov/AI_RMF_Playbook" }
+        ],
+        "estimated_effort": "1-2 weeks",
+        "documentation_required": "Quality management manual, internal audit schedule, corrective action logs, and change management records."
+      }
     },
     {
       "id": "third_party_vendor_assessment",
@@ -589,7 +813,21 @@
         }
       ],
       "evidence_required": "Vendor assessments, contracts with AI responsibilities, supplier performance reviews",
-      "if_no_guidance": "Assess third-party AI systems, pre-trained models, and data suppliers."
+      "if_no_guidance": "Assess third-party AI systems, pre-trained models, and data suppliers.",
+      "remediation": {
+        "what": "Establish a third-party and supply chain assessment process for AI components.",
+        "how": [
+          "Create a vendor assessment questionnaire covering AI-specific risks: data provenance, model transparency, bias testing, and security.",
+          "Review contracts with third-party AI providers to ensure responsibilities for monitoring, updates, and incident reporting are defined.",
+          "Maintain an inventory of all third-party AI components (pre-trained models, APIs, datasets) with risk ratings."
+        ],
+        "tools": [
+          { "name": "NIST AI RMF GOVERN 6", "url": "https://airc.nist.gov/AI_RMF_Playbook" },
+          { "name": "ISO 42001 Annex A.9 Guidance", "url": "https://www.iso.org/standard/81230.html" }
+        ],
+        "estimated_effort": "2-3 days",
+        "documentation_required": "Vendor assessment reports, AI component inventory, contracts with AI-specific clauses."
+      }
     }
   ],
   "annex_iv_elements": [
