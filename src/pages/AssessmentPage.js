@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import en from '../locales/en.json';
 import useAssessmentStore from '../hooks/useAssessmentStore';
 import TosModal from '../components/TosModal';
+import TemplateStep from '../components/assessment/TemplateStep';
+import TEMPLATES from '../data/templates';
 import DeploymentStep from '../components/assessment/DeploymentStep';
 import FrameworkSelectionStep from '../components/assessment/FrameworkSelectionStep';
 import OnboardingStep from '../components/assessment/OnboardingStep';
@@ -17,6 +19,7 @@ import SectionGovernance from '../components/assessment/SectionGovernance';
 const t = en.assessment;
 
 const STEPS = {
+  TEMPLATE: -1,
   DEPLOYMENT: 0,
   FRAMEWORKS: 1,
   ONBOARDING: 2,
@@ -107,7 +110,7 @@ function findSectionForError(field, formSections) {
 
 export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTosAccept, onTosExit }) {
   const { profile, inputs, restored, setProfile, setInput, setInputs, resetAssessment, dismissRestored } = useAssessmentStore();
-  const [step, setStep] = useState(STEPS.DEPLOYMENT);
+  const [step, setStep] = useState(STEPS.TEMPLATE);
   const [formSection, setFormSection] = useState(0);
   const [errors, setErrors] = useState({});
   const [errorBanner, setErrorBanner] = useState('');
@@ -117,11 +120,21 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
   const location = useLocation();
   const isFresh = location.state?.fresh === true;
 
+  const handleTemplateSelect = useCallback((tpl) => {
+    setProfile(tpl.profile);
+    setInputs(tpl.inputs);
+    setStep(STEPS.DEPLOYMENT);
+  }, [setProfile, setInputs]);
+
+  const handleTemplateSkip = useCallback(() => {
+    setStep(STEPS.DEPLOYMENT);
+  }, []);
+
   // Clear previous data on fresh start
   useEffect(() => {
     if (isFresh) {
       resetAssessment();
-      setStep(STEPS.DEPLOYMENT);
+      setStep(STEPS.TEMPLATE);
       setFormSection(0);
       setErrors({});
       setErrorBanner('');
@@ -197,6 +210,8 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
       setStep(STEPS.FRAMEWORKS);
     } else if (step === STEPS.FRAMEWORKS) {
       setStep(STEPS.DEPLOYMENT);
+    } else if (step === STEPS.DEPLOYMENT) {
+      setStep(STEPS.TEMPLATE);
     }
   }, [step, formSection]);
 
@@ -256,11 +271,12 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
   };
 
   // Progress indicator
-  const totalSteps = 3 + formSections.length; // deployment + frameworks + onboarding + form sections
-  const currentProgress = step === STEPS.DEPLOYMENT ? 1
-    : step === STEPS.FRAMEWORKS ? 2
-    : step === STEPS.ONBOARDING ? 3
-    : 3 + formSection + 1;
+  const totalSteps = 4 + formSections.length; // template + deployment + frameworks + onboarding + form sections
+  const currentProgress = step === STEPS.TEMPLATE ? 1
+    : step === STEPS.DEPLOYMENT ? 2
+    : step === STEPS.FRAMEWORKS ? 3
+    : step === STEPS.ONBOARDING ? 4
+    : 4 + formSection + 1;
 
   if (!tosAccepted) {
     return <TosModal onAccept={onTosAccept} onExit={onTosExit} />;
@@ -286,6 +302,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
         <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
           <span>Step {currentProgress} of {totalSteps}</span>
           <span>
+            {step === STEPS.TEMPLATE && 'Template'}
             {step === STEPS.DEPLOYMENT && t.step_deployment}
             {step === STEPS.FRAMEWORKS && t.step_frameworks}
             {step === STEPS.ONBOARDING && t.step_onboarding}
@@ -301,6 +318,14 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
       </div>
 
       {/* Step content */}
+      {step === STEPS.TEMPLATE && (
+        <TemplateStep
+          templates={TEMPLATES}
+          onSelect={handleTemplateSelect}
+          onSkip={handleTemplateSkip}
+        />
+      )}
+
       {step === STEPS.DEPLOYMENT && (
         <DeploymentStep
           value={profile.deployment_status}
@@ -354,6 +379,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
       )}
 
       {/* Navigation */}
+      {step !== STEPS.TEMPLATE && (
       <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-6">
         <button
           type="button"
@@ -397,6 +423,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
           </button>
         )}
       </div>
+      )}
     </main>
   );
 }

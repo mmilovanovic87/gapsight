@@ -6,7 +6,8 @@
       "Bash(npm run:*)",
       "Bash(npm install:*)",
       "Bash(node:*)",
-      "Bash(CI=true npx react-scripts:*)"
+      "Bash(CI=true npx react-scripts:*)",
+      "Bash(npx playwright:*)"
     ]
   }
 }

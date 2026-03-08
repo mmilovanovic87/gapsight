@@ -1,0 +1,64 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "GapSight" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - navigation [ref=e8]:
+          - button "New Assessment" [ref=e9] [cursor=pointer]
+          - link "KB Changelog" [ref=e10] [cursor=pointer]:
+            - /url: /kb-changelog
+          - link "About" [ref=e11] [cursor=pointer]:
+            - /url: /about
+          - link "Privacy" [ref=e12] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms" [ref=e13] [cursor=pointer]:
+            - /url: /terms
+        - button "Clear Session" [ref=e14] [cursor=pointer]
+  - generic [ref=e16]:
+    - generic [ref=e17]: ℹ
+    - generic [ref=e18]: "GapSight: AI regulatory self-assessment for ML teams. Results are not legal advice."
+    - generic [ref=e19]: KB v1.0 | 2026-03
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - generic [ref=e24]: Step 2 of 9
+      - generic [ref=e25]: Framework Selection
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - heading "Framework Selection" [level=2] [ref=e30]
+        - paragraph [ref=e31]: Answer a few questions to determine which regulatory frameworks apply to your system.
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - paragraph [ref=e34]: Do users of your system currently reside in the EU, or is your company registered in the EU?
+          - generic [ref=e35]:
+            - button "Yes" [ref=e36] [cursor=pointer]
+            - button "No" [active] [ref=e37] [cursor=pointer]
+        - generic [ref=e38]:
+          - paragraph [ref=e39]: Is your company based in the US, or do you work with US federal agencies or US-regulated clients?
+          - generic [ref=e40]:
+            - button "Yes" [ref=e41] [cursor=pointer]
+            - button "No" [ref=e42] [cursor=pointer]
+    - generic [ref=e43]:
+      - button "Back" [ref=e44] [cursor=pointer]
+      - button "Next" [disabled] [ref=e45]
+  - contentinfo [ref=e46]:
+    - generic [ref=e47]:
+      - paragraph [ref=e48]: "GapSight: AI regulatory self-assessment for ML teams."
+      - paragraph [ref=e49]: Not legal advice. Informational only.
+      - paragraph [ref=e50]: KB v1.0 | 2026-03
+      - navigation [ref=e51]:
+        - link "Privacy Policy" [ref=e52] [cursor=pointer]:
+          - /url: /privacy
+        - link "Terms of Service" [ref=e53] [cursor=pointer]:
+          - /url: /terms
+        - link "About" [ref=e54] [cursor=pointer]:
+          - /url: /about
+        - link "KB Changelog" [ref=e55] [cursor=pointer]:
+          - /url: /kb-changelog
+        - link "Report an Issue" [ref=e56] [cursor=pointer]:
+          - /url: https://github.com
+      - paragraph [ref=e57]: © 2026 GapSight
+```
