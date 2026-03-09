@@ -111,9 +111,12 @@ function findSectionForError(field, formSections) {
 function getSectionCompletion(section, inputs, profile) {
   switch (section) {
     case 'accuracy': {
-      const filled = [inputs.overall_accuracy, inputs.f1_score, inputs.auc_roc, inputs.test_set_size].filter(v => v !== null && v !== undefined && v !== '').length;
-      if (filled === 4) return 'complete';
-      if (filled > 0) return 'partial';
+      const filled = [inputs.overall_accuracy, inputs.f1_score, inputs.auc_roc]
+        .filter(v => v !== null && v !== undefined && v !== '').length;
+      const hasTestSize = inputs.test_set_size !== null && inputs.test_set_size !== undefined && inputs.test_set_size !== '';
+      const hasRepresentative = inputs.test_set_representative !== null && inputs.test_set_representative !== undefined && inputs.test_set_representative !== '';
+      if (filled === 3 && hasTestSize && hasRepresentative) return 'complete';
+      if (filled > 0 || hasTestSize || hasRepresentative) return 'partial';
       return 'empty';
     }
     case 'fairness': {
@@ -128,9 +131,9 @@ function getSectionCompletion(section, inputs, profile) {
         .filter(v => v !== null && v !== undefined && v !== '').length;
       const hasDriftMonitoring = inputs.drift_monitoring_active !== null && inputs.drift_monitoring_active !== undefined;
       const hasFailsafe = inputs.failsafe_mechanism_documented !== null && inputs.failsafe_mechanism_documented !== undefined;
-      const total = filled + (hasDriftMonitoring ? 1 : 0) + (hasFailsafe ? 1 : 0);
-      if (filled === 3 && hasDriftMonitoring && hasFailsafe) return 'complete';
-      if (total > 0) return 'partial';
+      const hasRetrainDate = inputs.last_retrain_date !== null && inputs.last_retrain_date !== undefined && inputs.last_retrain_date !== '';
+      if (filled === 3 && hasDriftMonitoring && hasFailsafe && hasRetrainDate) return 'complete';
+      if (filled > 0 || hasDriftMonitoring || hasFailsafe) return 'partial';
       return 'empty';
     }
     case 'explainability': {
@@ -244,8 +247,19 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
   }, [showGpai]);
 
   const canAdvanceDeployment = !!profile.deployment_status;
-  const canAdvanceFrameworks = !!(profile.frameworks_selected && profile.frameworks_selected.length > 0);
-  const canAdvanceOnboarding = !!(profile.role && profile.gpai_flag !== null && profile.risk_category);
+  const canAdvanceFrameworks = !!(
+    profile.frameworks_selected &&
+    profile.frameworks_selected.length > 0 &&
+    profile.frameworks_answers &&
+    Object.keys(profile.frameworks_answers).length >= 5
+  );
+  const canAdvanceOnboarding = !!(
+    profile.role &&
+    profile.gpai_flag !== null &&
+    profile.risk_category &&
+    profile.frameworks_selected &&
+    profile.frameworks_selected.length > 0
+  );
 
   const handleNext = useCallback(() => {
     if (step === STEPS.DEPLOYMENT && canAdvanceDeployment) {
