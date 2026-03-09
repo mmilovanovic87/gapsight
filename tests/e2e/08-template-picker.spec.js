@@ -10,7 +10,7 @@ test.describe('Template picker', () => {
   test('template picker is shown as first step', async ({ page }) => {
     await page.getByRole('button', { name: /Start Free Assessment/i }).click();
     await page.getByRole('button', { name: 'I Accept' }).click();
-    await expect(page.getByText(/choose a template/i)).toBeVisible();
+    await expect(page.getByText(/Choose a starting point/i)).toBeVisible();
   });
 
   test('start from scratch skips to deployment step', async ({ page }) => {

@@ -34,7 +34,7 @@ test.describe('Navigation', () => {
     await expect(page).toHaveURL(/\/assessment/);
 
     // Should see Step 1 content (deployment heading)
-    await expect(page.getByRole('heading', { name: 'Deployment Context' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Choose a starting point/i })).toBeVisible();
 
     // Profile should be cleared
     const profile = await page.evaluate(() =>

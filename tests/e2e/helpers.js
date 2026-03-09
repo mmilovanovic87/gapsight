@@ -95,7 +95,7 @@ export async function answerFrameworkQuestions(page, answers = {}) {
   const keys = ['q1', 'q2', 'q3', 'q4', 'q5'];
   const questionTexts = [
     'reside in the EU',
-    'US-based',
+    'based in the US',
     'ISO certification',
     'globally recognized',
     'expand to the EU',
@@ -103,8 +103,11 @@ export async function answerFrameworkQuestions(page, answers = {}) {
 
   for (let i = 0; i < keys.length; i++) {
     const container = page.locator('.p-4.border-gray-200.rounded-lg').filter({ hasText: questionTexts[i] });
-    const isVisible = await container.isVisible({ timeout: 3000 }).catch(() => false);
-    if (!isVisible) break; // tree ended early, stop
+    try {
+      await container.waitFor({ state: 'visible', timeout: 5000 });
+    } catch {
+      break; // tree ended early, stop
+    }
     const btnName = defaults[keys[i]] ? 'Yes' : 'No';
     await container.getByRole('button', { name: btnName }).click();
     await page.waitForTimeout(200);

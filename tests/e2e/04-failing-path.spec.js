@@ -18,10 +18,11 @@ test.describe('Failing path: bad metrics produce CRITICAL/HIGH risk', () => {
 
     // Step 2: Frameworks - all No (defaults to NIST)
     await answerFrameworkQuestions(page, { q1: true });
+    await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled({ timeout: 5000 });
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Step 3: Onboarding - Provider, no GPAI, high-risk
-    await page.locator('input[name="role"][value="provider"]').check({ force: true });
+    await page.getByText('Provider: builds and places AI system on market').click();
     await page.locator('.space-y-3').filter({ hasText: 'General-Purpose AI' }).getByRole('button', { name: 'No' }).click();
 
     // Risk tree: p1=Yes, p2=Yes, p4=No => high-risk

@@ -31,7 +31,7 @@ test.describe('Happy path: high-risk provider, EU AI Act', () => {
 
     // ---- Step 3: Onboarding ----
     // Role: Provider
-    await page.locator('input[name="role"][value="provider"]').check({ force: true });
+    await page.getByText('Provider: builds and places AI system on market').click();
 
     // GPAI: No
     await page.locator('.space-y-3').filter({ hasText: 'General-Purpose AI' }).getByRole('button', { name: 'No' }).click();

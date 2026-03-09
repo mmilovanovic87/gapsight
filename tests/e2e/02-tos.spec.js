@@ -17,8 +17,10 @@ test.describe('ToS modal', () => {
   test('"I Accept" proceeds to assessment form', async ({ page }) => {
     await page.goto('/assessment');
     await page.getByRole('button', { name: 'I Accept' }).click();
+    // Template picker is now shown after ToS
+    await page.getByRole('button', { name: /Start from scratch/i }).click();
     // Should see Step 1 (Deployment context)
-    await expect(page.getByRole('heading', { name: 'Deployment Context' })).toBeVisible();
+    await expect(page.getByText(/deployment/i).first()).toBeVisible();
   });
 
   test('does not reappear after acceptance', async ({ page }) => {
