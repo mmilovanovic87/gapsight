@@ -105,19 +105,26 @@ export default function SectionGovernance({ inputs, onInput, profile, errors, se
             )}
 
             {showEvidence && (
-              <TextArea
-                id={`${req.id}_evidence`}
-                label={sec.evidence_label}
-                value={data.evidence}
-                onChange={(v) => setGovField(req.id, 'evidence', v)}
-                placeholder={sec.evidence_placeholder}
-                minLength={20}
-                error={
-                  data.evidence && data.evidence.length > 0 && data.evidence.length < 20
-                    ? t.validation.min_length.replace('{min}', '20')
-                    : null
-                }
-              />
+              <>
+                {data.status === 'yes' && (
+                  <p className="text-xs text-red-500">Evidence is required when status is Yes</p>
+                )}
+                <TextArea
+                  id={`${req.id}_evidence`}
+                  label={sec.evidence_label}
+                  value={data.evidence}
+                  onChange={(v) => setGovField(req.id, 'evidence', v)}
+                  placeholder={sec.evidence_placeholder}
+                  minLength={20}
+                  error={
+                    data.status === 'yes' && (!data.evidence || data.evidence.trim().length === 0)
+                      ? 'Required when status is Yes (minimum 20 characters)'
+                      : data.evidence && data.evidence.length > 0 && data.evidence.length < 20
+                      ? t.validation.min_length.replace('{min}', '20')
+                      : null
+                  }
+                />
+              </>
             )}
 
             {showDate && (
