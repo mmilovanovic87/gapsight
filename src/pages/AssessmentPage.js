@@ -275,7 +275,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
         setFormSection((s) => s + 1);
       }
     }
-  }, [step, canAdvanceDeployment, canAdvanceFrameworks, canAdvanceOnboarding, formSection, formSections.length]);
+  }, [step, canAdvanceDeployment, canAdvanceFrameworks, canAdvanceOnboarding, formSection, formSections.length, setProfile]);
 
   const handleBack = useCallback(() => {
     if (step === STEPS.FORM && formSection > 0) {
