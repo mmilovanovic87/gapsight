@@ -53,12 +53,6 @@ function evaluateTree(answers) {
     reasons.eu_ai_act = t.reason_eu_proactive;
   }
 
-  // If nothing flagged after all questions, default to NIST
-  if (frameworks.length === 0) {
-    frameworks.push('nist_ai_rmf');
-    reasons.nist_ai_rmf = t.reason_nist_default;
-  }
-
   return { frameworks, reasons, done: true };
 }
 
@@ -104,7 +98,7 @@ export default function FrameworkSelectionStep({ value, onChange }) {
 
   // Propagate to parent
   useEffect(() => {
-    if (done && effectiveSelection.length > 0) {
+    if (done) {
       onChange({
         frameworks_selected: effectiveSelection,
         frameworks_answers: answers,
@@ -166,6 +160,13 @@ export default function FrameworkSelectionStep({ value, onChange }) {
           );
         })}
       </div>
+
+      {done && effectiveSelection.length === 0 && (
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm font-medium text-amber-800">No framework applies based on your answers.</p>
+          <p className="text-xs text-amber-700 mt-1">You can manually add a framework below, or go back and revise your answers. Proceeding without a framework will limit your assessment results.</p>
+        </div>
+      )}
 
       {/* Results */}
       {done && (

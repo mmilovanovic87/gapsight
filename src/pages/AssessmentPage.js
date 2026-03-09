@@ -111,8 +111,8 @@ function findSectionForError(field, formSections) {
 function getSectionCompletion(section, inputs, profile) {
   switch (section) {
     case 'accuracy': {
-      const filled = [inputs.overall_accuracy, inputs.f1_score, inputs.auc_roc].filter(v => v !== null && v !== undefined && v !== '').length;
-      if (filled === 3) return 'complete';
+      const filled = [inputs.overall_accuracy, inputs.f1_score, inputs.auc_roc, inputs.test_set_size].filter(v => v !== null && v !== undefined && v !== '').length;
+      if (filled === 4) return 'complete';
       if (filled > 0) return 'partial';
       return 'empty';
     }
