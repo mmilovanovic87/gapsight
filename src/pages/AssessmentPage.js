@@ -266,6 +266,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
       setStep(STEPS.FRAMEWORKS);
     } else if (step === STEPS.FRAMEWORKS && canAdvanceFrameworks) {
       setStep(STEPS.ONBOARDING);
+      setProfile({ risk_category: null });
     } else if (step === STEPS.ONBOARDING && canAdvanceOnboarding) {
       setStep(STEPS.FORM);
       setFormSection(0);
