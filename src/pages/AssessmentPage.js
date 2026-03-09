@@ -108,6 +108,61 @@ function findSectionForError(field, formSections) {
   return idx >= 0 ? idx : null;
 }
 
+function getSectionCompletion(section, inputs, profile) {
+  switch (section) {
+    case 'accuracy': {
+      const filled = [inputs.overall_accuracy, inputs.f1_score, inputs.auc_roc].filter(v => v !== null && v !== undefined && v !== '').length;
+      if (filled === 3) return 'complete';
+      if (filled > 0) return 'partial';
+      return 'empty';
+    }
+    case 'fairness': {
+      const hasBias = inputs.bias_mitigation_applied !== null && inputs.bias_mitigation_applied !== undefined;
+      const hasParity = inputs.demographic_parity_diff !== null && inputs.demographic_parity_diff !== undefined && inputs.demographic_parity_diff !== '';
+      if (hasBias && hasParity) return 'complete';
+      if (hasBias || hasParity) return 'partial';
+      return 'empty';
+    }
+    case 'robustness': {
+      const filled = [inputs.data_drift_score, inputs.concept_drift_score, inputs.adversarial_robustness_score].filter(v => v !== null && v !== undefined && v !== '').length;
+      if (filled === 3) return 'complete';
+      if (filled > 0) return 'partial';
+      return 'empty';
+    }
+    case 'explainability': {
+      const hasMethod = inputs.explainability_method !== null && inputs.explainability_method !== undefined;
+      const hasCoverage = inputs.explanation_coverage !== null && inputs.explanation_coverage !== undefined && inputs.explanation_coverage !== '';
+      const hasBooleans = inputs.explanations_available_to_users !== null && inputs.explanations_available_to_users !== undefined;
+      if (hasMethod && hasCoverage && hasBooleans) return 'complete';
+      if (hasMethod || hasCoverage) return 'partial';
+      return 'empty';
+    }
+    case 'human_oversight': {
+      const oversight = inputs.human_oversight || {};
+      const answered = Object.keys(oversight).filter(k => oversight[k] !== null && oversight[k] !== undefined).length;
+      if (answered >= 5) return 'complete';
+      if (answered > 0) return 'partial';
+      return 'empty';
+    }
+    case 'gpai': {
+      const hasDisclosed = inputs.gpai_training_data_disclosed !== null && inputs.gpai_training_data_disclosed !== undefined;
+      if (hasDisclosed) return 'complete';
+      return 'empty';
+    }
+    case 'governance': {
+      const gov = inputs.governance || {};
+      const total = Object.keys(gov).length;
+      if (total === 0) return 'empty';
+      const filled = Object.keys(gov).filter(k => gov[k]?.status !== null && gov[k]?.status !== undefined).length;
+      if (filled === total) return 'complete';
+      if (filled > 0) return 'partial';
+      return 'empty';
+    }
+    default:
+      return 'empty';
+  }
+}
+
 export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTosAccept, onTosExit }) {
   const { profile, inputs, restored, setProfile, setInput, setInputs, resetAssessment, dismissRestored } = useAssessmentStore();
   const [step, setStep] = useState(STEPS.TEMPLATE);
@@ -353,20 +408,27 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
         <>
           {/* Section tabs */}
           <div className="mb-6 flex gap-1 overflow-x-auto pb-2">
-            {formSections.map((sec, i) => (
-              <button
-                key={sec}
-                type="button"
-                onClick={() => { setFormSection(i); setErrorBanner(''); }}
-                className={`px-3 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
-                  i === formSection
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {i + 1}. {sec.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-              </button>
-            ))}
+            {formSections.map((sec, i) => {
+              const completion = getSectionCompletion(sec, inputs, profile);
+              const dot = completion === 'complete' ? 'bg-green-400'
+                : completion === 'partial' ? 'bg-yellow-400'
+                : 'bg-gray-300';
+              return (
+                <button
+                  key={sec}
+                  type="button"
+                  onClick={() => { setFormSection(i); setErrorBanner(''); }}
+                  className={`px-3 py-1.5 rounded text-xs whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                    i === formSection
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <span className={`inline-block w-2 h-2 rounded-full ${dot}`} />
+                  {i + 1}. {sec.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                </button>
+              );
+            })}
           </div>
           {renderFormSection()}
         </>
