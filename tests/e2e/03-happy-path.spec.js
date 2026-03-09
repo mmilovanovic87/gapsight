@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { clearStorage, acceptTos, answerFrameworkQuestions, answerRiskTree } from './helpers';
+import { clearStorage, acceptTos, skipTemplatePicker, answerFrameworkQuestions, answerRiskTree } from './helpers';
 
 test.describe('Happy path: high-risk provider, EU AI Act', () => {
   test.beforeEach(async ({ page }) => {
@@ -14,6 +14,7 @@ test.describe('Happy path: high-risk provider, EU AI Act', () => {
 
     // ToS
     await acceptTos(page);
+    await skipTemplatePicker(page);
 
     // ---- Step 1: Deployment ----
     await page.getByText('Yes, already in production').click();

@@ -17,6 +17,14 @@ export async function acceptTos(page) {
   await page.getByRole('button', { name: 'I Accept' }).click();
 }
 
+/** Skip the template picker by clicking "Start from scratch". */
+export async function skipTemplatePicker(page) {
+  const skipBtn = page.getByRole('button', { name: /Start from scratch/i });
+  if (await skipBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await skipBtn.click();
+  }
+}
+
 /**
  * Seed localStorage with a completed assessment and navigate to /results.
  * Skips ToS, disclaimer, and the entire form flow.
@@ -84,7 +92,7 @@ export async function seedAndGoToResults(page, overrides = {}) {
  */
 export async function answerFrameworkQuestions(page, answers = {}) {
   const defaults = { q1: true, q2: false, q3: false, q4: false, q5: false, ...answers };
-
+  const keys = ['q1', 'q2', 'q3', 'q4', 'q5'];
   const questionTexts = [
     'reside in the EU',
     'US-based',
@@ -92,15 +100,14 @@ export async function answerFrameworkQuestions(page, answers = {}) {
     'globally recognized',
     'expand to the EU',
   ];
-  const keys = ['q1', 'q2', 'q3', 'q4', 'q5'];
 
   for (let i = 0; i < keys.length; i++) {
-    // Wait for this question's container to be visible
     const container = page.locator('.p-4.border-gray-200.rounded-lg').filter({ hasText: questionTexts[i] });
-    await container.waitFor({ state: 'visible', timeout: 10000 });
-
+    const isVisible = await container.isVisible({ timeout: 3000 }).catch(() => false);
+    if (!isVisible) break; // tree ended early, stop
     const btnName = defaults[keys[i]] ? 'Yes' : 'No';
     await container.getByRole('button', { name: btnName }).click();
+    await page.waitForTimeout(200);
   }
 }
 

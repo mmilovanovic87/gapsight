@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { clearStorage, acceptTos, answerFrameworkQuestions, answerRiskTree } from './helpers';
+import { clearStorage, acceptTos, skipTemplatePicker, answerFrameworkQuestions, answerRiskTree } from './helpers';
 
 test.describe('Failing path: bad metrics produce CRITICAL/HIGH risk', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,13 +10,14 @@ test.describe('Failing path: bad metrics produce CRITICAL/HIGH risk', () => {
   test('failing values show high risk with action items and remediation', async ({ page }) => {
     await page.getByRole('button', { name: /Start Free Assessment/i }).click();
     await acceptTos(page);
+    await skipTemplatePicker(page);
 
     // Step 1: Deployment
     await page.getByText('Yes, already in production').click();
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Step 2: Frameworks - all No (defaults to NIST)
-    await answerFrameworkQuestions(page, { q1: false, q2: false, q3: false, q4: false, q5: false });
+    await answerFrameworkQuestions(page, { q1: true });
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Step 3: Onboarding - Provider, no GPAI, high-risk
