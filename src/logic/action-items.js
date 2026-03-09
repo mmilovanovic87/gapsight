@@ -102,19 +102,28 @@ export function generateActionItems(allResults, crossMetricWarnings, profile, in
     });
   }
 
-  // Annex IV unchecked items
+  // Annex IV unchecked items — grouped into a single action item
   if (inputs.governance?.technical_documentation?.status === 'partial') {
     const annexChecks = inputs.annex_iv_checklist || {};
-    for (const element of knowledgeBase.annex_iv_elements) {
-      if (!annexChecks[element.id]) {
-        items.MEDIUM.push({
-          id: `annex_iv_${element.id}`,
-          metric: 'technical_documentation',
-          label: `Annex IV: ${element.label}`,
-          action: `Document: ${element.label}`,
-          frameworks: filterFwStrings(['EU AI Act Annex IV'], selectedFw),
-        });
-      }
+    const missing = knowledgeBase.annex_iv_elements.filter((el) => !annexChecks[el.id]);
+    if (missing.length > 0) {
+      items.MEDIUM.push({
+        id: 'annex_iv_group',
+        metric: 'technical_documentation',
+        label: `Annex IV Technical Documentation (${missing.length}/${knowledgeBase.annex_iv_elements.length} elements incomplete)`,
+        action: `Complete the following Annex IV elements: ${missing.map((el) => el.label).join(', ')}.`,
+        frameworks: filterFwStrings(['EU AI Act Annex IV'], selectedFw),
+        remediation: {
+          what: `${missing.length} of 15 required Annex IV elements are not yet documented.`,
+          how: missing.map((el) => `${el.id}. ${el.label}`),
+          tools: [
+            { name: 'Google Model Cards', url: 'https://modelcards.withgoogle.com/' },
+            { name: 'Hugging Face Model Card Guide', url: 'https://huggingface.co/docs/hub/model-cards' },
+          ],
+          estimated_effort: '3-7 days',
+          documentation_required: 'Completed Annex IV document covering all 15 elements.',
+        },
+      });
     }
   }
 
