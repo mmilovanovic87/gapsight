@@ -124,16 +124,22 @@ function getSectionCompletion(section, inputs, profile) {
       return 'empty';
     }
     case 'robustness': {
-      const filled = [inputs.data_drift_score, inputs.concept_drift_score, inputs.adversarial_robustness_score].filter(v => v !== null && v !== undefined && v !== '').length;
-      if (filled === 3) return 'complete';
-      if (filled > 0) return 'partial';
+      const filled = [inputs.data_drift_score, inputs.concept_drift_score, inputs.adversarial_robustness_score]
+        .filter(v => v !== null && v !== undefined && v !== '').length;
+      const hasDriftMonitoring = inputs.drift_monitoring_active !== null && inputs.drift_monitoring_active !== undefined;
+      const hasFailsafe = inputs.failsafe_mechanism_documented !== null && inputs.failsafe_mechanism_documented !== undefined;
+      const total = filled + (hasDriftMonitoring ? 1 : 0) + (hasFailsafe ? 1 : 0);
+      if (filled === 3 && hasDriftMonitoring && hasFailsafe) return 'complete';
+      if (total > 0) return 'partial';
       return 'empty';
     }
     case 'explainability': {
       const hasMethod = inputs.explainability_method !== null && inputs.explainability_method !== undefined;
       const hasCoverage = inputs.explanation_coverage !== null && inputs.explanation_coverage !== undefined && inputs.explanation_coverage !== '';
-      const hasBooleans = inputs.explanations_available_to_users !== null && inputs.explanations_available_to_users !== undefined;
-      if (hasMethod && hasCoverage && hasBooleans) return 'complete';
+      const hasAvailable = inputs.explanations_available_to_users !== null && inputs.explanations_available_to_users !== undefined;
+      const hasModelCard = inputs.model_card_exists !== null && inputs.model_card_exists !== undefined;
+      const hasInstructions = inputs.instructions_for_use_documented !== null && inputs.instructions_for_use_documented !== undefined;
+      if (hasMethod && hasCoverage && hasAvailable && hasModelCard && hasInstructions) return 'complete';
       if (hasMethod || hasCoverage) return 'partial';
       return 'empty';
     }
