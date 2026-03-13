@@ -1,6 +1,5 @@
 import en from '../locales/en.json';
-
-const TIMEOUT_MS = 10_000;
+import { FEEDBACK_TIMEOUT_MS } from '../logic/constants';
 const FORMSPREE_URL = 'https://formspree.io/f/mjgakgzn';
 
 /**
@@ -13,7 +12,7 @@ const FORMSPREE_URL = 'https://formspree.io/f/mjgakgzn';
  */
 export async function submitFeedback({ issue_type, reference, description, honeypot }) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), FEEDBACK_TIMEOUT_MS);
 
   try {
     const res = await fetch(FORMSPREE_URL, {

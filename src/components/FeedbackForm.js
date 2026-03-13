@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import en from '../locales/en.json';
 import { submitFeedback } from '../api/feedback';
+import { FEEDBACK_MIN_LENGTH, FEEDBACK_COOLDOWN_MS } from '../logic/constants';
 
 const t = en.feedback;
-const DISABLE_MS = 30_000;
 
 const ISSUE_TYPES = Object.entries(t.issue_types).map(([value, label]) => ({ value, label }));
 
@@ -19,7 +19,7 @@ export default function FeedbackForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!issueType || description.length < 20) return;
+    if (!issueType || description.length < FEEDBACK_MIN_LENGTH) return;
 
     setStatus('loading');
     setErrorMsg('');
@@ -27,7 +27,7 @@ export default function FeedbackForm() {
     // Disable button for 30 seconds after any submission attempt
     setDisabled(true);
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setDisabled(false), DISABLE_MS);
+    timerRef.current = setTimeout(() => setDisabled(false), FEEDBACK_COOLDOWN_MS);
 
     const result = await submitFeedback({
       issue_type: issueType,
@@ -112,8 +112,8 @@ export default function FeedbackForm() {
               required
               className="block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {description.length > 0 && description.length < 20 && (
-              <p className="text-xs text-gray-400 mt-1">{20 - description.length} characters remaining</p>
+            {description.length > 0 && description.length < FEEDBACK_MIN_LENGTH && (
+              <p className="text-xs text-gray-400 mt-1">{FEEDBACK_MIN_LENGTH - description.length} characters remaining</p>
             )}
           </div>
 
@@ -123,9 +123,9 @@ export default function FeedbackForm() {
 
           <button
             type="submit"
-            disabled={disabled || status === 'loading' || !issueType || description.length < 20}
+            disabled={disabled || status === 'loading' || !issueType || description.length < FEEDBACK_MIN_LENGTH}
             className={`px-4 py-2 text-sm rounded text-white ${
-              disabled || status === 'loading' || !issueType || description.length < 20
+              disabled || status === 'loading' || !issueType || description.length < FEEDBACK_MIN_LENGTH
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}

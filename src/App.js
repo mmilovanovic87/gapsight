@@ -17,6 +17,11 @@ import ResultsPage from './pages/ResultsPage';
 import SharedViewPage from './pages/SharedViewPage';
 import kbChangelog from './data/kb-changelog.json';
 
+/**
+ * Generates a v4-format UUID using Math.random.
+ *
+ * @returns {string} UUID string (e.g., "550e8400-e29b-41d4-a716-446655440000")
+ */
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -25,6 +30,11 @@ function generateUUID() {
   });
 }
 
+/**
+ * Reads the current session object from localStorage.
+ *
+ * @returns {object|null} Parsed session or null if missing/corrupt
+ */
 function getSession() {
   try {
     const raw = localStorage.getItem('gapsight_session');
@@ -33,6 +43,11 @@ function getSession() {
   return null;
 }
 
+/**
+ * Creates and persists a new session with a fresh UUID and timestamps.
+ *
+ * @returns {object} The newly created session object
+ */
 function initSession() {
   const now = new Date().toISOString();
   const session = {
@@ -48,6 +63,12 @@ function initSession() {
   return session;
 }
 
+/**
+ * Merges updates into the current session and persists to localStorage.
+ *
+ * @param {object} updates - Fields to merge into the session
+ * @returns {object} The updated session object
+ */
 function updateSession(updates) {
   const session = getSession() || initSession();
   const updated = { ...session, ...updates, last_modified_at: new Date().toISOString() };

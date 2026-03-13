@@ -1,4 +1,12 @@
 import { isMetricRequired } from './profile-filter';
+import {
+  OVERSIGHT_WEIGHTS,
+  OVERSIGHT_PASS_THRESHOLD,
+  OVERSIGHT_REVIEW_THRESHOLD,
+  SMALL_TEST_SET_THRESHOLD,
+  STALE_MODEL_24M_MONTHS,
+  STALE_MODEL_12M_MONTHS,
+} from './constants';
 
 /**
  * Computes the status for a single numeric metric.
@@ -97,7 +105,7 @@ export function getHumanOversightStatus(answers) {
     };
   }
 
-  const weights = [1, 3, 2, 2, 1];
+  const weights = OVERSIGHT_WEIGHTS;
   const values = [
     answerValue(answers.q1),
     answerValue(answers.q2),
@@ -110,8 +118,8 @@ export function getHumanOversightStatus(answers) {
   const weightedScore = values.reduce((sum, v, i) => sum + v * weights[i], 0) / totalWeight;
 
   let status;
-  if (weightedScore >= 0.80) status = 'PASS';
-  else if (weightedScore >= 0.60) status = 'REVIEW';
+  if (weightedScore >= OVERSIGHT_PASS_THRESHOLD) status = 'PASS';
+  else if (weightedScore >= OVERSIGHT_REVIEW_THRESHOLD) status = 'REVIEW';
   else status = 'FAIL';
 
   return { status, score: weightedScore, message: null };
@@ -129,7 +137,7 @@ export function deriveContextFlags(inputs, profile) {
 
   // Small test set
   if (inputs.test_set_size !== null && inputs.test_set_size !== undefined) {
-    if (Number(inputs.test_set_size) < 30) {
+    if (Number(inputs.test_set_size) < SMALL_TEST_SET_THRESHOLD) {
       flags.push('SMALL_TEST_SET');
     }
   }
@@ -153,9 +161,9 @@ export function deriveContextFlags(inputs, profile) {
     const monthsSince = (now.getFullYear() - retrainDate.getFullYear()) * 12 +
       (now.getMonth() - retrainDate.getMonth());
 
-    if (monthsSince >= 24) {
+    if (monthsSince >= STALE_MODEL_24M_MONTHS) {
       flags.push('STALE_MODEL_24M');
-    } else if (monthsSince >= 12) {
+    } else if (monthsSince >= STALE_MODEL_12M_MONTHS) {
       flags.push('STALE_MODEL_12M');
     }
   }

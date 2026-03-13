@@ -7,43 +7,12 @@ import { computeResults } from '../logic/compute-results';
 import { downloadJsonExport } from '../logic/export-json';
 import { downloadHtmlExport } from '../logic/export-html';
 import { downloadPdfExport } from '../logic/export-pdf';
+import { RISK_LEVEL_STYLES, FRAMEWORK_NAMES, URGENCY_LEVEL_STYLES } from '../logic/constants';
+import StatusBadge from '../components/StatusBadge';
 import ShareModal from '../components/ShareModal';
 import FeedbackForm from '../components/FeedbackForm';
 
 const t = en.results;
-
-const RISK_COLORS = {
-  CRITICAL: 'text-red-700 border-red-500 bg-red-50',
-  HIGH: 'text-orange-700 border-orange-500 bg-orange-50',
-  MEDIUM: 'text-yellow-700 border-yellow-500 bg-yellow-50',
-  LOW: 'text-green-700 border-green-500 bg-green-50',
-};
-
-const STATUS_STYLES = {
-  PASS: 'bg-green-100 text-green-800',
-  REVIEW: 'bg-yellow-100 text-yellow-800',
-  FAIL: 'bg-red-100 text-red-800',
-  CRITICAL_FAIL: 'bg-red-200 text-red-900 font-bold',
-  NOT_APPLICABLE: 'bg-gray-100 text-gray-500',
-  PROCESS_REQUIRED: 'bg-yellow-100 text-yellow-800',
-};
-
-function StatusBadge({ status }) {
-  const label = status === 'CRITICAL_FAIL' ? 'CRITICAL' : status === 'PROCESS_REQUIRED' ? 'REVIEW' : status === 'NOT_APPLICABLE' ? 'N/A' : status;
-  return (
-    <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${STATUS_STYLES[status] || STATUS_STYLES.FAIL}`}>
-      {label}
-    </span>
-  );
-}
-
-const FW_NAMES = { eu_ai_act: 'EU AI Act', nist_ai_rmf: 'NIST RMF', iso_42001: 'ISO 42001' };
-const URGENCY_STYLES = {
-  CRITICAL: { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' },
-  HIGH: { border: 'border-orange-300', bg: 'bg-orange-50', text: 'text-orange-700' },
-  MEDIUM: { border: 'border-yellow-300', bg: 'bg-yellow-50', text: 'text-yellow-700' },
-  ONGOING: { border: 'border-blue-300', bg: 'bg-blue-50', text: 'text-blue-700' },
-};
 const URGENCY_LABELS = { CRITICAL: t.urgency_critical, HIGH: t.urgency_high, MEDIUM: t.urgency_medium, ONGOING: t.urgency_ongoing };
 
 function ActionItem({ item }) {
@@ -167,7 +136,7 @@ export default function ResultsPage({ onShowRiskModal }) {
       )}
 
       {/* Summary panel */}
-      <div className={`border-2 rounded-lg p-6 mb-6 ${RISK_COLORS[results.riskLevel.level]}`}>
+      <div className={`border-2 rounded-lg p-6 mb-6 ${RISK_LEVEL_STYLES[results.riskLevel.level]}`}>
         <h2 className="text-lg font-semibold mb-4">{t.summary_title}</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
@@ -210,7 +179,7 @@ export default function ResultsPage({ onShowRiskModal }) {
             <tbody>
               {Object.entries(results.frameworkSummary).map(([fw, counts]) => (
                 <tr key={fw} className="border-t border-gray-200">
-                  <td className="py-2 font-medium">{FW_NAMES[fw]}</td>
+                  <td className="py-2 font-medium">{FRAMEWORK_NAMES[fw]}</td>
                   <td className="py-2 text-green-700">{counts.pass}/{counts.total}</td>
                   <td className="py-2 text-yellow-700">{counts.review}</td>
                   <td className="py-2 text-red-700">{counts.fail}</td>
@@ -312,7 +281,7 @@ export default function ResultsPage({ onShowRiskModal }) {
           <div className="space-y-4">
             {Object.entries(results.actionItems).map(([urgency, items]) => {
               if (items.length === 0) return null;
-              const style = URGENCY_STYLES[urgency];
+              const style = URGENCY_LEVEL_STYLES[urgency];
               return (
                 <div key={urgency} className={`border ${style.border} rounded-lg overflow-hidden`}>
                   <div className={`px-4 py-2 ${style.bg} ${style.text} text-sm font-semibold`}>

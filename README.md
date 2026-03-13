@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# GapSight
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**AI regulatory self-assessment for ML teams.**
 
-## Available Scripts
+GapSight is a free, open-source tool that helps AI teams identify potential compliance gaps relative to **EU AI Act**, **NIST AI RMF**, and **ISO/IEC 42001**. It is an informative self-assessment tool — not a compliance platform, not legal advice, and not a certification system.
 
-In the project directory, you can run:
+## Architecture
 
-### `npm start`
+```
+src/
+├── api/            # Client-side API calls (share links, feedback)
+├── components/     # Reusable React components
+│   └── assessment/ # Assessment form section components
+├── data/           # Static data (knowledge base, templates)
+├── hooks/          # Custom React hooks (state management)
+├── locales/        # i18n strings (en.json, CI-scanned)
+├── logic/          # Pure business logic (no React dependency)
+│   ├── constants.js        # All thresholds, weights, and limits
+│   ├── scoring.js          # Metric status computation
+│   ├── compute-results.js  # Orchestrates full assessment
+│   ├── cross-metric.js     # 7 cross-metric validation rules
+│   ├── risk-level.js       # Risk level calculation
+│   ├── action-items.js     # Remediation action generation
+│   ├── profile-filter.js   # KB filtering by user profile
+│   └── export-*.js         # JSON, HTML, PDF export
+└── pages/          # Page-level route components
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+api/                # Vercel Edge Functions (share link endpoints)
+config/             # Language policy, KB config
+scripts/            # CI enforcement scripts
+specs/              # Product and architecture specifications
+tests/e2e/          # Playwright E2E test suite
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Key design decisions
 
-### `npm test`
+- **Logic layer is framework-agnostic.** All scoring, validation, and computation in `src/logic/` has zero React dependency. It can be imported as plain Node.js modules.
+- **State is localStorage-based.** No server-side state for assessments. Everything persists client-side via `useAssessmentStore` hook.
+- **Language policy is CI-enforced.** Forbidden phrases (e.g., "compliance platform") are scanned on every build. See `config/language-policy.json`.
+- **Knowledge base is a frozen API contract.** Schema changes require version bumps and migration scripts. See `ARCHITECTURE.md`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Data flow
 
-### `npm run build`
+```
+User Input → useAssessmentStore (localStorage)
+           → computeResults(inputs, profile)
+           → profile-filter → scoring → cross-metric → risk-level → action-items
+           → ResultsPage render + export functions
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js 20+
+- npm
 
-### `npm run eject`
+### Development
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm install
+npm start         # Dev server on http://localhost:3000
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Testing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm test                # Unit tests (Jest)
+npm run test:e2e        # E2E tests (Playwright, requires npm start)
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Build
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+npm run build           # Production build → build/
+```
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Vercel auto-deploys on push to `main`. No manual deployment step needed.
 
-### `npm run build` fails to minify
+Configuration: `vercel.json` handles SPA routing and API rewrites.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Specification documents
+
+Detailed specs live in the `specs/` directory:
+
+| Document | Contents |
+|----------|----------|
+| `specs/PRODUCT.md` | Product positioning, scope, non-goals |
+| `specs/ALGORITHM.md` | Complete scoring algorithm walkthrough |
+| `specs/ARCHITECTURE.md` | API contracts, storage schemas |
+| `specs/KNOWLEDGE-BASE.md` | KB structure, metrics, framework mappings |
+
+## Contributing
+
+1. Read `CLAUDE.md` for project constraints
+2. Run `scripts/check-language-policy.sh` before committing
+3. All UI strings must go in `src/locales/en.json`
+4. Never add hardcoded thresholds — use `src/logic/constants.js`
+5. Follow the PR template in `.github/pull_request_template.md`
+
+## License
+
+See repository for license details.

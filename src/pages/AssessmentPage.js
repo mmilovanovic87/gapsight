@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import en from '../locales/en.json';
 import useAssessmentStore from '../hooks/useAssessmentStore';
+import { BIAS_MITIGATION_MIN_LENGTH, MIN_FRAMEWORK_ANSWERS } from '../logic/constants';
 import TosModal from '../components/TosModal';
 import TemplateStep from '../components/assessment/TemplateStep';
 import TEMPLATES from '../data/templates';
@@ -75,8 +76,8 @@ function validateInputs(inputs, profile) {
   // Bias mitigation method min length - only validate when field is visible
   if (inputs.bias_mitigation_applied === true &&
       inputs.bias_mitigation_method != null &&
-      inputs.bias_mitigation_method.length > 0 && inputs.bias_mitigation_method.length < 20) {
-    errors.bias_mitigation_method = t.validation.min_length.replace('{min}', '20');
+      inputs.bias_mitigation_method.length > 0 && inputs.bias_mitigation_method.length < BIAS_MITIGATION_MIN_LENGTH) {
+    errors.bias_mitigation_method = t.validation.min_length.replace('{min}', String(BIAS_MITIGATION_MIN_LENGTH));
   }
   // Clean out null errors
   Object.keys(errors).forEach((k) => {
@@ -251,7 +252,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
     profile.frameworks_selected &&
     profile.frameworks_selected.length > 0 &&
     profile.frameworks_answers &&
-    Object.keys(profile.frameworks_answers).length >= 5
+    Object.keys(profile.frameworks_answers).length >= MIN_FRAMEWORK_ANSWERS
   );
   const canAdvanceOnboarding = !!(
     profile.role &&

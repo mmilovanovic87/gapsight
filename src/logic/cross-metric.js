@@ -1,4 +1,14 @@
 import { monthsSinceDate } from './scoring';
+import {
+  CROSS_ACCURACY_THRESHOLD,
+  CROSS_FAIRNESS_GAP_THRESHOLD,
+  CROSS_ROBUSTNESS_THRESHOLD,
+  CROSS_DRIFT_THRESHOLD,
+  CROSS_RETRAIN_MONTHS_THRESHOLD,
+  CROSS_FAIRNESS_MITIGATION_THRESHOLD,
+  CROSS_OVERSIGHT_THRESHOLD,
+  GPAI_SYSTEMIC_RISK_FLOPS,
+} from './constants';
 
 /**
  * Evaluates all 7 cross-metric validation rules against user inputs and profile.
@@ -14,8 +24,8 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   const hasNist = profile.frameworks_selected?.includes('nist_ai_rmf') ?? true;
 
   // RULE 1 - Accuracy-Fairness Tradeoff
-  if (toNum(inputs.overall_accuracy) >= 0.90 &&
-      toNum(inputs.demographic_parity_diff) >= 0.15) {
+  if (toNum(inputs.overall_accuracy) >= CROSS_ACCURACY_THRESHOLD &&
+      toNum(inputs.demographic_parity_diff) >= CROSS_FAIRNESS_GAP_THRESHOLD) {
     const refs = [];
     if (hasEuAiAct) refs.push('EU AI Act Article 10');
     if (hasNist) refs.push('NIST MEASURE 2.11');
@@ -28,7 +38,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   }
 
   // RULE 2 - Robustness Without Monitoring
-  if (toNum(inputs.adversarial_robustness_score) >= 0.80 &&
+  if (toNum(inputs.adversarial_robustness_score) >= CROSS_ROBUSTNESS_THRESHOLD &&
       inputs.drift_monitoring_active === false) {
     warnings.push({
       id: 'robustness_without_monitoring',
@@ -39,8 +49,8 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
 
   // RULE 3 - High Drift Without Retraining
   const monthsSinceRetrain = monthsSinceDate(inputs.last_retrain_date);
-  if (toNum(inputs.data_drift_score) >= 0.20 &&
-      monthsSinceRetrain !== null && monthsSinceRetrain >= 12) {
+  if (toNum(inputs.data_drift_score) >= CROSS_DRIFT_THRESHOLD &&
+      monthsSinceRetrain !== null && monthsSinceRetrain >= CROSS_RETRAIN_MONTHS_THRESHOLD) {
     warnings.push({
       id: 'high_drift_without_retraining',
       severity: 'CRITICAL',
@@ -49,7 +59,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   }
 
   // RULE 4 - Fairness Without Mitigation
-  if (toNum(inputs.equalized_odds_diff) >= 0.10 &&
+  if (toNum(inputs.equalized_odds_diff) >= CROSS_FAIRNESS_MITIGATION_THRESHOLD &&
       inputs.bias_mitigation_applied === false) {
     warnings.push({
       id: 'fairness_without_mitigation',
@@ -62,7 +72,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
 
   // RULE 5 - Explainability-Oversight Gap
   if (inputs.explainability_method === 'None' &&
-      humanOversightScore !== null && humanOversightScore < 0.80) {
+      humanOversightScore !== null && humanOversightScore < CROSS_OVERSIGHT_THRESHOLD) {
     warnings.push({
       id: 'explainability_oversight_gap',
       severity: 'WARNING',
@@ -73,7 +83,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   // RULE 6 - GPAI Systemic Risk Notification (EU AI Act only)
   if (hasEuAiAct &&
       profile.gpai_flag === true &&
-      toNum(inputs.training_flops) >= 1e25 &&
+      toNum(inputs.training_flops) >= GPAI_SYSTEMIC_RISK_FLOPS &&
       inputs.systemic_risk_notification_sent === 'no') {
     warnings.push({
       id: 'gpai_systemic_risk_notification',
@@ -96,17 +106,6 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   }
 
   return warnings;
-}
-
-/**
- * Groups warnings by severity for display.
- */
-export function groupWarningsBySeverity(warnings) {
-  return {
-    CRITICAL: warnings.filter(w => w.severity === 'CRITICAL'),
-    WARNING: warnings.filter(w => w.severity === 'WARNING'),
-    INFO: warnings.filter(w => w.severity === 'INFO'),
-  };
 }
 
 function toNum(val) {

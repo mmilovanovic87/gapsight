@@ -1,3 +1,9 @@
+import {
+  RISK_FAIL_RATE_THRESHOLD,
+  RISK_REVIEW_RATE_THRESHOLD,
+  RISK_CROSS_CRITICAL_THRESHOLD,
+} from './constants';
+
 /**
  * Calculates the overall risk level from metric results and cross-metric warnings.
  *
@@ -45,7 +51,7 @@ export function getRiskLevel(results, crossMetricWarnings) {
   }
 
   // HIGH: fail rate >= 30% OR >= 2 cross-metric CRITICAL
-  if (failRate >= 0.30 || crossCritical >= 2) {
+  if (failRate >= RISK_FAIL_RATE_THRESHOLD || crossCritical >= RISK_CROSS_CRITICAL_THRESHOLD) {
     return {
       level: 'HIGH',
       message: 'Significant gaps identified. Address before deployment. Consult a qualified legal professional.',
@@ -54,7 +60,7 @@ export function getRiskLevel(results, crossMetricWarnings) {
   }
 
   // MEDIUM: review rate >= 20%
-  if (reviewRate >= 0.20) {
+  if (reviewRate >= RISK_REVIEW_RATE_THRESHOLD) {
     return {
       level: 'MEDIUM',
       message: 'Some areas require attention. A review with a qualified professional is recommended.',

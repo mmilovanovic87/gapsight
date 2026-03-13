@@ -1,24 +1,15 @@
 import kbChangelog from '../data/kb-changelog.json';
 import en from '../locales/en.json';
-
-const RISK_COLORS = {
-  CRITICAL: '#dc2626',
-  HIGH: '#ea580c',
-  MEDIUM: '#ca8a04',
-  LOW: '#16a34a',
-};
-
-const STATUS_BADGES = {
-  PASS: { bg: '#dcfce7', color: '#166534', label: 'PASS' },
-  REVIEW: { bg: '#fef9c3', color: '#854d0e', label: 'REVIEW' },
-  FAIL: { bg: '#fee2e2', color: '#991b1b', label: 'FAIL' },
-  CRITICAL_FAIL: { bg: '#fee2e2', color: '#991b1b', label: 'CRITICAL' },
-  NOT_APPLICABLE: { bg: '#f3f4f6', color: '#6b7280', label: 'N/A' },
-  PROCESS_REQUIRED: { bg: '#fef9c3', color: '#854d0e', label: 'REVIEW' },
-};
+import {
+  RISK_COLORS_HEX,
+  STATUS_BADGES_HTML,
+  FRAMEWORK_NAMES,
+  URGENCY_LABELS_EXPORT,
+  URGENCY_COLORS_HEX,
+} from './constants';
 
 function badge(status) {
-  const s = STATUS_BADGES[status] || STATUS_BADGES.FAIL;
+  const s = STATUS_BADGES_HTML[status] || STATUS_BADGES_HTML.FAIL;
   return `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;background:${s.bg};color:${s.color}">${s.label}</span>`;
 }
 
@@ -35,7 +26,7 @@ function esc(str) {
  */
 export function generateHtmlExport(results, session) {
   const kb = kbChangelog;
-  const riskColor = RISK_COLORS[results.riskLevel.level] || '#6b7280';
+  const riskColor = RISK_COLORS_HEX[results.riskLevel.level] || '#6b7280';
 
   // Cross-metric warnings HTML
   let warningsHtml = '';
@@ -50,7 +41,7 @@ export function generateHtmlExport(results, session) {
   }
 
   // Framework summary HTML
-  const fwNames = { eu_ai_act: 'EU AI Act', nist_ai_rmf: 'NIST RMF', iso_42001: 'ISO 42001' };
+  const fwNames = FRAMEWORK_NAMES;
   const fwRows = Object.entries(results.frameworkSummary).map(([fw, counts]) =>
     `<tr><td style="padding:6px 12px;font-weight:600">${fwNames[fw] || fw}</td><td style="padding:6px 12px;color:#166534">${counts.pass}/${counts.total} PASS</td><td style="padding:6px 12px;color:#854d0e">${counts.review} REVIEW</td><td style="padding:6px 12px;color:#991b1b">${counts.fail} FAIL</td>${counts.critical > 0 ? `<td style="padding:6px 12px;color:#991b1b;font-weight:700">${counts.critical} CRITICAL</td>` : '<td></td>'}</tr>`
   ).join('\n');
@@ -66,8 +57,8 @@ export function generateHtmlExport(results, session) {
   ).join('\n');
 
   // Action items HTML
-  const urgencyLabels = { CRITICAL: 'Critical: Before Deployment', HIGH: 'High Priority: Within 30 Days', MEDIUM: 'Medium Priority: Within 90 Days', ONGOING: 'Ongoing' };
-  const urgencyColors = { CRITICAL: '#dc2626', HIGH: '#ea580c', MEDIUM: '#ca8a04', ONGOING: '#2563eb' };
+  const urgencyLabels = URGENCY_LABELS_EXPORT;
+  const urgencyColors = URGENCY_COLORS_HEX;
   let actionHtml = '';
   for (const [urgency, items] of Object.entries(results.actionItems)) {
     if (items.length === 0) continue;
