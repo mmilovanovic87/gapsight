@@ -1,0 +1,28 @@
+name: 'GapSight Compliance Check'
+description: 'Run AI compliance self-assessment checks against your project using the GapSight scoring engine.'
+
+inputs:
+  assessment-path:
+    description: 'Path to the assessment JSON file (profile + inputs)'
+    required: false
+    default: '.gapsight/assessment.json'
+  knowledge-base-path:
+    description: 'Path to the GapSight knowledge base JSON. Defaults to the bundled KB.'
+    required: false
+    default: ''
+  fail-on:
+    description: 'Risk level that causes the action to fail. One of: CRITICAL, HIGH, MEDIUM, NONE'
+    required: false
+    default: 'HIGH'
+
+outputs:
+  passed:
+    description: 'Whether the compliance check passed (true/false)'
+  risk-level:
+    description: 'Overall risk level (CRITICAL, HIGH, MEDIUM, LOW)'
+  report-json:
+    description: 'Path to the JSON report artifact'
+
+runs:
+  using: 'node20'
+  main: 'index.js'

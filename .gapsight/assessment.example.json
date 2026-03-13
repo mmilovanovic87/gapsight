@@ -1,0 +1,43 @@
+{
+  "profile": {
+    "role": "provider",
+    "gpai_flag": false,
+    "risk_category": "high-risk",
+    "deployment_status": "pre-deployment",
+    "frameworks_selected": ["eu_ai_act"]
+  },
+  "inputs": {
+    "overall_accuracy": 0.91,
+    "f1_score": 0.87,
+    "auc_roc": 0.94,
+    "test_set_size": 5000,
+    "demographic_parity_diff": 0.04,
+    "equalized_odds_diff": 0.03,
+    "disparate_impact_ratio": 0.92,
+    "bias_mitigation_applied": true,
+    "bias_mitigation_method": "Reweighing applied to training data",
+    "data_drift_score": 0.05,
+    "concept_drift_score": 0.02,
+    "adversarial_robustness_score": 0.85,
+    "explanation_coverage": 0.88,
+    "explainability_method": "SHAP",
+    "explanations_available_to_users": true,
+    "model_card_exists": true,
+    "instructions_for_use_documented": true,
+    "human_oversight": {
+      "q1": "yes",
+      "q2": "yes",
+      "q3": "yes",
+      "q4": "yes",
+      "q5": "yes"
+    },
+    "governance": {
+      "risk_management_system": { "status": "yes" },
+      "ai_policy": { "status": "yes" },
+      "technical_documentation": { "status": "yes" },
+      "data_governance_policy": { "status": "yes" },
+      "automated_logging": { "status": "yes" },
+      "quality_management_system": { "status": "yes" }
+    }
+  }
+}
