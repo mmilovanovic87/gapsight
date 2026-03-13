@@ -1,0 +1,20 @@
+{
+  "name": "gapsight-core",
+  "version": "1.0.0",
+  "description": "Framework-agnostic compliance scoring engine for GapSight",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "keywords": [
+    "compliance",
+    "eu-ai-act",
+    "nist-ai-rmf",
+    "iso-42001",
+    "scoring"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

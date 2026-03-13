@@ -1,0 +1,132 @@
+/**
+ * Cross-metric validation rules.
+ *
+ * Evaluates 7 rules that detect inconsistencies across multiple metrics,
+ * producing CRITICAL or WARNING severity findings.
+ *
+ * @module cross-metric
+ */
+
+const {
+  CROSS_ACCURACY_THRESHOLD,
+  CROSS_FAIRNESS_GAP_THRESHOLD,
+  CROSS_ROBUSTNESS_THRESHOLD,
+  CROSS_DRIFT_THRESHOLD,
+  CROSS_RETRAIN_MONTHS_THRESHOLD,
+  CROSS_FAIRNESS_MITIGATION_THRESHOLD,
+  CROSS_OVERSIGHT_THRESHOLD,
+  GPAI_SYSTEMIC_RISK_FLOPS,
+} = require('./constants');
+const { monthsSinceDate } = require('./scoring');
+
+/**
+ * Safely converts a value to a number, returning null for invalid inputs.
+ *
+ * @param {*} val - Value to convert
+ * @returns {number|null}
+ */
+function toNum(val) {
+  if (val === null || val === undefined || val === '') return null;
+  const n = Number(val);
+  return isNaN(n) ? null : n;
+}
+
+/**
+ * Evaluates all 7 cross-metric validation rules.
+ *
+ * @param {object} inputs - All user-provided values
+ * @param {object} profile - User profile
+ * @param {number|null} humanOversightScore - Weighted oversight score
+ * @returns {Array<{ id: string, severity: string, message: string }>}
+ */
+function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
+  const warnings = [];
+  const hasEuAiAct = profile.frameworks_selected?.includes('eu_ai_act') ?? true;
+  const hasNist = profile.frameworks_selected?.includes('nist_ai_rmf') ?? true;
+
+  // RULE 1 - Accuracy-Fairness Tradeoff
+  if (toNum(inputs.overall_accuracy) >= CROSS_ACCURACY_THRESHOLD &&
+      toNum(inputs.demographic_parity_diff) >= CROSS_FAIRNESS_GAP_THRESHOLD) {
+    const refs = [];
+    if (hasEuAiAct) refs.push('EU AI Act Article 10');
+    if (hasNist) refs.push('NIST MEASURE 2.11');
+    const refText = refs.length > 0 ? ` ${refs.join(' and ')} require` : ' Best practices require';
+    warnings.push({
+      id: 'accuracy_fairness_tradeoff',
+      severity: 'WARNING',
+      message: `High accuracy with significant fairness gap detected.${refText} explicit analysis and documentation of this tradeoff.`,
+    });
+  }
+
+  // RULE 2 - Robustness Without Monitoring
+  if (toNum(inputs.adversarial_robustness_score) >= CROSS_ROBUSTNESS_THRESHOLD &&
+      inputs.drift_monitoring_active === false) {
+    warnings.push({
+      id: 'robustness_without_monitoring',
+      severity: 'WARNING',
+      message: 'Robustness measured during development does not guarantee runtime robustness without active production monitoring.',
+    });
+  }
+
+  // RULE 3 - High Drift Without Retraining
+  const monthsSinceRetrain = monthsSinceDate(inputs.last_retrain_date);
+  if (toNum(inputs.data_drift_score) >= CROSS_DRIFT_THRESHOLD &&
+      monthsSinceRetrain !== null && monthsSinceRetrain >= CROSS_RETRAIN_MONTHS_THRESHOLD) {
+    warnings.push({
+      id: 'high_drift_without_retraining',
+      severity: 'CRITICAL',
+      message: 'High drift score combined with stale model requires immediate retraining plan.',
+    });
+  }
+
+  // RULE 4 - Fairness Without Mitigation
+  if (toNum(inputs.equalized_odds_diff) >= CROSS_FAIRNESS_MITIGATION_THRESHOLD &&
+      inputs.bias_mitigation_applied === false) {
+    warnings.push({
+      id: 'fairness_without_mitigation',
+      severity: 'CRITICAL',
+      message: hasEuAiAct
+        ? 'Bias detected without applied mitigation. Direct EU AI Act Article 10 violation.'
+        : 'Bias detected without applied mitigation. Immediate remediation required.',
+    });
+  }
+
+  // RULE 5 - Explainability-Oversight Gap
+  if (inputs.explainability_method === 'None' &&
+      humanOversightScore !== null && humanOversightScore < CROSS_OVERSIGHT_THRESHOLD) {
+    warnings.push({
+      id: 'explainability_oversight_gap',
+      severity: 'WARNING',
+      message: 'Absence of explainability combined with weak human oversight increases automation bias risk.',
+    });
+  }
+
+  // RULE 6 - GPAI Systemic Risk Notification
+  if (hasEuAiAct &&
+      profile.gpai_flag === true &&
+      toNum(inputs.training_flops) >= GPAI_SYSTEMIC_RISK_FLOPS &&
+      inputs.systemic_risk_notification_sent === 'no') {
+    warnings.push({
+      id: 'gpai_systemic_risk_notification',
+      severity: 'CRITICAL',
+      message: 'GPAI systemic risk threshold exceeded. Notification to EU AI Office is mandatory immediately.',
+    });
+  }
+
+  // RULE 7 - High-Risk Post-Deployment Without Logging
+  if (profile.risk_category === 'high-risk' &&
+      profile.deployment_status === 'post-deployment' &&
+      inputs.automated_logging === 'no') {
+    warnings.push({
+      id: 'high_risk_post_deploy_no_logging',
+      severity: 'CRITICAL',
+      message: hasEuAiAct
+        ? 'EU AI Act Article 12 requires automated logging for high-risk systems in production.'
+        : 'Automated logging is required for high-risk systems in production.',
+    });
+  }
+
+  return warnings;
+}
+
+module.exports = { evaluateCrossMetricRules, toNum };
