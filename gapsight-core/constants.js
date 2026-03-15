@@ -4,6 +4,10 @@
  * All thresholds, weights, and limits used in compliance checks.
  * No magic numbers should exist outside this file.
  *
+ * NOTE: Scoring constants are duplicated in src/logic/constants.js (browser ESM).
+ * This file is CommonJS (Node.js) and cannot be imported in browser code.
+ * If you change a value here, you MUST also update src/logic/constants.js (and vice versa).
+ *
  * @module constants
  */
 
