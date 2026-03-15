@@ -30,3 +30,20 @@ jobs:
       - run: npm ci
       - run: npm test -- --watchAll=false
       - run: npm run build
+
+  compliance-check:
+    name: Compliance Check (self-test)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run compliance check
+        id: compliance
+        uses: ./.github/actions/compliance-check
+        with:
+          assessment-path: '.gapsight/assessment.example.json'
+          fail-on: 'NONE'
+      - name: Print compliance outputs
+        run: |
+          echo "Passed: ${{ steps.compliance.outputs.passed }}"
+          echo "Risk level: ${{ steps.compliance.outputs.risk-level }}"
