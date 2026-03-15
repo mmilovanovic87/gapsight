@@ -205,4 +205,6 @@ async function run() {
   }
 }
 
+module.exports = { shouldFail, run };
+
 run();

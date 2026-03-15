@@ -11,6 +11,9 @@ const {
   FRAMEWORK_NAMES,
 } = require('./constants');
 
+/** All known framework IDs, derived from FRAMEWORK_NAMES to avoid hardcoding. */
+const ALL_FRAMEWORK_IDS = Object.keys(FRAMEWORK_NAMES);
+
 /**
  * Calculates the overall risk level from scored results and cross-metric warnings.
  *
@@ -72,7 +75,7 @@ function getRiskLevel(results, crossMetricWarnings) {
 function getFrameworkSummary(results, selectedFrameworks) {
   const frameworks = selectedFrameworks && selectedFrameworks.length > 0
     ? selectedFrameworks
-    : ['eu_ai_act', 'nist_ai_rmf', 'iso_42001'];
+    : ALL_FRAMEWORK_IDS;
   const summary = {};
 
   for (const fw of frameworks) {

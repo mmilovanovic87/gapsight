@@ -86,10 +86,26 @@ function filterMappings(mappings, selected) {
  * if (!report.passed) process.exit(1);
  */
 function runComplianceCheck(assessment) {
+  if (!assessment || typeof assessment !== 'object') {
+    throw new Error('runComplianceCheck requires a non-null assessment object.');
+  }
+
   const { knowledgeBase, profile, inputs } = assessment;
 
-  if (!knowledgeBase || !profile || !inputs) {
-    throw new Error('runComplianceCheck requires { knowledgeBase, profile, inputs }');
+  if (!knowledgeBase || typeof knowledgeBase !== 'object') {
+    throw new Error('assessment.knowledgeBase must be a non-null object.');
+  }
+  if (!Array.isArray(knowledgeBase.metrics)) {
+    throw new Error('assessment.knowledgeBase.metrics must be an array.');
+  }
+  if (!Array.isArray(knowledgeBase.process_requirements)) {
+    throw new Error('assessment.knowledgeBase.process_requirements must be an array.');
+  }
+  if (!profile || typeof profile !== 'object') {
+    throw new Error('assessment.profile must be a non-null object.');
+  }
+  if (!inputs || typeof inputs !== 'object') {
+    throw new Error('assessment.inputs must be a non-null object.');
   }
 
   const contextFlags = deriveContextFlags(inputs, profile);

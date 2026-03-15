@@ -11,11 +11,36 @@ const baseProfile = {
 };
 
 describe('runComplianceCheck', () => {
-  test('throws when missing required fields', () => {
-    expect(() => runComplianceCheck({})).toThrow('requires { knowledgeBase, profile, inputs }');
-    expect(() => runComplianceCheck({ knowledgeBase })).toThrow();
-    expect(() => runComplianceCheck({ knowledgeBase, profile: baseProfile })).toThrow();
-    expect(() => runComplianceCheck({ profile: baseProfile, inputs: {} })).toThrow();
+  test('throws when assessment is null or not an object', () => {
+    expect(() => runComplianceCheck(null)).toThrow('non-null assessment object');
+    expect(() => runComplianceCheck(undefined)).toThrow('non-null assessment object');
+    expect(() => runComplianceCheck('string')).toThrow('non-null assessment object');
+  });
+
+  test('throws when knowledgeBase is missing or not an object', () => {
+    expect(() => runComplianceCheck({})).toThrow('knowledgeBase must be a non-null object');
+    expect(() => runComplianceCheck({ knowledgeBase: null })).toThrow('knowledgeBase must be a non-null object');
+    expect(() => runComplianceCheck({ knowledgeBase: 'string' })).toThrow('knowledgeBase must be a non-null object');
+  });
+
+  test('throws when knowledgeBase.metrics is not an array', () => {
+    expect(() => runComplianceCheck({ knowledgeBase: { metrics: 'not-array', process_requirements: [] } })).toThrow('metrics must be an array');
+    expect(() => runComplianceCheck({ knowledgeBase: { process_requirements: [] } })).toThrow('metrics must be an array');
+  });
+
+  test('throws when knowledgeBase.process_requirements is not an array', () => {
+    expect(() => runComplianceCheck({ knowledgeBase: { metrics: [] } })).toThrow('process_requirements must be an array');
+    expect(() => runComplianceCheck({ knowledgeBase: { metrics: [], process_requirements: 'not-array' } })).toThrow('process_requirements must be an array');
+  });
+
+  test('throws when profile is missing or not an object', () => {
+    expect(() => runComplianceCheck({ knowledgeBase, profile: null, inputs: {} })).toThrow('profile must be a non-null object');
+    expect(() => runComplianceCheck({ knowledgeBase, inputs: {} })).toThrow('profile must be a non-null object');
+  });
+
+  test('throws when inputs is missing or not an object', () => {
+    expect(() => runComplianceCheck({ knowledgeBase, profile: baseProfile })).toThrow('inputs must be a non-null object');
+    expect(() => runComplianceCheck({ knowledgeBase, profile: baseProfile, inputs: null })).toThrow('inputs must be a non-null object');
   });
 
   test('returns a complete report for a passing assessment', () => {

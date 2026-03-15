@@ -1,4 +1,4 @@
-const { isRequiredForProfile, getMetricsForProfile, getProcessRequirementsForProfile, isMetricRequired } = require('../profile-filter');
+const { isRequiredForProfile, getMetricsForProfile, getProcessRequirementsForProfile, isMetricRequired, warnOnUnknownProfileValues } = require('../profile-filter');
 
 const mockKB = {
   metrics: [
@@ -118,5 +118,50 @@ describe('isMetricRequired', () => {
   test('returns false for non-existent metric', () => {
     const profile = { role: 'provider', risk_category: 'high-risk', deployment_status: 'pre-deployment', gpai_flag: false };
     expect(isMetricRequired(mockKB, 'nonexistent', profile)).toBe(false);
+  });
+});
+
+describe('warnOnUnknownProfileValues', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+  });
+
+  test('does not warn for valid profile values', () => {
+    warnOnUnknownProfileValues({ role: 'provider', risk_category: 'high-risk', deployment_status: 'pre-deployment' });
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('warns for unknown role', () => {
+    warnOnUnknownProfileValues({ role: 'admin', risk_category: 'high-risk', deployment_status: 'pre-deployment' });
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown profile.role: "admin"'));
+  });
+
+  test('warns for unknown risk_category', () => {
+    warnOnUnknownProfileValues({ role: 'provider', risk_category: 'extreme', deployment_status: 'pre-deployment' });
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown profile.risk_category: "extreme"'));
+  });
+
+  test('warns for unknown deployment_status', () => {
+    warnOnUnknownProfileValues({ role: 'provider', risk_category: 'high-risk', deployment_status: 'retired' });
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown profile.deployment_status: "retired"'));
+  });
+
+  test('does not warn when fields are missing (undefined)', () => {
+    warnOnUnknownProfileValues({});
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('unknown values are treated as non-matching in filtering', () => {
+    const profile = { role: 'admin', risk_category: 'extreme', deployment_status: 'retired', gpai_flag: false };
+    const result = getMetricsForProfile(mockKB, profile);
+    // Only universal_metric (no required_for_profiles) should match
+    expect(result.map(m => m.id)).toEqual(['universal_metric']);
+    expect(warnSpy).toHaveBeenCalled();
   });
 });

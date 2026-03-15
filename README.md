@@ -100,6 +100,16 @@ Detailed specs live in the `specs/` directory:
 4. Never add hardcoded thresholds — use `src/logic/constants.js`
 5. Follow the PR template in `.github/pull_request_template.md`
 
+## Architecture & Developer Guide
+
+GapSight has a three-layer architecture:
+
+1. **React frontend** (`src/`) — Single-page assessment UI. All scoring logic is delegated to the logic layer.
+2. **gapsight-core** (`gapsight-core/`) — Standalone Node.js module containing the compliance scoring engine. Zero UI dependencies. Can be used independently in any Node.js project. See [`gapsight-core/README.md`](gapsight-core/README.md) for API docs and usage examples.
+3. **GitHub Action** (`.github/actions/compliance-check/`) — Runs gapsight-core as a CI gate, enabling "compliance-as-tests" — automated compliance checks that run on every push or PR, failing the build if risk exceeds a threshold. See [`.github/actions/compliance-check/README.md`](.github/actions/compliance-check/README.md) for setup and configuration.
+
+**Compliance-as-tests** means treating AI compliance assessments as automated test gates in your CI/CD pipeline, so compliance regressions are caught before code reaches production.
+
 ## License
 
 See repository for license details.

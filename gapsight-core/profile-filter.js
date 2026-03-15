@@ -4,6 +4,35 @@
  * @module profile-filter
  */
 
+const {
+  VALID_ROLES,
+  VALID_RISK_CATEGORIES,
+  VALID_DEPLOYMENT_STATUSES,
+} = require('./constants');
+
+/**
+ * Logs a warning if a profile field has an unrecognized value.
+ *
+ * Design decision: unknown enum values are treated as non-matching rather than
+ * throwing an error. This ensures forward compatibility — if a new role or risk
+ * category is added to the knowledge base before constants are updated, the
+ * engine degrades gracefully (fewer matches) instead of crashing. The console
+ * warning alerts integrators to the mismatch so they can update their profile.
+ *
+ * @param {object} profile - User profile to validate
+ */
+function warnOnUnknownProfileValues(profile) {
+  if (profile.role && !VALID_ROLES.includes(profile.role)) {
+    console.warn(`[gapsight-core] Unknown profile.role: "${profile.role}". Known values: ${VALID_ROLES.join(', ')}`);
+  }
+  if (profile.risk_category && !VALID_RISK_CATEGORIES.includes(profile.risk_category)) {
+    console.warn(`[gapsight-core] Unknown profile.risk_category: "${profile.risk_category}". Known values: ${VALID_RISK_CATEGORIES.join(', ')}`);
+  }
+  if (profile.deployment_status && !VALID_DEPLOYMENT_STATUSES.includes(profile.deployment_status)) {
+    console.warn(`[gapsight-core] Unknown profile.deployment_status: "${profile.deployment_status}". Known values: ${VALID_DEPLOYMENT_STATUSES.join(', ')}`);
+  }
+}
+
 /**
  * Checks whether a KB item is required for the given user profile.
  *
@@ -31,6 +60,7 @@ function isRequiredForProfile(item, profile) {
  * @returns {object[]} Filtered metrics array
  */
 function getMetricsForProfile(knowledgeBase, profile) {
+  warnOnUnknownProfileValues(profile);
   return knowledgeBase.metrics.filter(m => isRequiredForProfile(m, profile));
 }
 
@@ -64,4 +94,5 @@ module.exports = {
   getMetricsForProfile,
   getProcessRequirementsForProfile,
   isMetricRequired,
+  warnOnUnknownProfileValues,
 };

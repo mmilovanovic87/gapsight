@@ -32,6 +32,11 @@ const RISK_FAIL_RATE_THRESHOLD = 0.30;
 const RISK_REVIEW_RATE_THRESHOLD = 0.20;
 const RISK_CROSS_CRITICAL_THRESHOLD = 2;
 
+// Valid profile enum values
+const VALID_ROLES = ['provider', 'deployer'];
+const VALID_RISK_CATEGORIES = ['high-risk', 'limited', 'gpai'];
+const VALID_DEPLOYMENT_STATUSES = ['pre-deployment', 'post-deployment', 'pilot'];
+
 // Framework display names
 const FRAMEWORK_NAMES = {
   eu_ai_act: 'EU AI Act',
@@ -57,5 +62,8 @@ module.exports = {
   RISK_FAIL_RATE_THRESHOLD,
   RISK_REVIEW_RATE_THRESHOLD,
   RISK_CROSS_CRITICAL_THRESHOLD,
+  VALID_ROLES,
+  VALID_RISK_CATEGORIES,
+  VALID_DEPLOYMENT_STATUSES,
   FRAMEWORK_NAMES,
 };

@@ -1,21 +1,27 @@
 /**
- * Tests for the GitHub Action's pure logic functions.
+ * Tests for the GitHub Action's shouldFail function.
  *
- * We cannot run the full action (it depends on @actions/core runtime),
- * but we can test the shouldFail threshold logic by extracting it.
+ * Imports the real shouldFail from index.js to ensure the test
+ * exercises the actual implementation, not a copy.
  */
 
-const SEVERITY_ORDER = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
+// Mock @actions/core to prevent side effects when index.js is required
+jest.mock('@actions/core', () => ({
+  getInput: jest.fn(() => ''),
+  setOutput: jest.fn(),
+  setFailed: jest.fn(),
+  info: jest.fn(),
+}));
 
-/**
- * Mirror of the shouldFail function from index.js.
- */
-function shouldFail(riskLevel, failOn) {
-  if (failOn === 'NONE') return false;
-  const riskIndex = SEVERITY_ORDER.indexOf(riskLevel);
-  const thresholdIndex = SEVERITY_ORDER.indexOf(failOn);
-  return riskIndex <= thresholdIndex;
-}
+// Mock fs and the knowledge base require to prevent file-not-found errors
+jest.mock('fs', () => ({
+  existsSync: jest.fn(() => false),
+  readFileSync: jest.fn(),
+  mkdirSync: jest.fn(),
+  writeFileSync: jest.fn(),
+}));
+
+const { shouldFail } = require('../index');
 
 describe('shouldFail', () => {
   test('NONE threshold never fails', () => {
