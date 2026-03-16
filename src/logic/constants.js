@@ -1,68 +1,70 @@
 /**
  * Centralized constants for all scoring, validation, and display logic.
  *
- * Scoring constants are imported from gapsight-core (single source of truth).
+ * Scoring constants are duplicated from gapsight-core/constants.js.
  * UI-only constants (validation, timing, styling) are defined here.
  *
  * @module constants
  */
 
-// ---------------------------------------------------------------------------
-// Scoring constants — re-exported from gapsight-core (single source of truth)
-// ---------------------------------------------------------------------------
+// NOTE: These constants are intentionally duplicated from gapsight-core/constants.js.
+// gapsight-core is a CommonJS Node.js module and cannot be imported in browser ESM code.
+// If you change a value here, you MUST also update gapsight-core/constants.js (and vice versa).
 
-const core = require('gapsight-core/constants');
+// ---------------------------------------------------------------------------
+// Scoring constants — duplicated from gapsight-core/constants.js
+// ---------------------------------------------------------------------------
 
 /** @type {number[]} Weights for human oversight questions q1–q5. */
-export const OVERSIGHT_WEIGHTS = core.OVERSIGHT_WEIGHTS;
+export const OVERSIGHT_WEIGHTS = [1, 3, 2, 2, 1];
 
 /** Minimum weighted score for a PASS on human oversight. */
-export const OVERSIGHT_PASS_THRESHOLD = core.OVERSIGHT_PASS_THRESHOLD;
+export const OVERSIGHT_PASS_THRESHOLD = 0.80;
 
 /** Minimum weighted score for a REVIEW on human oversight. */
-export const OVERSIGHT_REVIEW_THRESHOLD = core.OVERSIGHT_REVIEW_THRESHOLD;
+export const OVERSIGHT_REVIEW_THRESHOLD = 0.60;
 
 /** Test sets below this sample count trigger SMALL_TEST_SET flag. */
-export const SMALL_TEST_SET_THRESHOLD = core.SMALL_TEST_SET_THRESHOLD;
+export const SMALL_TEST_SET_THRESHOLD = 30;
 
 /** Months since last retrain to trigger STALE_MODEL_24M flag. */
-export const STALE_MODEL_24M_MONTHS = core.STALE_MODEL_24M_MONTHS;
+export const STALE_MODEL_24M_MONTHS = 24;
 
 /** Months since last retrain to trigger STALE_MODEL_12M flag. */
-export const STALE_MODEL_12M_MONTHS = core.STALE_MODEL_12M_MONTHS;
+export const STALE_MODEL_12M_MONTHS = 12;
 
 /** Accuracy above this combined with fairness gap triggers Rule 1 warning. */
-export const CROSS_ACCURACY_THRESHOLD = core.CROSS_ACCURACY_THRESHOLD;
+export const CROSS_ACCURACY_THRESHOLD = 0.90;
 
 /** Demographic parity diff above this combined with high accuracy triggers Rule 1. */
-export const CROSS_FAIRNESS_GAP_THRESHOLD = core.CROSS_FAIRNESS_GAP_THRESHOLD;
+export const CROSS_FAIRNESS_GAP_THRESHOLD = 0.15;
 
 /** Adversarial robustness above this without monitoring triggers Rule 2 warning. */
-export const CROSS_ROBUSTNESS_THRESHOLD = core.CROSS_ROBUSTNESS_THRESHOLD;
+export const CROSS_ROBUSTNESS_THRESHOLD = 0.80;
 
 /** Data drift score above this with stale model triggers Rule 3 critical. */
-export const CROSS_DRIFT_THRESHOLD = core.CROSS_DRIFT_THRESHOLD;
+export const CROSS_DRIFT_THRESHOLD = 0.20;
 
 /** Months since retrain above this with high drift triggers Rule 3. */
-export const CROSS_RETRAIN_MONTHS_THRESHOLD = core.CROSS_RETRAIN_MONTHS_THRESHOLD;
+export const CROSS_RETRAIN_MONTHS_THRESHOLD = 12;
 
 /** Equalized odds diff above this without mitigation triggers Rule 4 critical. */
-export const CROSS_FAIRNESS_MITIGATION_THRESHOLD = core.CROSS_FAIRNESS_MITIGATION_THRESHOLD;
+export const CROSS_FAIRNESS_MITIGATION_THRESHOLD = 0.10;
 
 /** Human oversight score below this with no explainability triggers Rule 5. */
-export const CROSS_OVERSIGHT_THRESHOLD = core.CROSS_OVERSIGHT_THRESHOLD;
+export const CROSS_OVERSIGHT_THRESHOLD = 0.80;
 
 /** Training FLOPS above this triggers GPAI systemic risk notification (Rule 6). */
-export const GPAI_SYSTEMIC_RISK_FLOPS = core.GPAI_SYSTEMIC_RISK_FLOPS;
+export const GPAI_SYSTEMIC_RISK_FLOPS = 1e25;
 
 /** Fail rate at or above this percentage results in HIGH risk level. */
-export const RISK_FAIL_RATE_THRESHOLD = core.RISK_FAIL_RATE_THRESHOLD;
+export const RISK_FAIL_RATE_THRESHOLD = 0.30;
 
 /** Review rate at or above this percentage results in MEDIUM risk level. */
-export const RISK_REVIEW_RATE_THRESHOLD = core.RISK_REVIEW_RATE_THRESHOLD;
+export const RISK_REVIEW_RATE_THRESHOLD = 0.20;
 
 /** Number of cross-metric CRITICAL warnings that results in HIGH risk level. */
-export const RISK_CROSS_CRITICAL_THRESHOLD = core.RISK_CROSS_CRITICAL_THRESHOLD;
+export const RISK_CROSS_CRITICAL_THRESHOLD = 2;
 
 // ---------------------------------------------------------------------------
 // Validation
@@ -112,9 +114,13 @@ export const PDF_PAGE_BREAK_Y = 277;
 
 /**
  * Human-readable names for compliance frameworks.
- * Re-exported from gapsight-core (single source of truth).
+ * Duplicated from gapsight-core/constants.js.
  */
-export const FRAMEWORK_NAMES = core.FRAMEWORK_NAMES;
+export const FRAMEWORK_NAMES = {
+  eu_ai_act: 'EU AI Act',
+  nist_ai_rmf: 'NIST RMF',
+  iso_42001: 'ISO 42001',
+};
 
 /**
  * Tailwind CSS classes for risk level display.

@@ -27,8 +27,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm install --legacy-peer-deps
-      - run: npm test -- --watchAll=false
+      - run: npm install
+      - run: npx vitest run
       - run: npm run build
 
   compliance-check:
