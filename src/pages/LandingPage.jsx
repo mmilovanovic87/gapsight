@@ -111,6 +111,47 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Compliance as Code */}
+      <section className="bg-slate-50 border-t border-slate-200">
+        <div className="max-w-3xl mx-auto px-6 py-20">
+          <h2 className="text-2xl font-bold text-center text-slate-900 mb-3">
+            Compliance as Code
+          </h2>
+          <p className="text-center text-slate-600 mb-10">
+            Add compliance checks to your CI/CD pipeline in minutes.
+          </p>
+
+          <div className="rounded-lg bg-slate-900 p-5 overflow-x-auto">
+            <pre className="text-sm text-slate-200 leading-relaxed font-mono whitespace-pre">
+{`# .github/workflows/compliance.yml
+- uses: mmilovanovic87/gapsight/.github/actions/compliance-check@main
+  with:
+    assessment-path: '.gapsight/assessment.json'
+    fail-on: 'HIGH'`}
+            </pre>
+          </div>
+
+          <ul className="mt-8 space-y-3">
+            {[
+              'Runs on every push alongside your unit tests',
+              'Fails the build if risk level exceeds your threshold',
+              'Outputs a structured JSON report as a CI artifact',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-slate-700">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5">
+                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 text-center text-xs text-slate-400">
+            Supports EU AI Act, NIST AI RMF, and ISO/IEC 42001. Free and open source.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
