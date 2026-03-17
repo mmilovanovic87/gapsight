@@ -1,0 +1,43 @@
+{
+  "profile": {
+    "role": "provider",
+    "gpai_flag": false,
+    "risk_category": "high-risk",
+    "deployment_status": "post-deployment",
+    "frameworks_selected": ["eu_ai_act", "nist_ai_rmf", "iso_42001"]
+  },
+  "inputs": {
+    "overall_accuracy": 0.81,
+    "f1_score": 0.72,
+    "auc_roc": 0.78,
+    "test_set_size": 18,
+    "demographic_parity_diff": 0.12,
+    "equalized_odds_diff": 0.09,
+    "disparate_impact_ratio": 0.76,
+    "bias_mitigation_applied": false,
+    "bias_mitigation_method": "",
+    "data_drift_score": 0.25,
+    "concept_drift_score": 0.18,
+    "adversarial_robustness_score": 0.65,
+    "explanation_coverage": 0.44,
+    "explainability_method": "SHAP",
+    "explanations_available_to_users": false,
+    "model_card_exists": false,
+    "instructions_for_use_documented": false,
+    "human_oversight": {
+      "q1": "yes",
+      "q2": "no",
+      "q3": "yes",
+      "q4": "no",
+      "q5": "no"
+    },
+    "governance": {
+      "risk_management_system": { "status": "no" },
+      "ai_policy": { "status": "partial" },
+      "technical_documentation": { "status": "no" },
+      "data_governance_policy": { "status": "no" },
+      "automated_logging": { "status": "partial" },
+      "quality_management_system": { "status": "no" }
+    }
+  }
+}
