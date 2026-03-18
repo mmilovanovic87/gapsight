@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Framework-agnostic compliance scoring engine for GapSight",
   "main": "index.js",
+  "bin": {
+    "gapsight-check": "./bin/check.js"
+  },
   "scripts": {
     "test": "jest --coverage"
   },

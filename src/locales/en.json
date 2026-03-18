@@ -408,7 +408,13 @@
     "export_pdf": "Download PDF",
     "export_pdf_generating": "Generating PDF...",
     "back_to_form": "Back to Assessment",
-    "share_button": "Share"
+    "share_button": "Share",
+    "export_ci": "Export for CI",
+    "export_ci_message": "Save this as .gapsight/assessment.json in your repository to use with the GitHub Action.",
+    "ci_cta_title": "Automate this in your CI pipeline",
+    "ci_cta_description": "The GapSight GitHub Action runs this same compliance check automatically on every push or pull request, failing the build if risk exceeds your threshold.",
+    "ci_cta_export_note": "Use the \"Export for CI\" button above to generate your assessment.json.",
+    "ci_cta_docs_link": "Full documentation"
   },
   "share": {
     "title": "Share Assessment",

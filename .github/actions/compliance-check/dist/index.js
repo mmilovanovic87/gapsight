@@ -33,9 +33,15 @@ const SEVERITY_ORDER = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 /**
  * Returns true if the detected risk level meets or exceeds the fail threshold.
  *
- * @param {string} riskLevel - Detected risk level
- * @param {string} failOn - Configured fail threshold
- * @returns {boolean}
+ * Semantics: "fail-on: HIGH" means the check fails if the detected risk level
+ * is HIGH or above (i.e., HIGH or CRITICAL). The comparison uses SEVERITY_ORDER
+ * where index 0 is the most severe. A risk level "meets or exceeds" the threshold
+ * when its index in SEVERITY_ORDER is less than or equal to the threshold's index.
+ * If failOn is 'NONE', the check never fails (report-only mode).
+ *
+ * @param {string} riskLevel - Detected risk level (CRITICAL, HIGH, MEDIUM, or LOW)
+ * @param {string} failOn - Configured fail threshold (CRITICAL, HIGH, MEDIUM, or NONE)
+ * @returns {boolean} true if the action should fail
  */
 function shouldFail(riskLevel, failOn) {
   if (failOn === 'NONE') return false;
@@ -183,8 +189,48 @@ async function run() {
     // Run compliance check
     const report = runComplianceCheck({ knowledgeBase, profile, inputs });
 
+    // Verbose output: metrics found and missing
+    const allInputKeys = Object.keys(inputs).filter((k) => k !== 'human_oversight' && k !== 'governance');
+    const metricsFound = report.metricResults.filter((r) => r.value !== null && r.value !== undefined);
+    const metricsMissing = report.metricResults.filter((r) => r.value === null || r.value === undefined);
+
+    core.info('');
+    core.info('── Metrics Found in Assessment ──');
+    if (metricsFound.length > 0) {
+      for (const r of metricsFound) {
+        core.info(`  - ${r.label} (${r.id}): ${r.value}`);
+      }
+    } else {
+      core.info('  (none)');
+    }
+    core.info('');
+
+    core.info('── Metrics Missing (defaults applied) ──');
+    if (metricsMissing.length > 0) {
+      for (const r of metricsMissing) {
+        core.info(`  - ${r.label} (${r.id}): not provided, scored as ${r.status}`);
+      }
+    } else {
+      core.info('  (none — all metrics provided)');
+    }
+    core.info('');
+
+    core.info('── Risk Assessment ──');
+    core.info(`  Computed risk level: ${report.riskLevel.level}`);
+    core.info(`  Fail-on threshold:   ${failOn}`);
+    core.info(`  (fail-on: ${failOn} means the check fails if risk level is ${failOn} or above.)`);
+    core.info('');
+
     // Print human-readable output
     printReport(report);
+
+    // Final verdict
+    if (shouldFail(report.riskLevel.level, failOn)) {
+      core.info(`\u274C Compliance check failed: risk level ${report.riskLevel.level} meets or exceeds fail-on threshold ${failOn}`);
+    } else {
+      core.info('\u2705 Compliance check passed');
+    }
+    core.info('');
 
     // Write JSON artifact
     const outputDir = path.resolve('.gapsight');
@@ -31443,6 +31489,10 @@ module.exports = {
  *
  * All thresholds, weights, and limits used in compliance checks.
  * No magic numbers should exist outside this file.
+ *
+ * NOTE: Scoring constants are duplicated in src/logic/constants.js (browser ESM).
+ * This file is CommonJS (Node.js) and cannot be imported in browser code.
+ * If you change a value here, you MUST also update src/logic/constants.js (and vice versa).
  *
  * @module constants
  */

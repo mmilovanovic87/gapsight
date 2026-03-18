@@ -86,6 +86,8 @@ export default function ResultsPage({ onShowRiskModal }) {
   const navigate = useNavigate();
   const [showShareModal, setShowShareModal] = useState(false);
   const [pdfGenerating, setPdfGenerating] = useState(false);
+  const [ciExportMessage, setCiExportMessage] = useState(false);
+  const [ciCtaOpen, setCiCtaOpen] = useState(false);
 
   const results = useMemo(() => computeResults(inputs, profile), [inputs, profile]);
 
@@ -330,12 +332,79 @@ export default function ResultsPage({ onShowRiskModal }) {
             {pdfGenerating ? t.export_pdf_generating : t.export_pdf}
           </button>
           <button
+            onClick={() => {
+              const ciAssessment = {
+                profile: {
+                  role: profile.role,
+                  gpai_flag: profile.gpai_flag,
+                  risk_category: profile.risk_category,
+                  deployment_status: profile.deployment_status,
+                  frameworks_selected: profile.frameworks_selected,
+                },
+                inputs: { ...inputs },
+              };
+              const json = JSON.stringify(ciAssessment, null, 2);
+              const blob = new Blob([json], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'assessment.json';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              setCiExportMessage(true);
+            }}
+            className="px-4 py-2 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+          >
+            {t.export_ci}
+          </button>
+          <button
             onClick={() => setShowShareModal(true)}
             className="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
           >
             {t.share_button}
           </button>
         </div>
+        {ciExportMessage && (
+          <p className="mt-3 text-sm text-green-700" data-testid="ci-export-message">
+            {t.export_ci_message}
+          </p>
+        )}
+      </div>
+
+      {/* CI CTA */}
+      <div className="border border-gray-200 bg-gray-50 rounded-lg p-5 mt-6" data-testid="ci-cta-block">
+        <button
+          type="button"
+          onClick={() => setCiCtaOpen((v) => !v)}
+          className="w-full flex items-center justify-between text-left"
+        >
+          <h2 className="text-lg font-semibold">{t.ci_cta_title}</h2>
+          <span className="text-gray-400 text-xl">{ciCtaOpen ? '\u25B2' : '\u25BC'}</span>
+        </button>
+        {ciCtaOpen && (
+          <div className="mt-4 space-y-3 text-sm text-gray-700">
+            <p>{t.ci_cta_description}</p>
+            <pre className="bg-gray-900 text-green-300 p-4 rounded text-xs overflow-x-auto">
+{`- uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
+  with:
+    assessment-path: '.gapsight/assessment.json'
+    fail-on: 'HIGH'`}
+            </pre>
+            <p>{t.ci_cta_export_note}</p>
+            <p>
+              <a
+                href="https://github.com/mmilovanovic87/gapsight/tree/main/.github/actions/compliance-check"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                {t.ci_cta_docs_link}
+              </a>
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Feedback */}

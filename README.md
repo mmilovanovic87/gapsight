@@ -110,6 +110,22 @@ GapSight has a three-layer architecture:
 
 **Compliance-as-tests** means treating AI compliance assessments as automated test gates in your CI/CD pipeline, so compliance regressions are caught before code reaches production.
 
+### Recommended workflow
+
+1. Fill in your assessment in the GapSight UI.
+2. Click **"Export for CI"** on the Results page to download `assessment.json`.
+3. Commit the file as `.gapsight/assessment.json` in your repository.
+4. Add the GitHub Action to your CI pipeline:
+
+```yaml
+- uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
+  with:
+    assessment-path: '.gapsight/assessment.json'
+    fail-on: 'HIGH'
+```
+
+You can also dry-run locally using the `gapsight-check` CLI — see [`gapsight-core/README.md`](gapsight-core/README.md).
+
 ## License
 
 See repository for license details.

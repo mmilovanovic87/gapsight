@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- "Export for CI" button on Results page — downloads `assessment.json` for use with the GitHub Action
+- CI integration CTA section on Results page with workflow YAML example and documentation link
+- Verbose output in GitHub Action: lists metrics found/missing, risk level, fail-on semantics, clear pass/fail verdict
+- `gapsight-check` CLI in `gapsight-core/bin/check.js` for local dry-run compliance checks
+- `.gapsight/assessment.example.json` canonical reference covering all fields the scoring engine recognizes
+- CLI argument parser unit tests
+- E2E test for Export for CI button and CI CTA block
 - `gapsight-core` standalone Node.js compliance scoring module
 - GitHub Action for CI/CD compliance checks (compliance-as-tests)
 - KB schema validation in `runComplianceCheck` with descriptive error messages
@@ -15,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `CHANGELOG.md`
 
 ### Changed
+- All documentation now uses `@v1` tag instead of `@main` for version pinning in action references
 - `src/logic/constants.js` now imports scoring constants from `gapsight-core` (single source of truth)
 - Framework list in `risk-level.js` derived from `FRAMEWORK_NAMES` instead of hardcoded array
 - Action unit test imports real `shouldFail` function instead of re-implementing it

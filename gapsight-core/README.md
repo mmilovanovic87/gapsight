@@ -113,10 +113,45 @@ Validated conditions:
 - `assessment.profile` must be a non-null object
 - `assessment.inputs` must be a non-null object
 
+## CLI: `gapsight-check`
+
+A command-line interface for running compliance checks locally — useful for dry-runs without GitHub Actions.
+
+### Usage
+
+```bash
+# If installed globally or via npx
+gapsight-check ./path/to/assessment.json [--fail-on HIGH]
+
+# Or run directly
+node gapsight-core/bin/check.js .gapsight/assessment.json --fail-on HIGH
+```
+
+### Arguments
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `<file>` | Yes | — | Path to assessment JSON file |
+| `--fail-on` | No | `NONE` | Risk level that causes exit code 1. One of: `CRITICAL`, `HIGH`, `MEDIUM`, `NONE`. |
+
+### Output
+
+The CLI prints verbose output including:
+- Metrics found in the assessment file
+- Metrics missing and what defaults were applied
+- Computed risk level and fail-on threshold
+- Full compliance report (metrics, governance, oversight, cross-metric warnings)
+- Final verdict: `✅ Compliance check passed` or `❌ Compliance check failed`
+
+### Exit codes
+
+- `0` — Check passed (or `--fail-on NONE`)
+- `1` — Check failed, invalid arguments, or file not found
+
 ## Also exports
 
 - `constants` — all scoring thresholds, weights, and framework names used by the engine
 
 ## Repository
 
-This module is part of the [GapSight](https://github.com/your-org/gapsight) project.
+This module is part of the [GapSight](https://github.com/mmilovanovic87/gapsight) project.

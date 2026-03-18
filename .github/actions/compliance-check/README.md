@@ -36,7 +36,7 @@ jobs:
 
       - name: Run GapSight Compliance Check
         id: compliance
-        uses: ./.github/actions/compliance-check
+        uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
         with:
           assessment-path: '.gapsight/assessment.json'
           fail-on: 'HIGH'
@@ -60,6 +60,22 @@ jobs:
               body: `Compliance check failed with risk level: ${{ steps.compliance.outputs.risk-level }}`
             });
 ```
+
+## Version Pinning
+
+> **Version pinning:** Always pin to a tag (`@v1`) rather than `@main` in production pipelines. The `@main` reference may include unreleased breaking changes.
+
+## Verbose Output
+
+The action prints detailed information to the GitHub Actions log:
+
+1. **Metrics Found** — Lists all metrics present in the assessment file with their values.
+2. **Metrics Missing** — Lists metrics not provided and what default status was applied.
+3. **Risk Assessment** — Shows the computed risk level and the fail-on threshold.
+4. **Full Report** — Metric results, governance/process results, human oversight, cross-metric warnings, and framework summary.
+5. **Final Verdict** — A clear pass/fail line:
+   - `✅ Compliance check passed`
+   - `❌ Compliance check failed: risk level {X} meets or exceeds fail-on threshold {Y}`
 
 ## Failure Modes
 
