@@ -414,7 +414,13 @@
     "ci_cta_title": "Automate this in your CI pipeline",
     "ci_cta_description": "The GapSight GitHub Action runs this same compliance check automatically on every push or pull request, failing the build if risk exceeds your threshold.",
     "ci_cta_export_note": "Use the \"Export for CI\" button above to generate your assessment.json.",
-    "ci_cta_docs_link": "Full documentation"
+    "ci_cta_docs_link": "Full documentation",
+    "metric_legend_pass": "PASS: Metric was assessed and meets the threshold.",
+    "metric_legend_fail": "FAIL: Metric was assessed and does not meet the threshold.",
+    "metric_legend_not_provided": "Not provided: Metric was not entered. In CI, unentered metrics are treated as failing.",
+    "ci_export_warning": "{count} metric(s) were not assessed. In CI, gapsight-core will treat them as failing. You can still export, or go back and complete the assessment.",
+    "ci_export_anyway": "Export anyway",
+    "ci_export_cancel": "Cancel"
   },
   "share": {
     "title": "Share Assessment",

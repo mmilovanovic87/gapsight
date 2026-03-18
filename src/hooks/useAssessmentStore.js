@@ -29,6 +29,18 @@ const DEFAULT_PROFILE = {
   deployment_status: null,
 };
 
+/**
+ * Default inputs is an empty object. Metric values follow this convention:
+ * - **undefined** (key absent): metric was never touched by the user.
+ * - **null**: user interacted with the field but cleared it (e.g. emptied a number input).
+ * - **0** (or any number): user explicitly entered this value — 0 is a valid metric
+ *   (e.g. 0% demographic parity difference means perfect fairness).
+ *
+ * Both undefined and null mean "unentered / not provided" and are treated
+ * identically by the scoring engine (scored as FAIL for required metrics).
+ * The Results page uses this distinction to show "Not provided" instead of
+ * a red FAIL indicator.
+ */
 const DEFAULT_INPUTS = {};
 
 /**

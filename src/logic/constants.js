@@ -143,6 +143,7 @@ export const STATUS_BADGE_STYLES = {
   FAIL: 'bg-red-100 text-red-800',
   CRITICAL_FAIL: 'bg-red-200 text-red-900 font-bold',
   NOT_APPLICABLE: 'bg-gray-100 text-gray-500',
+  NOT_PROVIDED: 'bg-gray-100 text-gray-500',
   PROCESS_REQUIRED: 'bg-yellow-100 text-yellow-800',
 };
 
@@ -155,6 +156,7 @@ export const STATUS_BADGE_LABELS = {
   FAIL: 'FAIL',
   CRITICAL_FAIL: 'CRITICAL',
   NOT_APPLICABLE: 'N/A',
+  NOT_PROVIDED: 'Not provided',
   PROCESS_REQUIRED: 'REVIEW',
 };
 

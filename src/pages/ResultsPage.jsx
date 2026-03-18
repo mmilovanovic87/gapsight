@@ -87,6 +87,7 @@ export default function ResultsPage({ onShowRiskModal }) {
   const [showShareModal, setShowShareModal] = useState(false);
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [ciExportMessage, setCiExportMessage] = useState(false);
+  const [ciExportWarning, setCiExportWarning] = useState(false);
   const [ciCtaOpen, setCiCtaOpen] = useState(false);
 
   const results = useMemo(() => computeResults(inputs, profile), [inputs, profile]);
@@ -97,6 +98,51 @@ export default function ResultsPage({ onShowRiskModal }) {
       return raw ? JSON.parse(raw) : null;
     } catch { return null; }
   }, []);
+
+  const unenteredMetricCount = useMemo(
+    () => results.metricResults.filter((r) => r.value === null || r.value === undefined).length,
+    [results]
+  );
+
+  function triggerCiDownload() {
+    // Build a clean inputs object, omitting unentered (null/undefined) values
+    const cleanInputs = {};
+    for (const [key, val] of Object.entries(inputs)) {
+      if (val === null || val === undefined) continue;
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        // Nested objects (governance, human_oversight) — keep as-is but filter nulls
+        const nested = {};
+        for (const [nk, nv] of Object.entries(val)) {
+          if (nv !== null && nv !== undefined) nested[nk] = nv;
+        }
+        if (Object.keys(nested).length > 0) cleanInputs[key] = nested;
+      } else {
+        cleanInputs[key] = val;
+      }
+    }
+    const ciAssessment = {
+      profile: {
+        role: profile.role,
+        gpai_flag: profile.gpai_flag,
+        risk_category: profile.risk_category,
+        deployment_status: profile.deployment_status,
+        frameworks_selected: profile.frameworks_selected,
+      },
+      inputs: cleanInputs,
+    };
+    const json = JSON.stringify(ciAssessment, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'assessment.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setCiExportMessage(true);
+    setCiExportWarning(false);
+  }
 
   const kbVersion = kbChangelog.current_version;
   const kbDate = kbChangelog.versions[0].date;
@@ -219,15 +265,25 @@ export default function ResultsPage({ onShowRiskModal }) {
               </tr>
             </thead>
             <tbody>
-              {results.metricResults.map((r) => (
-                <tr key={r.id} className="border-t border-gray-100">
-                  <td className="py-2 px-3">{r.label}</td>
-                  <td className="py-2 px-3 font-mono text-xs">{r.value !== null && r.value !== undefined ? String(r.value) : '-'}</td>
-                  <td className="py-2 px-3"><StatusBadge status={r.status} /></td>
-                </tr>
-              ))}
+              {results.metricResults.map((r) => {
+                const isProvided = r.value !== null && r.value !== undefined;
+                return (
+                  <tr key={r.id} className="border-t border-gray-100" data-metric-status={isProvided ? 'entered' : 'not-provided'}>
+                    <td className="py-2 px-3">{r.label}</td>
+                    <td className="py-2 px-3 font-mono text-xs">{isProvided ? String(r.value) : '-'}</td>
+                    <td className="py-2 px-3">
+                      <StatusBadge status={isProvided ? r.status : 'NOT_PROVIDED'} />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+        </div>
+        <div className="mt-2 text-xs text-gray-500 space-y-0.5" data-testid="metric-legend">
+          <p>{t.metric_legend_pass}</p>
+          <p>{t.metric_legend_fail}</p>
+          <p>{t.metric_legend_not_provided}</p>
         </div>
       </div>
 
@@ -333,27 +389,12 @@ export default function ResultsPage({ onShowRiskModal }) {
           </button>
           <button
             onClick={() => {
-              const ciAssessment = {
-                profile: {
-                  role: profile.role,
-                  gpai_flag: profile.gpai_flag,
-                  risk_category: profile.risk_category,
-                  deployment_status: profile.deployment_status,
-                  frameworks_selected: profile.frameworks_selected,
-                },
-                inputs: { ...inputs },
-              };
-              const json = JSON.stringify(ciAssessment, null, 2);
-              const blob = new Blob([json], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'assessment.json';
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              URL.revokeObjectURL(url);
-              setCiExportMessage(true);
+              if (unenteredMetricCount > 0) {
+                setCiExportWarning(true);
+                setCiExportMessage(false);
+              } else {
+                triggerCiDownload();
+              }
             }}
             className="px-4 py-2 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
           >
@@ -366,6 +407,29 @@ export default function ResultsPage({ onShowRiskModal }) {
             {t.share_button}
           </button>
         </div>
+        {ciExportWarning && (
+          <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm" data-testid="ci-export-warning">
+            <p className="text-yellow-800">
+              {t.ci_export_warning.replace('{count}', unenteredMetricCount)}
+            </p>
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => triggerCiDownload()}
+                className="px-3 py-1 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                data-testid="ci-export-anyway"
+              >
+                {t.ci_export_anyway}
+              </button>
+              <button
+                onClick={() => setCiExportWarning(false)}
+                className="px-3 py-1 text-sm rounded text-gray-500 hover:text-gray-700"
+                data-testid="ci-export-cancel"
+              >
+                {t.ci_export_cancel}
+              </button>
+            </div>
+          </div>
+        )}
         {ciExportMessage && (
           <p className="mt-3 text-sm text-green-700" data-testid="ci-export-message">
             {t.export_ci_message}
