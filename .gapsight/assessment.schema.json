@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GapSight Assessment File Schema",
+  "description": "Schema for GapSight assessment JSON files used by the compliance scoring engine and GitHub Action.",
+  "type": "object",
+  "properties": {
+    "_comment": {
+      "description": "Optional human-readable comment or documentation array.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "_meta": {
+      "description": "Optional metadata block added by GapSight exports.",
+      "type": "object",
+      "properties": {
+        "generated_at": { "type": "string", "format": "date-time" },
+        "gapsight_version": { "type": "string" },
+        "kb_version": { "type": "string" },
+        "eu_ai_act_reference": { "type": "string" }
+      }
+    },
+    "profile": {
+      "description": "AI system profile describing deployment context and applicable frameworks.",
+      "type": "object",
+      "required": ["role", "risk_category", "deployment_status"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["provider", "deployer"],
+          "description": "'provider' builds and places AI system on market; 'deployer' uses third-party AI."
+        },
+        "gpai_flag": {
+          "type": "boolean",
+          "description": "Whether this is a General-Purpose AI / foundation model."
+        },
+        "risk_category": {
+          "type": "string",
+          "enum": ["high-risk", "limited", "gpai"],
+          "description": "EU AI Act risk classification category."
+        },
+        "deployment_status": {
+          "type": "string",
+          "enum": ["pre-deployment", "post-deployment", "pilot"],
+          "description": "Current deployment stage of the AI system."
+        },
+        "frameworks_selected": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["eu_ai_act", "nist_ai_rmf", "iso_42001"]
+          },
+          "description": "Regulatory frameworks to evaluate against."
+        }
+      }
+    },
+    "inputs": {
+      "description": "All metric values, governance answers, and human oversight responses.",
+      "type": "object",
+      "properties": {
+        "overall_accuracy": {
+          "description": "Proportion of correct predictions (0–1). Maps to KB metric 'accuracy'.",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "f1_score": {
+          "description": "Weighted F1 score (0–1).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "auc_roc": {
+          "description": "Area under ROC curve (0–1).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "test_set_size": {
+          "description": "Number of test samples (positive integer).",
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "null" }
+          ]
+        },
+        "test_set_representative": {
+          "type": ["string", "null"],
+          "enum": ["yes", "partial", "no", null]
+        },
+        "demographic_parity_diff": {
+          "description": "Demographic parity difference (-1 to 1, lower is better).",
+          "oneOf": [
+            { "type": "number", "minimum": -1, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "equalized_odds_diff": {
+          "description": "Equalized odds difference (-1 to 1, lower is better).",
+          "oneOf": [
+            { "type": "number", "minimum": -1, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "disparate_impact_ratio": {
+          "description": "Disparate impact ratio (0+, higher is better, target >= 0.80).",
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "bias_mitigation_applied": { "type": ["boolean", "null"] },
+        "bias_mitigation_method": { "type": ["string", "null"] },
+        "data_drift_score": {
+          "description": "Data drift score (0–1, lower is better).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "concept_drift_score": {
+          "description": "Concept drift score (0–1, lower is better).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "adversarial_robustness_score": {
+          "description": "Adversarial robustness score (0–1, higher is better).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "drift_monitoring_active": { "type": ["boolean", "null"] },
+        "last_retrain_date": { "type": ["string", "null"], "format": "date" },
+        "failsafe_mechanism_documented": { "type": ["boolean", "null"] },
+        "explanation_coverage": {
+          "description": "Explanation coverage (0–1, higher is better).",
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" },
+            { "const": "not_applicable" }
+          ]
+        },
+        "explainability_method": {
+          "type": ["string", "null"],
+          "enum": ["SHAP", "LIME", "Integrated Gradients", "Feature Importance", "None", null]
+        },
+        "explanations_available_to_users": { "type": ["boolean", "null"] },
+        "model_card_exists": { "type": ["boolean", "null"] },
+        "instructions_for_use_documented": { "type": ["boolean", "null"] },
+        "training_flops": { "type": ["number", "null"], "description": "Total training FLOPs (e.g. 1e24)." },
+        "training_data_summary_published": { "type": ["boolean", "null"] },
+        "copyright_policy_status": { "type": ["string", "null"] },
+        "model_evaluations_conducted": { "type": ["boolean", "null"] },
+        "adversarial_testing_conducted": { "type": ["boolean", "null"] },
+        "systemic_risk_notification_sent": { "type": ["string", "null"], "enum": ["yes", "no", null] },
+        "human_oversight": {
+          "type": "object",
+          "description": "Human oversight questionnaire (q1–q5).",
+          "properties": {
+            "q1": { "type": "string", "enum": ["yes", "partially", "no"] },
+            "q2": { "type": "string", "enum": ["yes", "partially", "no"] },
+            "q3": { "type": "string", "enum": ["yes", "partially", "no"] },
+            "q4": { "type": "string", "enum": ["yes", "partially", "no"] },
+            "q5": { "type": "string", "enum": ["yes", "partially", "no"] }
+          }
+        },
+        "governance": {
+          "type": "object",
+          "description": "Governance process requirements.",
+          "properties": {
+            "risk_management_system": { "$ref": "#/definitions/governance_item" },
+            "ai_policy": { "$ref": "#/definitions/governance_item" },
+            "technical_documentation": { "$ref": "#/definitions/governance_item" },
+            "data_governance_policy": { "$ref": "#/definitions/governance_item" },
+            "automated_logging": { "$ref": "#/definitions/governance_item" },
+            "quality_management_system": { "$ref": "#/definitions/governance_item" },
+            "third_party_vendor_assessment": { "$ref": "#/definitions/governance_item" }
+          }
+        }
+      }
+    }
+  },
+  "required": ["profile", "inputs"],
+  "definitions": {
+    "governance_item": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["yes", "in_progress", "partial", "no", "not_applicable"]
+        },
+        "evidence": { "type": ["string", "null"] },
+        "completion_date": { "type": ["string", "null"] }
+      },
+      "required": ["status"]
+    }
+  }
+}

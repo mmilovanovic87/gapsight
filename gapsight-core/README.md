@@ -113,7 +113,21 @@ Validated conditions:
 - `assessment.profile` must be a non-null object
 - `assessment.inputs` must be a non-null object
 
+## JSON Schema
+
+A JSON Schema is available at `.gapsight/assessment.schema.json`. VS Code and other editors will use this for autocompletion and inline validation if you add `"$schema"` to your assessment file:
+
+```json
+{
+  "$schema": "./.gapsight/assessment.schema.json",
+  "profile": { ... },
+  "inputs": { ... }
+}
+```
+
 ## CLI: `gapsight-check`
+
+> **Note:** `gapsight-core` is not published to npm. The CLI is available only within the GapSight repository itself. To use it: clone the repository, run `npm install` in `gapsight-core/`, then run `node bin/check.js ./path/to/assessment.json`.
 
 A command-line interface for running compliance checks locally — useful for dry-runs without GitHub Actions.
 

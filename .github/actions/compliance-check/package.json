@@ -8,6 +8,7 @@
     "build": "ncc build index.js -o dist"
   },
   "dependencies": {
+    "@actions/artifact": "^2.2.2",
     "@actions/core": "^2.0.3"
   },
   "devDependencies": {

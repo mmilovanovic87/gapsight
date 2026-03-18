@@ -1,4 +1,5 @@
 {
+  "$schema": "./assessment.schema.json",
   "_comment": [
     "GapSight Assessment File — Canonical Reference",
     "",

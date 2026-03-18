@@ -124,7 +124,13 @@ GapSight has a three-layer architecture:
     fail-on: 'HIGH'
 ```
 
-You can also dry-run locally using the `gapsight-check` CLI — see [`gapsight-core/README.md`](gapsight-core/README.md).
+Before pushing to CI, you can run a local dry-run: `cd gapsight-core && node bin/check.js ../.gapsight/assessment.json`
+
+See [`gapsight-core/README.md`](gapsight-core/README.md) for full CLI documentation.
+
+### Metric-to-regulation mapping
+
+For a detailed explanation of why each metric maps to specific regulatory articles, see [`docs/metric-mapping-rationale.md`](docs/metric-mapping-rationale.md).
 
 ## License
 

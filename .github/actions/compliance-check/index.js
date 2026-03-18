@@ -11,6 +11,7 @@
 const core = require('@actions/core');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { runComplianceCheck } = require('../../../gapsight-core');
 
 /** @type {Record<string, string>} Maps fail-on input to ordered severity levels */
@@ -234,6 +235,34 @@ async function run() {
     const reportPath = path.join(outputDir, 'compliance-report.json');
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
     core.info(`📄 JSON report written to: ${reportPath}`);
+
+    // Write and upload structured artifact report
+    const metricsNotApplicable = report.metricResults
+      .filter((r) => r.value === 'not_applicable')
+      .map((r) => r.label || r.id);
+    const artifactReport = {
+      timestamp: new Date().toISOString(),
+      risk_level: report.riskLevel.level,
+      passed: report.passed,
+      fail_on: failOn,
+      metrics_found: metricsFound.map((r) => r.label || r.id),
+      metrics_missing: metricsMissing.map((r) => r.label || r.id),
+      metrics_not_applicable: metricsNotApplicable,
+      compliance_result: report,
+    };
+    const tempDir = process.env.RUNNER_TEMP || os.tmpdir();
+    const artifactPath = path.join(tempDir, 'gapsight-compliance-report.json');
+    fs.writeFileSync(artifactPath, JSON.stringify(artifactReport, null, 2));
+
+    try {
+      const { DefaultArtifactClient } = require('@actions/artifact');
+      const artifact = new DefaultArtifactClient();
+      await artifact.uploadArtifact('gapsight-compliance-report', [artifactPath], tempDir);
+      core.info('📦 Compliance report uploaded as artifact: gapsight-compliance-report');
+    } catch (artifactErr) {
+      // Artifact upload is best-effort — don't fail the action if it fails
+      core.warning(`Artifact upload failed (non-fatal): ${artifactErr.message}`);
+    }
 
     // Set outputs
     core.setOutput('passed', String(report.passed));

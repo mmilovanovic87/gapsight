@@ -77,6 +77,10 @@ The action prints detailed information to the GitHub Actions log:
    - `✅ Compliance check passed`
    - `❌ Compliance check failed: risk level {X} meets or exceeds fail-on threshold {Y}`
 
+## Artifact Upload
+
+After each run, a `gapsight-compliance-report` artifact is uploaded and retained for 90 days by default (GitHub's retention policy). Download it from the Actions run summary for audit purposes. The artifact contains the full compliance result, metrics found/missing, risk level, and fail-on threshold.
+
 ## Failure Modes
 
 | Condition | Behavior |
