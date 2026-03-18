@@ -99,10 +99,11 @@ export default function ResultsPage({ onShowRiskModal }) {
     } catch { return null; }
   }, []);
 
-  const unenteredMetricCount = useMemo(
-    () => results.metricResults.filter((r) => r.value === null || r.value === undefined).length,
+  const unenteredMetrics = useMemo(
+    () => results.metricResults.filter((r) => r.value === null || r.value === undefined),
     [results]
   );
+  const unenteredMetricCount = unenteredMetrics.length;
 
   function triggerCiDownload() {
     // Build a clean inputs object, omitting unentered (null/undefined) values
@@ -410,7 +411,11 @@ export default function ResultsPage({ onShowRiskModal }) {
         {ciExportWarning && (
           <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm" data-testid="ci-export-warning">
             <p className="text-yellow-800">
-              {t.ci_export_warning.replace('{count}', unenteredMetricCount)}
+              {(unenteredMetricCount === 1
+                ? t.ci_export_warning_singular
+                : t.ci_export_warning_plural.replace('{count}', unenteredMetricCount)
+              ).replace('{names}', unenteredMetrics.map((r) => r.label).join(', '))}
+              {t.ci_export_warning_suffix}
             </p>
             <div className="flex gap-3 mt-2">
               <button

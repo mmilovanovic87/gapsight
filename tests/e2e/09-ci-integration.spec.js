@@ -134,8 +134,9 @@ test.describe('CI integration', () => {
     const warning = page.getByTestId('ci-export-warning');
     await expect(warning).toBeVisible();
 
-    // Warning message should contain the count (3: accuracy + auc_roc + concept_drift_score)
-    await expect(warning).toContainText('3 metric(s) were not assessed');
+    // Warning message should contain the count and specific metric names
+    await expect(warning).toContainText('3 metrics were not assessed');
+    await expect(warning).toContainText('AUC-ROC');
     await expect(warning).toContainText('gapsight-core will treat them as failing');
 
     // Click "Export anyway" — should trigger download

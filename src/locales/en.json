@@ -418,7 +418,9 @@
     "metric_legend_pass": "PASS: Metric was assessed and meets the threshold.",
     "metric_legend_fail": "FAIL: Metric was assessed and does not meet the threshold.",
     "metric_legend_not_provided": "Not provided: Metric was not entered. In CI, unentered metrics are treated as failing.",
-    "ci_export_warning": "{count} metric(s) were not assessed. In CI, gapsight-core will treat them as failing. You can still export, or go back and complete the assessment.",
+    "ci_export_warning_singular": "1 metric was not assessed: {names}.",
+    "ci_export_warning_plural": "{count} metrics were not assessed: {names}.",
+    "ci_export_warning_suffix": " In CI, gapsight-core will treat them as failing. You can still export, or go back and complete the assessment.",
     "ci_export_anyway": "Export anyway",
     "ci_export_cancel": "Cancel"
   },
