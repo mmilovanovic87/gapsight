@@ -8,6 +8,7 @@ import { downloadJsonExport } from '../logic/export-json';
 import { downloadHtmlExport } from '../logic/export-html';
 import { downloadPdfExport } from '../logic/export-pdf';
 import { RISK_LEVEL_STYLES, FRAMEWORK_NAMES, URGENCY_LEVEL_STYLES } from '../logic/constants';
+import pkg from '../../package.json';
 import StatusBadge from '../components/StatusBadge';
 import ShareModal from '../components/ShareModal';
 import FeedbackForm from '../components/FeedbackForm';
@@ -100,7 +101,9 @@ export default function ResultsPage({ onShowRiskModal }) {
   }, []);
 
   const unenteredMetrics = useMemo(
-    () => results.metricResults.filter((r) => r.value === null || r.value === undefined),
+    () => results.metricResults.filter((r) =>
+      r.value !== 'not_applicable' && (r.value === null || r.value === undefined)
+    ),
     [results]
   );
   const unenteredMetricCount = unenteredMetrics.length;
@@ -122,6 +125,12 @@ export default function ResultsPage({ onShowRiskModal }) {
       }
     }
     const ciAssessment = {
+      _meta: {
+        generated_at: new Date().toISOString(),
+        gapsight_version: pkg.version,
+        kb_version: `v${kbVersion}`,
+        eu_ai_act_reference: 'Regulation (EU) 2024/1689',
+      },
       profile: {
         role: profile.role,
         gpai_flag: profile.gpai_flag,
@@ -195,11 +204,11 @@ export default function ResultsPage({ onShowRiskModal }) {
           </div>
           <div>
             <span className="text-gray-500">{t.generated_label}: </span>
-            <span>{results.generatedAt.slice(0, 16).replace('T', ' ')}</span>
+            <span>{new Date(results.generatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div>
-            <span className="text-gray-500">KB: </span>
-            <span>v{kbVersion} | {kbDate}</span>
+            <span className="text-gray-500">GapSight: </span>
+            <span>v{pkg.version} {'\u00B7'} KB v{kbVersion} | {kbDate}</span>
           </div>
           <div>
             <span className="text-gray-500">{t.thresholds_label}: </span>
@@ -250,6 +259,9 @@ export default function ResultsPage({ onShowRiskModal }) {
           >
             {t.how_calculated}
           </button>
+          <p className="mt-3 text-xs text-gray-500 max-w-lg mx-auto" data-testid="risk-score-disclaimer">
+            {t.risk_score_disclaimer}
+          </p>
         </div>
       </div>
 
@@ -267,13 +279,16 @@ export default function ResultsPage({ onShowRiskModal }) {
             </thead>
             <tbody>
               {results.metricResults.map((r) => {
-                const isProvided = r.value !== null && r.value !== undefined;
+                const isNA = r.value === 'not_applicable';
+                const isProvided = !isNA && r.value !== null && r.value !== undefined;
+                const metricState = isNA ? 'not-applicable' : (isProvided ? 'entered' : 'not-provided');
+                const badgeStatus = isNA ? 'NOT_APPLICABLE' : (isProvided ? r.status : 'NOT_PROVIDED');
                 return (
-                  <tr key={r.id} className="border-t border-gray-100" data-metric-status={isProvided ? 'entered' : 'not-provided'}>
+                  <tr key={r.id} className="border-t border-gray-100" data-metric-status={metricState}>
                     <td className="py-2 px-3">{r.label}</td>
                     <td className="py-2 px-3 font-mono text-xs">{isProvided ? String(r.value) : '-'}</td>
                     <td className="py-2 px-3">
-                      <StatusBadge status={isProvided ? r.status : 'NOT_PROVIDED'} />
+                      <StatusBadge status={badgeStatus} />
                     </td>
                   </tr>
                 );
@@ -285,6 +300,7 @@ export default function ResultsPage({ onShowRiskModal }) {
           <p>{t.metric_legend_pass}</p>
           <p>{t.metric_legend_fail}</p>
           <p>{t.metric_legend_not_provided}</p>
+          <p>{t.metric_legend_not_applicable}</p>
         </div>
       </div>
 
@@ -361,6 +377,9 @@ export default function ResultsPage({ onShowRiskModal }) {
       {/* Export & Share */}
       <div className="border-t border-gray-200 pt-6">
         <h2 className="text-lg font-semibold mb-3">{t.export_title}</h2>
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800" data-testid="ci-security-note">
+          {t.ci_security_note}
+        </div>
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => downloadJsonExport(results, session)}
@@ -455,6 +474,9 @@ export default function ResultsPage({ onShowRiskModal }) {
         {ciCtaOpen && (
           <div className="mt-4 space-y-3 text-sm text-gray-700">
             <p>{t.ci_cta_description}</p>
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800" data-testid="ci-failon-warning">
+              {'\u26A0\uFE0F'} {t.ci_cta_failon_warning}
+            </div>
             <pre className="bg-gray-900 text-green-300 p-4 rounded text-xs overflow-x-auto">
 {`- uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
   with:
@@ -464,7 +486,7 @@ export default function ResultsPage({ onShowRiskModal }) {
             <p>{t.ci_cta_export_note}</p>
             <p>
               <a
-                href="https://github.com/mmilovanovic87/gapsight/tree/main/.github/actions/compliance-check"
+                href="https://github.com/mmilovanovic87/gapsight/blob/main/.github/actions/compliance-check/README.md"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"

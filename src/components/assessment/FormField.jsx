@@ -5,6 +5,7 @@ export function FloatInput({ id, label, value, onChange, min, max, threshold, di
   const dirLabel = direction === 'higher_better'
     ? `Pass >= ${passAt}, Review >= ${reviewAt}`
     : `Pass <= ${passAt}, Review <= ${reviewAt}`;
+  const isNA = value === 'not_applicable';
 
   return (
     <div className="space-y-1">
@@ -20,16 +21,26 @@ export function FloatInput({ id, label, value, onChange, min, max, threshold, di
         step="any"
         min={min}
         max={max}
-        value={value ?? ''}
+        disabled={isNA}
+        value={isNA ? '' : (value ?? '')}
         onChange={(e) => onChange(e.target.value === '' ? null : parseFloat(e.target.value))}
-        className={`block w-full rounded border px-3 py-2 text-sm ${error ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`block w-full rounded border px-3 py-2 text-sm ${isNA ? 'bg-gray-100 text-gray-400' : ''} ${error && !isNA ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
-      {passAt !== undefined && (
+      <label className="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={isNA}
+          onChange={(e) => onChange(e.target.checked ? 'not_applicable' : null)}
+          className="rounded text-blue-600"
+        />
+        {en.results.metric_not_applicable_label}
+      </label>
+      {passAt !== undefined && !isNA && (
         <p className="text-xs text-gray-400">
           {dirLabel} <span className="italic">- {thresholdText}</span>
         </p>
       )}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && !isNA && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 }

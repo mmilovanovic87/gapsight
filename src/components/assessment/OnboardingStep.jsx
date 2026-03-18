@@ -149,8 +149,19 @@ export default function OnboardingStep({ profile, onProfileChange }) {
 
       {/* Risk category decision tree */}
       <div className="space-y-3">
-        <h3 className="text-sm font-medium text-gray-700">{t.risk_title}</h3>
+        <h3 className="text-sm font-medium text-gray-700">
+          {t.risk_title}
+          <span className="ml-1 text-xs text-gray-400 cursor-help" title={t.risk_tooltip}>{'\u24D8'}</span>
+        </h3>
         <p className="text-sm text-gray-500">{t.risk_subtitle}</p>
+        <a
+          href={t.risk_annex_link_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-blue-600 hover:underline"
+        >
+          {t.risk_annex_link_text}
+        </a>
 
         <YesNo questionKey="p1" label={t.risk_p1} />
 

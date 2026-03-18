@@ -40,6 +40,15 @@ describe('getMetricStatus', () => {
     expect(getMetricStatus('', makeMetric(), [], baseProfile, isNotRequired)).toBe('NOT_APPLICABLE');
   });
 
+  test('returns NOT_APPLICABLE when value is "not_applicable" string (user-marked)', () => {
+    expect(getMetricStatus('not_applicable', makeMetric(), [], baseProfile, isRequired)).toBe('NOT_APPLICABLE');
+    expect(getMetricStatus('not_applicable', makeMetric(), [], baseProfile, isNotRequired)).toBe('NOT_APPLICABLE');
+  });
+
+  test('returns NOT_APPLICABLE for "not_applicable" even with CRITICAL_FAIL flag', () => {
+    expect(getMetricStatus('not_applicable', makeMetric(), ['CRITICAL_FAIL'], baseProfile, isRequired)).toBe('NOT_APPLICABLE');
+  });
+
   test('returns REVIEW for SMALL_TEST_SET flag on accuracy metrics', () => {
     expect(getMetricStatus(0.9, makeMetric(), ['SMALL_TEST_SET'], baseProfile, isRequired)).toBe('REVIEW');
   });

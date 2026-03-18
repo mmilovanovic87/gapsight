@@ -1,5 +1,6 @@
 import kbChangelog from '../data/kb-changelog.json';
 import en from '../locales/en.json';
+import pkg from '../../package.json';
 import {
   RISK_COLORS_HEX,
   STATUS_BADGES_HTML,
@@ -124,9 +125,10 @@ ${results.oversightResult.message ? `<p style="color:#991b1b;font-size:13px">${e
 ${actionHtml || '<p style="color:#6b7280;font-size:13px">No action items generated.</p>'}
 
 <div style="margin-top:40px;padding-top:16px;border-top:2px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
-<p>This report is an informative self-assessment. It is not legal advice and not a compliance certificate.</p>
+<p>${esc(en.footer.legal_disclaimer)}</p>
 <p>${esc(en.exports.canonical_note)}</p>
-<p>KB v${esc(kb.current_version)} | ${esc(kb.versions[0].date)} &mdash; &copy; 2026 GapSight</p>
+<p>GapSight v${esc(pkg.version)} &middot; KB v${esc(kb.current_version)} | ${esc(kb.versions[0].date)} &middot; EU AI Act ref: Regulation (EU) 2024/1689</p>
+<p>&copy; 2026 GapSight</p>
 </div>
 
 </div>

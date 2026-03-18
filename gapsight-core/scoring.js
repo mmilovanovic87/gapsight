@@ -27,6 +27,13 @@ const {
  * @returns {'CRITICAL_FAIL'|'FAIL'|'REVIEW'|'PASS'|'NOT_APPLICABLE'|'PROCESS_REQUIRED'}
  */
 function getMetricStatus(value, metric, contextFlags, profile, isMetricRequiredFn) {
+  // User explicitly marked this metric as not applicable to their system.
+  // Treated as NOT_APPLICABLE regardless of whether the metric is required,
+  // and excluded from risk scoring calculations.
+  if (value === 'not_applicable') {
+    return 'NOT_APPLICABLE';
+  }
+
   if (contextFlags.includes('CRITICAL_FAIL')) {
     return 'CRITICAL_FAIL';
   }

@@ -1,5 +1,6 @@
 import kbChangelog from '../data/kb-changelog.json';
 import en from '../locales/en.json';
+import pkg from '../../package.json';
 
 /**
  * Generates a JSON export of the assessment results.
@@ -11,6 +12,12 @@ export function generateJsonExport(results, session) {
     _disclaimer: en.exports.disclaimer,
     _note: 'This is an informative self-assessment. It is not legal advice and not a compliance certificate.',
     _canonical: en.exports.canonical_note,
+    _meta: {
+      generated_at: results.generatedAt,
+      gapsight_version: pkg.version,
+      kb_version: `v${kbChangelog.current_version}`,
+      eu_ai_act_reference: 'Regulation (EU) 2024/1689',
+    },
     assessment_id: session?.assessment_id || null,
     generated_at: results.generatedAt,
     tos_accepted_at: session?.tos_accepted_at || null,

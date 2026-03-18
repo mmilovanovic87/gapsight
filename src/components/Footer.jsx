@@ -25,6 +25,7 @@ export default function Footer() {
             {en.footer.nav_report_issue}
           </a>
         </nav>
+        <p className="mt-4 text-xs text-gray-400">{en.footer.legal_disclaimer}</p>
         <p className="mt-4">{en.footer.copyright}</p>
       </div>
     </footer>

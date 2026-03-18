@@ -94,10 +94,14 @@ test.describe('CI integration', () => {
     await expect(ctaBlock.locator('pre')).toContainText('assessment-path');
     await expect(ctaBlock.locator('pre')).toContainText("fail-on: 'HIGH'");
 
-    // Verify documentation link exists
+    // Verify fail-on warning is visible
+    await expect(ctaBlock.getByTestId('ci-failon-warning')).toBeVisible();
+    await expect(ctaBlock.getByTestId('ci-failon-warning')).toContainText('fail-on value is NONE');
+
+    // Verify documentation link points to README.md
     const docsLink = ctaBlock.getByRole('link', { name: /Full documentation/i });
     await expect(docsLink).toBeVisible();
-    await expect(docsLink).toHaveAttribute('href', /compliance-check/);
+    await expect(docsLink).toHaveAttribute('href', /\/blob\/main\/.github\/actions\/compliance-check\/README\.md/);
   });
 
   test('unentered metrics show "Not provided" instead of FAIL styling', async ({ page }) => {
