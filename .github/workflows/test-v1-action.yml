@@ -1,0 +1,17 @@
+# This workflow verifies that the @v1 tag resolves correctly and the action
+# runs end-to-end in a real GitHub Actions environment.
+# Run manually via workflow_dispatch. Delete after verification.
+name: Test v1 Action External
+on:
+  workflow_dispatch:
+jobs:
+  test-external-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run GapSight compliance check
+        uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
+        with:
+          assessment-path: '.gapsight/assessment.example.json'
+          fail-on: 'NONE'
