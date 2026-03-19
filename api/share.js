@@ -47,7 +47,6 @@ export default async function handler(req, res) {
       expires_at: expiresAt,
     });
   } catch (err) {
-    console.error('Share create error:', err);
     return res.status(500).json({ success: false, message: 'Failed to create share link' });
   }
 }

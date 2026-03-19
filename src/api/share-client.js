@@ -15,12 +15,20 @@
  * @returns {Promise<{ success: boolean, share_id?: string, has_pin?: boolean, expires_at?: string }>}
  */
 export async function createShareLink(assessment, pin) {
-  const res = await fetch('/api/share', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ assessment, pin: pin || null }),
-  });
-  return res.json();
+  try {
+    const res = await fetch('/api/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assessment, pin: pin || null }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      return { success: false, message: body.message || `Server error (${res.status})` };
+    }
+    return res.json();
+  } catch {
+    return { success: false, message: 'Network error. Please check your connection and try again.' };
+  }
 }
 
 /**
@@ -30,8 +38,16 @@ export async function createShareLink(assessment, pin) {
  * @returns {Promise<{ success: boolean, requires_pin?: boolean, data?: object }>}
  */
 export async function getSharedAssessment(uuid) {
-  const res = await fetch(`/api/share/${uuid}`);
-  return res.json();
+  try {
+    const res = await fetch(`/api/share/${uuid}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      return { success: false, message: body.message || `Server error (${res.status})` };
+    }
+    return res.json();
+  } catch {
+    return { success: false, message: 'Network error. Please check your connection and try again.' };
+  }
 }
 
 /**
@@ -42,12 +58,20 @@ export async function getSharedAssessment(uuid) {
  * @returns {Promise<{ success: boolean, data?: object }>}
  */
 export async function verifyPin(uuid, pin) {
-  const res = await fetch(`/api/share/verify-pin/${uuid}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pin }),
-  });
-  return res.json();
+  try {
+    const res = await fetch(`/api/share/verify-pin/${uuid}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin }),
+    });
+    if (!res.ok && res.status !== 403) {
+      const body = await res.json().catch(() => ({}));
+      return { success: false, message: body.message || `Server error (${res.status})` };
+    }
+    return res.json();
+  } catch {
+    return { success: false, message: 'Network error. Please check your connection and try again.' };
+  }
 }
 
 /**
@@ -57,10 +81,18 @@ export async function verifyPin(uuid, pin) {
  * @returns {Promise<{ success: boolean, expires_at?: string }>}
  */
 export async function extendShareLink(uuid) {
-  const res = await fetch(`/api/share/extend/${uuid}`, {
-    method: 'POST',
-  });
-  return res.json();
+  try {
+    const res = await fetch(`/api/share/extend/${uuid}`, {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      return { success: false, message: body.message || `Server error (${res.status})` };
+    }
+    return res.json();
+  } catch {
+    return { success: false, message: 'Network error. Please check your connection and try again.' };
+  }
 }
 
 /**
@@ -70,8 +102,16 @@ export async function extendShareLink(uuid) {
  * @returns {Promise<{ success: boolean }>}
  */
 export async function deleteShareLink(uuid) {
-  const res = await fetch(`/api/share/${uuid}`, {
-    method: 'DELETE',
-  });
-  return res.json();
+  try {
+    const res = await fetch(`/api/share/${uuid}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      return { success: false, message: body.message || `Server error (${res.status})` };
+    }
+    return res.json();
+  } catch {
+    return { success: false, message: 'Network error. Please check your connection and try again.' };
+  }
 }

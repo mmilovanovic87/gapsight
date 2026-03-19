@@ -9,6 +9,14 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'pdf-deps': ['jspdf', 'html2canvas'],
+        },
+      },
+    },
   },
   test: {
     environment: 'jsdom',

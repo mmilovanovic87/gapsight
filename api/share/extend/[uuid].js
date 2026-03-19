@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true, expires_at: newExpiry });
   } catch (err) {
-    console.error('Share extend error:', err);
+    // Error logged server-side only via Vercel runtime
     return res.status(500).json({ success: false, message: 'Failed to extend share link' });
   }
 }

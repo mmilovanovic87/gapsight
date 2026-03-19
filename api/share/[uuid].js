@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       const { pin_hash, ...safeData } = data;
       return res.status(200).json({ success: true, requires_pin: false, data: safeData });
     } catch (err) {
-      console.error('Share get error:', err);
+      // Error logged server-side only via Vercel runtime
       return res.status(500).json({ success: false, message: 'Failed to retrieve assessment' });
     }
   }
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       await kv.del(key);
       return res.status(200).json({ success: true });
     } catch (err) {
-      console.error('Share delete error:', err);
+      // Error logged server-side only via Vercel runtime
       return res.status(500).json({ success: false, message: 'Failed to delete share link' });
     }
   }

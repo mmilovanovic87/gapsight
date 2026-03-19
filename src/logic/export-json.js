@@ -73,14 +73,18 @@ export function generateJsonExport(results, session) {
  * Triggers a file download of the JSON export.
  */
 export function downloadJsonExport(results, session) {
-  const json = generateJsonExport(results, session);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  try {
+    const json = generateJsonExport(results, session);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    window.alert('Export failed. Please try again.');
+  }
 }

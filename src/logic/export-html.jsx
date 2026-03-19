@@ -142,14 +142,18 @@ ${actionHtml || '<p style="color:#6b7280;font-size:13px">No action items generat
  * Triggers a file download of the HTML export.
  */
 export function downloadHtmlExport(results, session) {
-  const html = generateHtmlExport(results, session);
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  try {
+    const html = generateHtmlExport(results, session);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    window.alert('Export failed. Please try again.');
+  }
 }

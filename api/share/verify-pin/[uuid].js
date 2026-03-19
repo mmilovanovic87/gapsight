@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     const { pin_hash, ...safeData } = data;
     return res.status(200).json({ success: true, data: safeData });
   } catch (err) {
-    console.error('PIN verify error:', err);
+    // Error logged server-side only via Vercel runtime
     return res.status(500).json({ success: false, message: 'Failed to verify PIN' });
   }
 }

@@ -43,6 +43,7 @@ export default function SectionHumanOversight({ inputs, onInput, sectionNumber }
                 <button
                   key={a.value}
                   type="button"
+                  aria-pressed={oversight[q.key] === a.value}
                   onClick={() => setAnswer(q.key, a.value)}
                   className={`px-4 py-1.5 rounded text-sm border transition-colors ${
                     oversight[q.key] === a.value
