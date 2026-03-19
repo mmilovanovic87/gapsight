@@ -1,6 +1,7 @@
 import kbChangelog from '../data/kb-changelog.json';
 import en from '../locales/en.json';
 import pkg from '../../package.json';
+import { triggerBlobDownload } from './download';
 import {
   RISK_COLORS_HEX,
   STATUS_BADGES_HTML,
@@ -146,14 +147,7 @@ export function downloadHtmlExport(results, session) {
   try {
     const html = generateHtmlExport(results, session);
     const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(blob, `gapsight-assessment-${results.generatedAt.slice(0, 10)}.html`);
   } catch {
     window.alert('Export failed. Please try again.');
   }

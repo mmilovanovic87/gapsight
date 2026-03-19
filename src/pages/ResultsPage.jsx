@@ -7,7 +7,8 @@ import { computeResults } from '../logic/compute-results';
 import { downloadJsonExport } from '../logic/export-json';
 import { downloadHtmlExport } from '../logic/export-html';
 import { downloadPdfExport } from '../logic/export-pdf';
-import { RISK_LEVEL_STYLES, FRAMEWORK_NAMES, URGENCY_LEVEL_STYLES } from '../logic/constants';
+import { RISK_LEVEL_STYLES, FRAMEWORK_NAMES, URGENCY_LEVEL_STYLES, STORAGE_KEYS } from '../logic/constants';
+import { triggerBlobDownload } from '../logic/download';
 import pkg from '../../package.json';
 import StatusBadge from '../components/StatusBadge';
 import ShareModal from '../components/ShareModal';
@@ -95,7 +96,7 @@ export default function ResultsPage({ onShowRiskModal }) {
 
   const session = useMemo(() => {
     try {
-      const raw = localStorage.getItem('gapsight_session');
+      const raw = localStorage.getItem(STORAGE_KEYS.SESSION);
       return raw ? JSON.parse(raw) : null;
     } catch { return null; }
   }, []);
@@ -143,14 +144,7 @@ export default function ResultsPage({ onShowRiskModal }) {
       };
       const json = JSON.stringify(ciAssessment, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'assessment.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      triggerBlobDownload(blob, 'assessment.json');
       setCiExportMessage(true);
       setCiExportWarning(false);
     } catch {

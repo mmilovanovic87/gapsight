@@ -1,6 +1,7 @@
 import kbChangelog from '../data/kb-changelog.json';
 import en from '../locales/en.json';
 import pkg from '../../package.json';
+import { triggerBlobDownload } from './download';
 
 /**
  * Generates a JSON export of the assessment results.
@@ -76,14 +77,7 @@ export function downloadJsonExport(results, session) {
   try {
     const json = generateJsonExport(results, session);
     const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `gapsight-assessment-${results.generatedAt.slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(blob, `gapsight-assessment-${results.generatedAt.slice(0, 10)}.json`);
   } catch {
     window.alert('Export failed. Please try again.');
   }

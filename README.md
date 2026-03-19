@@ -95,11 +95,11 @@ Detailed specs live in the `specs/` directory:
 
 ## Contributing
 
-1. Read `CLAUDE.md` for project constraints
-2. Run `scripts/check-language-policy.sh` before committing
-3. All UI strings must go in `src/locales/en.json`
-4. Never add hardcoded thresholds — use `src/logic/constants.js`
-5. Follow the PR template in `.github/pull_request_template.md`
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide: setup, testing, how to add metrics/frameworks, branch naming, and PR process.
+
+For architectural constraints and non-negotiable rules, see [`CLAUDE.md`](CLAUDE.md).
+
+For the rationale behind key design decisions, see [`docs/decisions/`](docs/decisions/).
 
 ## Architecture & Developer Guide
 

@@ -44,6 +44,24 @@ function drawLine(doc, y) {
  *
  * This is an informative self-assessment report, not legal advice
  * and not a compliance certificate.
+ *
+ * Layout approach: The PDF is built top-to-bottom using a `y` cursor variable
+ * that tracks the current vertical position in mm. Each section advances `y`
+ * by its rendered height. checkPage() handles page breaks by comparing `y`
+ * against PDF_PAGE_BREAK_Y and inserting a new page when needed.
+ *
+ * Sections rendered in order:
+ *   1. Disclaimer header (fixed yellow bar)
+ *   2. Title and canonical note
+ *   3. Profile info box (role, risk, frameworks, assessment ID)
+ *   4. Risk level panel (colored box)
+ *   5. Cross-metric warnings (if any)
+ *   6. Framework summary table
+ *   7. Metric results table
+ *   8. Governance & Process table
+ *   9. Human oversight score (if present)
+ *  10. Action items grouped by urgency
+ *  11. Footer with version info
  */
 export async function downloadPdfExport(results, session) {
   const { jsPDF } = await import('jspdf');

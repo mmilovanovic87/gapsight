@@ -92,6 +92,10 @@ refactor: extract download utility from ResultsPage
 - Constants use `SCREAMING_SNAKE_CASE`.
 - The logic layer (`src/logic/`) must have zero React imports.
 
+## Architecture decisions
+
+Major design decisions are documented as Architecture Decision Records in [`docs/decisions/`](docs/decisions/). Read these to understand **why** the codebase is structured the way it is — e.g., why CommonJS for gapsight-core, why dual constants files, why localStorage with no auth.
+
 ## Key constraints
 
 These are documented in [`CLAUDE.md`](CLAUDE.md) and are non-negotiable:

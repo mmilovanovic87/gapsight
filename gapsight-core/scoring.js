@@ -78,6 +78,10 @@ function getMetricStatus(value, metric, contextFlags, profile, isMetricRequiredF
  * @param {object} processReq - Process requirement definition
  * @param {object} profile - User profile
  * @returns {'PASS'|'REVIEW'|'FAIL'|'NOT_APPLICABLE'}
+ *
+ * @example
+ * getProcessStatus('yes', reqDef, profile);  // => 'PASS'
+ * getProcessStatus('in_progress', reqDef, profile);  // => 'REVIEW'
  */
 function getProcessStatus(value, processReq, profile) {
   if (value === 'not_applicable') return 'NOT_APPLICABLE';
@@ -137,6 +141,9 @@ function getHumanOversightStatus(answers) {
  * @param {object} inputs - All user inputs
  * @param {object} profile - User profile
  * @returns {string[]} Array of active context flag strings
+ *
+ * @example
+ * deriveContextFlags({ test_set_size: 20 }, profile);  // => ['SMALL_TEST_SET']
  */
 function deriveContextFlags(inputs, profile) {
   const flags = [];

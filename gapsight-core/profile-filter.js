@@ -58,6 +58,9 @@ function isRequiredForProfile(item, profile) {
  * @param {object} knowledgeBase - The full knowledge base object
  * @param {object} profile - User profile
  * @returns {object[]} Filtered metrics array
+ *
+ * @example
+ * const metrics = getMetricsForProfile(kb, { role: 'provider', risk_category: 'high-risk', deployment_status: 'pre-deployment' });
  */
 function getMetricsForProfile(knowledgeBase, profile) {
   warnOnUnknownProfileValues(profile);
