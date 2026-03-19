@@ -77,7 +77,7 @@ function initSession() {
 function updateSession(updates) {
   const session = getSession() || initSession();
   const updated = { ...session, ...updates, last_modified_at: new Date().toISOString() };
-  localStorage.setItem('gapsight_session', JSON.stringify(updated));
+  localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(updated));
   return updated;
 }
 
@@ -116,7 +116,7 @@ function App() {
   }, []);
 
   const handleConfirmClear = useCallback(() => {
-    const keys = Object.keys(localStorage).filter((k) => k.startsWith('gapsight_'));
+    const keys = Object.keys(localStorage).filter((k) => k.startsWith(STORAGE_KEYS.PREFIX));
     keys.forEach((k) => localStorage.removeItem(k));
     setShowClearModal(false);
     setTosAccepted(false);

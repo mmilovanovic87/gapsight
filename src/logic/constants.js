@@ -98,6 +98,7 @@ export const INPUTS_DEBOUNCE_MS = 500;
 
 /** Centralized localStorage key names. Used in App.jsx and useAssessmentStore. */
 export const STORAGE_KEYS = {
+  PREFIX: 'gapsight_',
   SESSION: 'gapsight_session',
   INPUTS: 'gapsight_inputs',
   PROFILE: 'gapsight_profile',
