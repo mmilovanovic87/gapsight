@@ -37,4 +37,62 @@ describe('constants', () => {
       iso_42001: 'ISO 42001',
     });
   });
+
+  test('threshold ordering: OVERSIGHT_REVIEW < OVERSIGHT_PASS', () => {
+    expect(constants.OVERSIGHT_REVIEW_THRESHOLD).toBeLessThan(constants.OVERSIGHT_PASS_THRESHOLD);
+  });
+
+  test('threshold ordering: RISK_REVIEW_RATE < RISK_FAIL_RATE', () => {
+    expect(constants.RISK_REVIEW_RATE_THRESHOLD).toBeLessThan(constants.RISK_FAIL_RATE_THRESHOLD);
+  });
+
+  test('threshold ordering: STALE_MODEL_12M < STALE_MODEL_24M', () => {
+    expect(constants.STALE_MODEL_12M_MONTHS).toBeLessThan(constants.STALE_MODEL_24M_MONTHS);
+  });
+
+  test('all percentage thresholds are in [0, 1]', () => {
+    const pctThresholds = [
+      constants.OVERSIGHT_PASS_THRESHOLD,
+      constants.OVERSIGHT_REVIEW_THRESHOLD,
+      constants.CROSS_ACCURACY_THRESHOLD,
+      constants.CROSS_FAIRNESS_GAP_THRESHOLD,
+      constants.CROSS_ROBUSTNESS_THRESHOLD,
+      constants.CROSS_DRIFT_THRESHOLD,
+      constants.CROSS_FAIRNESS_MITIGATION_THRESHOLD,
+      constants.CROSS_OVERSIGHT_THRESHOLD,
+      constants.RISK_FAIL_RATE_THRESHOLD,
+      constants.RISK_REVIEW_RATE_THRESHOLD,
+    ];
+    for (const t of pctThresholds) {
+      expect(t).toBeGreaterThanOrEqual(0);
+      expect(t).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test('constants match browser-side constants (src/logic/constants.js)', () => {
+    // Read the browser-side constants file and validate key values match
+    const fs = require('fs');
+    const path = require('path');
+    const browserConstants = fs.readFileSync(
+      path.resolve(__dirname, '../../src/logic/constants.js'),
+      'utf8'
+    );
+
+    // Verify critical constants are in sync
+    const pairs = [
+      ['OVERSIGHT_PASS_THRESHOLD', constants.OVERSIGHT_PASS_THRESHOLD],
+      ['OVERSIGHT_REVIEW_THRESHOLD', constants.OVERSIGHT_REVIEW_THRESHOLD],
+      ['SMALL_TEST_SET_THRESHOLD', constants.SMALL_TEST_SET_THRESHOLD],
+      ['CROSS_ACCURACY_THRESHOLD', constants.CROSS_ACCURACY_THRESHOLD],
+      ['RISK_FAIL_RATE_THRESHOLD', constants.RISK_FAIL_RATE_THRESHOLD],
+      ['RISK_REVIEW_RATE_THRESHOLD', constants.RISK_REVIEW_RATE_THRESHOLD],
+      ['GPAI_SYSTEMIC_RISK_FLOPS', constants.GPAI_SYSTEMIC_RISK_FLOPS],
+    ];
+    for (const [name, expectedValue] of pairs) {
+      const regex = new RegExp(`${name}\\s*=\\s*([\\d.e+]+)`);
+      const match = browserConstants.match(regex);
+      expect(match).not.toBeNull();
+      expect(parseFloat(match[1])).toBe(expectedValue);
+    }
+  });
 });

@@ -190,6 +190,16 @@ describe('deriveContextFlags', () => {
     expect(flags).not.toContain('SMALL_TEST_SET');
   });
 
+  test('boundary: test_set_size exactly 30 does NOT flag SMALL_TEST_SET (threshold uses <)', () => {
+    const flags = deriveContextFlags({ test_set_size: 30 }, baseProfile);
+    expect(flags).not.toContain('SMALL_TEST_SET');
+  });
+
+  test('boundary: test_set_size 29 flags SMALL_TEST_SET', () => {
+    const flags = deriveContextFlags({ test_set_size: 29 }, baseProfile);
+    expect(flags).toContain('SMALL_TEST_SET');
+  });
+
   test('does not flag SMALL_TEST_SET for null test_set_size', () => {
     const flags = deriveContextFlags({ test_set_size: null }, baseProfile);
     expect(flags).not.toContain('SMALL_TEST_SET');
@@ -271,5 +281,23 @@ describe('monthsSinceDate', () => {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
     expect(monthsSinceDate(sixMonthsAgo.toISOString())).toBe(6);
+  });
+
+  test('boundary: exactly 12 months ago flags STALE_MODEL_12M', () => {
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+    expect(monthsSinceDate(twelveMonthsAgo.toISOString())).toBe(12);
+  });
+
+  test('boundary: exactly 24 months ago returns 24', () => {
+    const twentyFourMonthsAgo = new Date();
+    twentyFourMonthsAgo.setMonth(twentyFourMonthsAgo.getMonth() - 24);
+    expect(monthsSinceDate(twentyFourMonthsAgo.toISOString())).toBe(24);
+  });
+
+  test('future date returns 0 or negative', () => {
+    const futureDate = new Date();
+    futureDate.setMonth(futureDate.getMonth() + 6);
+    expect(monthsSinceDate(futureDate.toISOString())).toBeLessThanOrEqual(0);
   });
 });

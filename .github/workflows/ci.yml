@@ -29,8 +29,8 @@ jobs:
           cache: npm
       - run: npm install
       - run: npx vitest run
-      - name: Run gapsight-core tests
-        run: cd gapsight-core && npm test
+      - name: Run gapsight-core tests with coverage
+        run: cd gapsight-core && npm test -- --coverageThreshold='{"global":{"branches":80,"functions":90,"lines":75,"statements":75}}'
       - run: npm run build
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
