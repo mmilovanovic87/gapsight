@@ -143,6 +143,16 @@
     "breaking_no": "No"
   },
   "threshold_label": "GapSight default, not a regulatory requirement",
+  "risk_level_modal": {
+    "title": "How is the risk level calculated?",
+    "description": "The overall risk level is determined by the number and severity of issues found across all required metrics for your profile.",
+    "critical": "One or more critical failures detected. Deployment is not permitted until resolved.",
+    "high": "30% or more of required metrics failed, or 2+ critical cross-metric warnings. Significant gaps require attention before deployment.",
+    "medium": "Fail rate below 30% but 20% or more of required metrics need review. A compliance professional review is recommended.",
+    "low": "Profile shows a good baseline. Periodic reassessment is recommended.",
+    "disclaimer": "GapSight default, not a regulatory requirement. These thresholds are informational only.",
+    "close": "Close"
+  },
   "inline_disclaimer": {
     "title": "Before you view results",
     "body": "GapSight is an informative self-assessment tool. Results are based on publicly available regulatory frameworks and the metrics you provide. This is not legal advice and not a certificate of regulatory compliance. Always consult a qualified professional.",
@@ -291,7 +301,8 @@
         "q5": "Does system actively prevent automation bias?",
         "answer_yes": "Yes",
         "answer_partially": "Partially",
-        "answer_no": "No"
+        "answer_no": "No",
+        "hard_blocker_message": "EU AI Act Article 14: override mechanism is non-negotiable for high-risk systems."
       },
       "gpai": {
         "title": "GPAI Obligations",

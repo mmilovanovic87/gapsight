@@ -56,7 +56,7 @@ export default function SectionHumanOversight({ inputs, onInput, sectionNumber }
             </div>
             {q.hardBlocker && oversight[q.key] === 'no' && (
               <p className="text-xs text-red-600 font-medium">
-                EU AI Act Article 14: override mechanism is non-negotiable for high-risk systems.
+                {sec.hard_blocker_message || 'EU AI Act Article 14: override mechanism is non-negotiable for high-risk systems.'}
               </p>
             )}
           </div>

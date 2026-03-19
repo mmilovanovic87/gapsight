@@ -1,4 +1,8 @@
-export default function Modal({ children, onClose }) {
+/**
+ * Reusable modal dialog wrapper with overlay backdrop.
+ * @param {{ children: React.ReactNode, onClose: () => void, labelId?: string }} props
+ */
+export default function Modal({ children, onClose, labelId }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
@@ -6,7 +10,12 @@ export default function Modal({ children, onClose }) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 p-6">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={labelId}
+        className="relative bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 p-6"
+      >
         {children}
       </div>
     </div>

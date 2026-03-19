@@ -46,8 +46,8 @@ export default function ShareModal({ assessment, onClose }) {
   };
 
   return (
-    <Modal onClose={onClose}>
-      <h2 className="text-xl font-bold mb-4">{t.title}</h2>
+    <Modal onClose={onClose} labelId="share-modal-title">
+      <h2 id="share-modal-title" className="text-xl font-bold mb-4">{t.title}</h2>
 
       {!result ? (
         <>

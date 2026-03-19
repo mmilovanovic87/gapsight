@@ -3,8 +3,8 @@ import Modal from './Modal';
 
 export default function InlineDisclaimerModal({ onConfirm }) {
   return (
-    <Modal>
-      <h2 className="text-xl font-bold mb-4">{en.inline_disclaimer.title}</h2>
+    <Modal labelId="inline-disclaimer-modal-title">
+      <h2 id="inline-disclaimer-modal-title" className="text-xl font-bold mb-4">{en.inline_disclaimer.title}</h2>
       <p className="text-sm text-gray-700">{en.inline_disclaimer.body}</p>
       <div className="mt-6 flex justify-end">
         <button

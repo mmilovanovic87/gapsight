@@ -29,7 +29,13 @@ jobs:
           cache: npm
       - run: npm install
       - run: npx vitest run
+      - name: Run gapsight-core tests
+        run: cd gapsight-core && npm test
       - run: npm run build
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright E2E tests
+        run: npx playwright test --config=playwright.config.js
 
   compliance-check:
     name: Compliance Check (self-test)

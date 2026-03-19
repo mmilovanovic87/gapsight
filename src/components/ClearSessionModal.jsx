@@ -3,8 +3,8 @@ import Modal from './Modal';
 
 export default function ClearSessionModal({ onConfirm, onCancel }) {
   return (
-    <Modal onClose={onCancel}>
-      <h2 className="text-xl font-bold mb-4">{en.clear_session_modal.title}</h2>
+    <Modal onClose={onCancel} labelId="clear-session-modal-title">
+      <h2 id="clear-session-modal-title" className="text-xl font-bold mb-4">{en.clear_session_modal.title}</h2>
       <p className="text-sm text-gray-700">{en.clear_session_modal.body}</p>
       <div className="mt-6 flex gap-3 justify-end">
         <button
