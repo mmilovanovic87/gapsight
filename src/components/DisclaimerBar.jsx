@@ -19,10 +19,10 @@ export default function DisclaimerBar() {
 
   return (
     <div className={`${bgClass} px-6 py-2 text-sm`}>
-      <div className="max-w-7xl mx-auto flex items-center gap-2">
+      <div className="max-w-7xl mx-auto flex flex-wrap items-center gap-2">
         <span role="img" aria-label="Information">&#8505;</span>
-        <span>{en.disclaimer_bar.text}</span>
-        <span className="ml-auto text-xs opacity-75">{versionText}</span>
+        <span className="flex-1 min-w-0">{en.disclaimer_bar.text}</span>
+        <span className="text-xs opacity-75 whitespace-nowrap">{versionText}</span>
       </div>
     </div>
   );

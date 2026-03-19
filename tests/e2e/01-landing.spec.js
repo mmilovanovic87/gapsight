@@ -9,18 +9,17 @@ test.describe('Landing page', () => {
   });
 
   test('loads with headline and CTA button', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /compliance gaps/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Start Free Assessment/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /EU AI Act exposure/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start Assessment', exact: true }).first()).toBeVisible();
   });
 
   test('CTA navigates to assessment', async ({ page }) => {
-    await page.getByRole('button', { name: /Start Free Assessment/i }).click();
+    await page.getByRole('button', { name: 'Start Assessment', exact: true }).first().click();
     await expect(page).toHaveURL(/\/assessment/);
   });
 
-  test('trust badges are visible', async ({ page }) => {
-    await expect(page.getByText('Free, no registration')).toBeVisible();
-    await expect(page.getByText('No data stored on our servers')).toBeVisible();
-    await expect(page.getByText('PDF, HTML and JSON export')).toBeVisible();
+  test('social proof bar is visible', async ({ page }) => {
+    await expect(page.getByText('Free forever')).toBeVisible();
+    await expect(page.getByText('no credit card', { exact: false }).first()).toBeVisible();
   });
 });

@@ -6,12 +6,36 @@
       "version": "1.0",
       "semver": "1.0.0",
       "date": "2026-03",
-      "changes": "Initial release.",
+      "changes": "Initial knowledge base release.",
       "frameworks": {
-        "eu_ai_act": "EU 2024/1689, Aug 2026 deadline",
-        "nist_ai_rmf": "v1.0, January 2023",
-        "iso_42001": "Published 2023"
+        "eu_ai_act": "Regulation (EU) 2024/1689. Article-level mapping for 8 metric categories covering Articles 9, 10, 11, 12, 13, 14, 15, 17, 25 and Annex III/IV.",
+        "nist_ai_rmf": "NIST AI 100-1 (2023). Mapping to GOVERN, MAP, MEASURE, MANAGE functions.",
+        "iso_42001": "ISO/IEC 42001:2023. Mapping to clauses 6.1, 8.4, and Annex A controls."
       },
+      "templates": [
+        "CV screening",
+        "Fraud detection",
+        "Credit scoring",
+        "Medical diagnosis",
+        "Content moderation",
+        "Autonomous systems",
+        "Chatbot/NLP",
+        "General purpose"
+      ],
+      "metrics_covered": [
+        "accuracy", "f1_score", "auc_roc",
+        "demographic_parity_diff", "equalized_odds_diff", "disparate_impact_ratio",
+        "data_drift_score", "concept_drift_score", "adversarial_robustness_score",
+        "explanation_coverage"
+      ],
+      "governance_covered": [
+        "Risk management system",
+        "AI governance policy",
+        "Technical documentation (Annex IV)",
+        "Data governance policy",
+        "Third-party management",
+        "Human oversight"
+      ],
       "gpai_threshold_flops": "1e25",
       "next_review": "2026-06",
       "breaking_changes": false

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import en from '../locales/en.json';
 import Modal from './Modal';
 import { createShareLink } from '../api/share-client';
@@ -39,9 +39,15 @@ export default function ShareModal({ assessment, onClose }) {
     ? `${window.location.origin}/shared/${result.share_id}`
     : null;
 
+  const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef(null);
+
   const handleCopy = () => {
     if (shareUrl) {
       navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -120,9 +126,13 @@ export default function ShareModal({ assessment, onClose }) {
               />
               <button
                 onClick={handleCopy}
-                className="px-3 py-2 text-sm rounded border border-gray-300 hover:bg-gray-50"
+                className={`px-3 py-2 text-sm rounded border ${
+                  copied
+                    ? 'border-green-400 bg-green-50 text-green-700'
+                    : 'border-gray-300 hover:bg-gray-50'
+                }`}
               >
-                {t.copy}
+                {copied ? 'Copied!' : t.copy}
               </button>
             </div>
 
