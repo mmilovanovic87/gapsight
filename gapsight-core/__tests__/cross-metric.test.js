@@ -1,4 +1,4 @@
-const { evaluateCrossMetricRules, toNum } = require('../cross-metric');
+const { evaluateCrossMetricRules, toNumberOrNull } = require('../cross-metric');
 
 const baseProfile = {
   role: 'provider',
@@ -8,24 +8,24 @@ const baseProfile = {
   frameworks_selected: ['eu_ai_act'],
 };
 
-describe('toNum', () => {
+describe('toNumberOrNull', () => {
   test('converts valid number strings', () => {
-    expect(toNum('0.5')).toBe(0.5);
-    expect(toNum('100')).toBe(100);
+    expect(toNumberOrNull('0.5')).toBe(0.5);
+    expect(toNumberOrNull('100')).toBe(100);
   });
 
   test('returns null for null/undefined/empty', () => {
-    expect(toNum(null)).toBeNull();
-    expect(toNum(undefined)).toBeNull();
-    expect(toNum('')).toBeNull();
+    expect(toNumberOrNull(null)).toBeNull();
+    expect(toNumberOrNull(undefined)).toBeNull();
+    expect(toNumberOrNull('')).toBeNull();
   });
 
   test('returns null for NaN', () => {
-    expect(toNum('abc')).toBeNull();
+    expect(toNumberOrNull('abc')).toBeNull();
   });
 
   test('passes through numbers', () => {
-    expect(toNum(0.5)).toBe(0.5);
+    expect(toNumberOrNull(0.5)).toBe(0.5);
   });
 });
 

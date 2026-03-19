@@ -93,6 +93,18 @@ export const FEEDBACK_COOLDOWN_MS = 30_000;
 export const INPUTS_DEBOUNCE_MS = 500;
 
 // ---------------------------------------------------------------------------
+// localStorage Keys
+// ---------------------------------------------------------------------------
+
+/** Centralized localStorage key names. Used in App.jsx and useAssessmentStore. */
+export const STORAGE_KEYS = {
+  SESSION: 'gapsight_session',
+  INPUTS: 'gapsight_inputs',
+  PROFILE: 'gapsight_profile',
+  DISCLAIMER_SHOWN: 'gapsight_disclaimer_shown',
+};
+
+// ---------------------------------------------------------------------------
 // PDF Export Dimensions (A4, mm)
 // ---------------------------------------------------------------------------
 

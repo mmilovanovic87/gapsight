@@ -65,8 +65,9 @@ npm start         # Dev server on http://localhost:3000
 ### Testing
 
 ```bash
-npm test                # Unit tests (Jest)
-npm run test:e2e        # E2E tests (Playwright, requires npm start)
+npx vitest run                                        # Frontend unit tests (Vitest)
+cd gapsight-core && npm test && cd ..                  # Scoring engine tests (Jest)
+npx playwright test --config=playwright.config.js      # E2E tests (Playwright)
 ```
 
 ### Build

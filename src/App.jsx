@@ -4,10 +4,12 @@ import './App.css';
 import Header from './components/Header';
 import DisclaimerBar from './components/DisclaimerBar';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
 import InlineDisclaimerModal from './components/InlineDisclaimerModal';
 import ClearSessionModal from './components/ClearSessionModal';
 import RiskLevelModal from './components/RiskLevelModal';
 import kbChangelog from './data/kb-changelog.json';
+import { STORAGE_KEYS } from './logic/constants';
 
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
@@ -40,7 +42,7 @@ function generateUUID() {
  */
 function getSession() {
   try {
-    const raw = localStorage.getItem('gapsight_session');
+    const raw = localStorage.getItem(STORAGE_KEYS.SESSION);
     if (raw) return JSON.parse(raw);
   } catch {}
   return null;
@@ -62,7 +64,7 @@ function initSession() {
     tos_accepted_at: null,
     disclaimer_confirmed_at: null,
   };
-  localStorage.setItem('gapsight_session', JSON.stringify(session));
+  localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(session));
   return session;
 }
 
@@ -104,8 +106,8 @@ function App() {
   }, []);
 
   const handleNewAssessment = useCallback(() => {
-    localStorage.removeItem('gapsight_inputs');
-    localStorage.removeItem('gapsight_profile');
+    localStorage.removeItem(STORAGE_KEYS.INPUTS);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE);
     setAssessmentKey((k) => k + 1);
   }, []);
 
@@ -121,7 +123,7 @@ function App() {
   }, []);
 
   const triggerInlineDisclaimer = useCallback(() => {
-    if (sessionStorage.getItem('gapsight_disclaimer_shown') === 'true') {
+    if (sessionStorage.getItem(STORAGE_KEYS.DISCLAIMER_SHOWN) === 'true') {
       return true;
     }
     setShowInlineDisclaimer(true);
@@ -129,7 +131,7 @@ function App() {
   }, []);
 
   const handleInlineDisclaimerConfirm = useCallback(() => {
-    sessionStorage.setItem('gapsight_disclaimer_shown', 'true');
+    sessionStorage.setItem(STORAGE_KEYS.DISCLAIMER_SHOWN, 'true');
     updateSession({ disclaimer_confirmed_at: new Date().toISOString() });
     setShowInlineDisclaimer(false);
   }, []);
@@ -141,6 +143,7 @@ function App() {
         <DisclaimerBar />
 
         <div className="flex-1">
+          <ErrorBoundary>
           <Suspense fallback={PageFallback}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -161,6 +164,7 @@ function App() {
               <Route path="/shared/:uuid" element={<SharedViewPage />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </div>
 
         <Footer />

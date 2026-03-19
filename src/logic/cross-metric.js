@@ -24,8 +24,8 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   const hasNist = profile.frameworks_selected?.includes('nist_ai_rmf') ?? true;
 
   // RULE 1 - Accuracy-Fairness Tradeoff
-  if (toNum(inputs.overall_accuracy) >= CROSS_ACCURACY_THRESHOLD &&
-      toNum(inputs.demographic_parity_diff) >= CROSS_FAIRNESS_GAP_THRESHOLD) {
+  if (toNumberOrNull(inputs.overall_accuracy) >= CROSS_ACCURACY_THRESHOLD &&
+      toNumberOrNull(inputs.demographic_parity_diff) >= CROSS_FAIRNESS_GAP_THRESHOLD) {
     const refs = [];
     if (hasEuAiAct) refs.push('EU AI Act Article 10');
     if (hasNist) refs.push('NIST MEASURE 2.11');
@@ -38,7 +38,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   }
 
   // RULE 2 - Robustness Without Monitoring
-  if (toNum(inputs.adversarial_robustness_score) >= CROSS_ROBUSTNESS_THRESHOLD &&
+  if (toNumberOrNull(inputs.adversarial_robustness_score) >= CROSS_ROBUSTNESS_THRESHOLD &&
       inputs.drift_monitoring_active === false) {
     warnings.push({
       id: 'robustness_without_monitoring',
@@ -49,7 +49,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
 
   // RULE 3 - High Drift Without Retraining
   const monthsSinceRetrain = monthsSinceDate(inputs.last_retrain_date);
-  if (toNum(inputs.data_drift_score) >= CROSS_DRIFT_THRESHOLD &&
+  if (toNumberOrNull(inputs.data_drift_score) >= CROSS_DRIFT_THRESHOLD &&
       monthsSinceRetrain !== null && monthsSinceRetrain >= CROSS_RETRAIN_MONTHS_THRESHOLD) {
     warnings.push({
       id: 'high_drift_without_retraining',
@@ -59,7 +59,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   }
 
   // RULE 4 - Fairness Without Mitigation
-  if (toNum(inputs.equalized_odds_diff) >= CROSS_FAIRNESS_MITIGATION_THRESHOLD &&
+  if (toNumberOrNull(inputs.equalized_odds_diff) >= CROSS_FAIRNESS_MITIGATION_THRESHOLD &&
       inputs.bias_mitigation_applied === false) {
     warnings.push({
       id: 'fairness_without_mitigation',
@@ -83,7 +83,7 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   // RULE 6 - GPAI Systemic Risk Notification (EU AI Act only)
   if (hasEuAiAct &&
       profile.gpai_flag === true &&
-      toNum(inputs.training_flops) >= GPAI_SYSTEMIC_RISK_FLOPS &&
+      toNumberOrNull(inputs.training_flops) >= GPAI_SYSTEMIC_RISK_FLOPS &&
       inputs.systemic_risk_notification_sent === 'no') {
     warnings.push({
       id: 'gpai_systemic_risk_notification',
@@ -108,7 +108,8 @@ export function evaluateCrossMetricRules(inputs, profile, humanOversightScore) {
   return warnings;
 }
 
-function toNum(val) {
+/** Safely converts a value to a number, returning null for invalid inputs. */
+function toNumberOrNull(val) {
   if (val === null || val === undefined || val === '') return null;
   const n = Number(val);
   return isNaN(n) ? null : n;

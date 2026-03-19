@@ -25,6 +25,10 @@ const {
  * @param {object} profile - User profile
  * @param {function} isMetricRequiredFn - Function to check if metric is required
  * @returns {'CRITICAL_FAIL'|'FAIL'|'REVIEW'|'PASS'|'NOT_APPLICABLE'|'PROCESS_REQUIRED'}
+ *
+ * @example
+ * const status = getMetricStatus(0.91, { pass_threshold: 0.80, review_threshold: 0.60, direction: 'higher_better' }, [], profile, isReqFn);
+ * // => 'PASS'
  */
 function getMetricStatus(value, metric, contextFlags, profile, isMetricRequiredFn) {
   // User explicitly marked this metric as not applicable to their system.
@@ -87,6 +91,10 @@ function getProcessStatus(value, processReq, profile) {
  *
  * @param {object} answers - { q1, q2, q3, q4, q5 } each 'yes'|'partially'|'no'
  * @returns {{ status: string, score: number, message: string|null }}
+ *
+ * @example
+ * const result = getHumanOversightStatus({ q1: 'yes', q2: 'yes', q3: 'partially', q4: 'yes', q5: 'no' });
+ * // => { status: 'REVIEW', score: 0.722, message: null }
  */
 function getHumanOversightStatus(answers) {
   const answerValue = (a) => {

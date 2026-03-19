@@ -77,6 +77,13 @@ function filterMappings(mappings, selected) {
  *   generatedAt: string,
  * }}
  *
+ * @throws {Error} If assessment is not a non-null object
+ * @throws {Error} If assessment.knowledgeBase is missing or not an object
+ * @throws {Error} If assessment.knowledgeBase.metrics is not an array
+ * @throws {Error} If assessment.knowledgeBase.process_requirements is not an array
+ * @throws {Error} If assessment.profile is missing or not an object
+ * @throws {Error} If assessment.inputs is missing or not an object
+ *
  * @example
  * const report = runComplianceCheck({
  *   knowledgeBase: require('../src/data/knowledge-base.json'),

@@ -14,7 +14,8 @@ function badge(status) {
   return `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;background:${s.bg};color:${s.color}">${s.label}</span>`;
 }
 
-function esc(str) {
+/** Escapes a string for safe inclusion in HTML output. */
+function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -36,7 +37,7 @@ export function generateHtmlExport(results, session) {
       const icon = w.severity === 'CRITICAL' ? '&#9940;' : '&#9888;';
       const bg = w.severity === 'CRITICAL' ? '#fee2e2' : '#fef9c3';
       const color = w.severity === 'CRITICAL' ? '#991b1b' : '#854d0e';
-      return `<div style="padding:10px 14px;background:${bg};color:${color};border-radius:6px;margin-bottom:6px;font-size:13px">${icon} <strong>${esc(w.severity)}</strong>: ${esc(w.message)}</div>`;
+      return `<div style="padding:10px 14px;background:${bg};color:${color};border-radius:6px;margin-bottom:6px;font-size:13px">${icon} <strong>${escapeHtml(w.severity)}</strong>: ${escapeHtml(w.message)}</div>`;
     }).join('\n');
     warningsHtml = `<div style="margin-bottom:24px"><h2 style="font-size:16px;margin-bottom:10px">Cross-Metric Warnings</h2>${warningItems}</div>`;
   }
@@ -49,12 +50,12 @@ export function generateHtmlExport(results, session) {
 
   // Metric results HTML
   const metricRows = results.metricResults.map((r) =>
-    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value !== null && r.value !== undefined ? esc(String(r.value)) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
+    `<tr><td style="padding:6px 12px">${escapeHtml(r.label)}</td><td style="padding:6px 12px">${r.value !== null && r.value !== undefined ? escapeHtml(String(r.value)) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
   ).join('\n');
 
   // Process results HTML
   const processRows = results.processResults.map((r) =>
-    `<tr><td style="padding:6px 12px">${esc(r.label)}</td><td style="padding:6px 12px">${r.value ? esc(r.value) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
+    `<tr><td style="padding:6px 12px">${escapeHtml(r.label)}</td><td style="padding:6px 12px">${r.value ? escapeHtml(r.value) : '-'}</td><td style="padding:6px 12px">${badge(r.status)}</td></tr>`
   ).join('\n');
 
   // Action items HTML
@@ -64,7 +65,7 @@ export function generateHtmlExport(results, session) {
   for (const [urgency, items] of Object.entries(results.actionItems)) {
     if (items.length === 0) continue;
     const itemsHtml = items.map((item) =>
-      `<li style="margin-bottom:8px"><strong>${esc(item.label)}</strong>: ${esc(item.action)}${item.frameworks && item.frameworks.length > 0 ? `<br><span style="font-size:11px;color:#6b7280">${item.frameworks.map(esc).join(', ')}</span>` : ''}</li>`
+      `<li style="margin-bottom:8px"><strong>${escapeHtml(item.label)}</strong>: ${escapeHtml(item.action)}${item.frameworks && item.frameworks.length > 0 ? `<br><span style="font-size:11px;color:#6b7280">${item.frameworks.map(escapeHtml).join(', ')}</span>` : ''}</li>`
     ).join('\n');
     actionHtml += `<div style="margin-bottom:16px"><h3 style="font-size:14px;color:${urgencyColors[urgency]};margin-bottom:8px">${urgencyLabels[urgency]}</h3><ul style="margin:0;padding-left:20px;font-size:13px">${itemsHtml}</ul></div>`;
   }
@@ -79,27 +80,27 @@ export function generateHtmlExport(results, session) {
 </head>
 <body>
 <div style="background:#fef3c7;padding:12px 24px;font-size:13px;color:#92400e;border-bottom:2px solid #f59e0b">
-${esc(en.exports.disclaimer)}
+${escapeHtml(en.exports.disclaimer)}
 </div>
 <div style="max-width:800px;margin:0 auto;padding:32px 24px">
 
 <h1 style="font-size:24px;margin-bottom:4px">GapSight Assessment Report</h1>
-<p style="color:#6b7280;font-size:13px;margin-top:0">${esc(en.exports.canonical_note)}</p>
+<p style="color:#6b7280;font-size:13px;margin-top:0">${escapeHtml(en.exports.canonical_note)}</p>
 
 <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin:24px 0">
 <table style="border:none"><tbody>
-<tr><td style="border:none;padding:4px 12px;color:#6b7280;width:160px">Profile</td><td style="border:none;padding:4px 12px">${esc(results.profile.role)} | ${esc(results.profile.risk_category)}${results.profile.gpai_flag ? ' | GPAI' : ''} | ${esc(results.profile.deployment_status)}</td></tr>
-<tr><td style="border:none;padding:4px 12px;color:#6b7280">Generated</td><td style="border:none;padding:4px 12px">${esc(results.generatedAt)}</td></tr>
-<tr><td style="border:none;padding:4px 12px;color:#6b7280">KB Version</td><td style="border:none;padding:4px 12px">v${esc(kb.current_version)} | ${esc(kb.versions[0].date)}</td></tr>
-<tr><td style="border:none;padding:4px 12px;color:#6b7280">Assessment ID</td><td style="border:none;padding:4px 12px;font-family:monospace;font-size:12px">${esc(session?.assessment_id || 'N/A')}</td></tr>
+<tr><td style="border:none;padding:4px 12px;color:#6b7280;width:160px">Profile</td><td style="border:none;padding:4px 12px">${escapeHtml(results.profile.role)} | ${escapeHtml(results.profile.risk_category)}${results.profile.gpai_flag ? ' | GPAI' : ''} | ${escapeHtml(results.profile.deployment_status)}</td></tr>
+<tr><td style="border:none;padding:4px 12px;color:#6b7280">Generated</td><td style="border:none;padding:4px 12px">${escapeHtml(results.generatedAt)}</td></tr>
+<tr><td style="border:none;padding:4px 12px;color:#6b7280">KB Version</td><td style="border:none;padding:4px 12px">v${escapeHtml(kb.current_version)} | ${escapeHtml(kb.versions[0].date)}</td></tr>
+<tr><td style="border:none;padding:4px 12px;color:#6b7280">Assessment ID</td><td style="border:none;padding:4px 12px;font-family:monospace;font-size:12px">${escapeHtml(session?.assessment_id || 'N/A')}</td></tr>
 <tr><td style="border:none;padding:4px 12px;color:#6b7280">Thresholds</td><td style="border:none;padding:4px 12px;font-style:italic;font-size:12px">GapSight defaults, not regulatory requirements</td></tr>
 </tbody></table>
 </div>
 
 <div style="background:#fff;border:2px solid ${riskColor};border-radius:8px;padding:20px;margin-bottom:24px;text-align:center">
 <div style="font-size:14px;color:#6b7280;margin-bottom:4px">Overall Risk Level</div>
-<div style="font-size:28px;font-weight:700;color:${riskColor}">${esc(results.riskLevel.level)}</div>
-<div style="font-size:13px;color:#4b5563;margin-top:4px">${esc(results.riskLevel.message)}</div>
+<div style="font-size:28px;font-weight:700;color:${riskColor}">${escapeHtml(results.riskLevel.level)}</div>
+<div style="font-size:13px;color:#4b5563;margin-top:4px">${escapeHtml(results.riskLevel.message)}</div>
 </div>
 
 ${warningsHtml}
@@ -117,7 +118,7 @@ ${results.oversightResult ? `
 <h2 style="font-size:16px;margin:24px 0 10px">Human Oversight</h2>
 <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px">
 <p>Weighted Score: <strong>${(results.oversightResult.value * 100).toFixed(0)}%</strong> - ${badge(results.oversightResult.status)}</p>
-${results.oversightResult.message ? `<p style="color:#991b1b;font-size:13px">${esc(results.oversightResult.message)}</p>` : ''}
+${results.oversightResult.message ? `<p style="color:#991b1b;font-size:13px">${escapeHtml(results.oversightResult.message)}</p>` : ''}
 </div>
 ` : ''}
 
@@ -125,9 +126,9 @@ ${results.oversightResult.message ? `<p style="color:#991b1b;font-size:13px">${e
 ${actionHtml || '<p style="color:#6b7280;font-size:13px">No action items generated.</p>'}
 
 <div style="margin-top:40px;padding-top:16px;border-top:2px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
-<p>${esc(en.footer.legal_disclaimer)}</p>
-<p>${esc(en.exports.canonical_note)}</p>
-<p>GapSight v${esc(pkg.version)} &middot; KB v${esc(kb.current_version)} | ${esc(kb.versions[0].date)} &middot; EU AI Act ref: Regulation (EU) 2024/1689</p>
+<p>${escapeHtml(en.footer.legal_disclaimer)}</p>
+<p>${escapeHtml(en.exports.canonical_note)}</p>
+<p>GapSight v${escapeHtml(pkg.version)} &middot; KB v${escapeHtml(kb.current_version)} | ${escapeHtml(kb.versions[0].date)} &middot; EU AI Act ref: Regulation (EU) 2024/1689</p>
 <p>&copy; 2026 GapSight</p>
 </div>
 

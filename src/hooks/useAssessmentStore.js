@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { INPUTS_DEBOUNCE_MS } from '../logic/constants';
+import { INPUTS_DEBOUNCE_MS, STORAGE_KEYS } from '../logic/constants';
 
-const INPUTS_KEY = 'gapsight_inputs';
-const PROFILE_KEY = 'gapsight_profile';
+const INPUTS_KEY = STORAGE_KEYS.INPUTS;
+const PROFILE_KEY = STORAGE_KEYS.PROFILE;
 
 /**
  * Loads and parses JSON from localStorage, returning null on failure.
