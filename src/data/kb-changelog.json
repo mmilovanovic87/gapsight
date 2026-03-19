@@ -6,12 +6,36 @@
       "version": "1.0",
       "semver": "1.0.0",
       "date": "2026-03",
-      "changes": "Initial release. Covers 7 assessment sections (Accuracy & Performance, Fairness & Bias, Robustness & Drift, Explainability & Transparency, Human Oversight, GPAI Obligations, Governance). Includes 7 cross-metric validation rules, risk-level calculation, 8 use-case templates, CI/CD integration via GitHub Actions, and export to JSON, HTML, and PDF. GPAI systemic risk threshold set at 1e25 FLOPs per EU AI Act Article 51.",
+      "changes": "Initial knowledge base release.",
       "frameworks": {
-        "eu_ai_act": "Regulation (EU) 2024/1689, published OJ 12 Jul 2024. High-risk obligations apply from 2 Aug 2026. GPAI obligations from 2 Aug 2025.",
-        "nist_ai_rmf": "NIST AI 100-1 v1.0, January 2023. Mapped to GOVERN, MAP, MEASURE, MANAGE functions.",
-        "iso_42001": "ISO/IEC 42001:2023, published 18 Dec 2023. Mapped to clauses 4-10 and Annex A controls."
+        "eu_ai_act": "Regulation (EU) 2024/1689. Article-level mapping for 8 metric categories covering Articles 9, 10, 11, 12, 13, 14, 15, 17, 25 and Annex III/IV.",
+        "nist_ai_rmf": "NIST AI 100-1 (2023). Mapping to GOVERN, MAP, MEASURE, MANAGE functions.",
+        "iso_42001": "ISO/IEC 42001:2023. Mapping to clauses 6.1, 8.4, and Annex A controls."
       },
+      "templates": [
+        "CV screening",
+        "Fraud detection",
+        "Credit scoring",
+        "Medical diagnosis",
+        "Content moderation",
+        "Autonomous systems",
+        "Chatbot/NLP",
+        "General purpose"
+      ],
+      "metrics_covered": [
+        "accuracy", "f1_score", "auc_roc",
+        "demographic_parity_diff", "equalized_odds_diff", "disparate_impact_ratio",
+        "data_drift_score", "concept_drift_score", "adversarial_robustness_score",
+        "explanation_coverage"
+      ],
+      "governance_covered": [
+        "Risk management system",
+        "AI governance policy",
+        "Technical documentation (Annex IV)",
+        "Data governance policy",
+        "Third-party management",
+        "Human oversight"
+      ],
       "gpai_threshold_flops": "1e25",
       "next_review": "2026-06",
       "breaking_changes": false

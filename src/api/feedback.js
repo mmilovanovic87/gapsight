@@ -1,5 +1,8 @@
 import en from '../locales/en.json';
 import { FEEDBACK_TIMEOUT_MS } from '../logic/constants';
+// Feedback submissions are sent to Formspree (formspree.io), form ID mjgakgzn.
+// This is a real, working endpoint — submissions appear in the Formspree dashboard
+// and are forwarded to the project owner's email.
 const FORMSPREE_URL = 'https://formspree.io/f/mjgakgzn';
 
 /**
