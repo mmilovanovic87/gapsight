@@ -4,6 +4,7 @@ export default function TermsPage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold">{en.tos.title}</h1>
+      <p className="mt-2 text-sm text-gray-500">{en.tos.effective_date}</p>
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold">Definition</h2>
@@ -23,6 +24,16 @@ export default function TermsPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold">Knowledge Base Currency</h2>
         <p className="mt-2 text-gray-700">{en.tos.kb_currency}</p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold">Intellectual Property</h2>
+        <p className="mt-2 text-gray-700">{en.tos.intellectual_property}</p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold">Termination</h2>
+        <p className="mt-2 text-gray-700">{en.tos.termination}</p>
       </section>
 
       <section className="mt-8">

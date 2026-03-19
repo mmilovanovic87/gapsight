@@ -20,6 +20,6 @@ test.describe('Landing page', () => {
 
   test('social proof bar is visible', async ({ page }) => {
     await expect(page.getByText('Free forever')).toBeVisible();
-    await expect(page.getByText('Open source', { exact: false }).first()).toBeVisible();
+    await expect(page.getByText('no credit card', { exact: false }).first()).toBeVisible();
   });
 });

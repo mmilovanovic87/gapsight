@@ -6,11 +6,11 @@
       "version": "1.0",
       "semver": "1.0.0",
       "date": "2026-03",
-      "changes": "Initial release.",
+      "changes": "Initial release. Covers 7 assessment sections (Accuracy & Performance, Fairness & Bias, Robustness & Drift, Explainability & Transparency, Human Oversight, GPAI Obligations, Governance). Includes 7 cross-metric validation rules, risk-level calculation, 8 use-case templates, CI/CD integration via GitHub Actions, and export to JSON, HTML, and PDF. GPAI systemic risk threshold set at 1e25 FLOPs per EU AI Act Article 51.",
       "frameworks": {
-        "eu_ai_act": "EU 2024/1689, Aug 2026 deadline",
-        "nist_ai_rmf": "v1.0, January 2023",
-        "iso_42001": "Published 2023"
+        "eu_ai_act": "Regulation (EU) 2024/1689, published OJ 12 Jul 2024. High-risk obligations apply from 2 Aug 2026. GPAI obligations from 2 Aug 2025.",
+        "nist_ai_rmf": "NIST AI 100-1 v1.0, January 2023. Mapped to GOVERN, MAP, MEASURE, MANAGE functions.",
+        "iso_42001": "ISO/IEC 42001:2023, published 18 Dec 2023. Mapped to clauses 4-10 and Annex A controls."
       },
       "gpai_threshold_flops": "1e25",
       "next_review": "2026-06",

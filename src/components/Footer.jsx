@@ -16,7 +16,7 @@ export default function Footer() {
         <p className="font-medium text-gray-700">{en.footer.tagline}</p>
         <p className="mt-1">{en.footer.positioning}</p>
         <p className="mt-1 text-xs">{versionText}</p>
-        <nav className="mt-4 flex justify-center gap-4">
+        <nav className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2">
           <Link to="/privacy" className="hover:text-gray-700">{en.footer.nav_privacy}</Link>
           <Link to="/terms" className="hover:text-gray-700">{en.footer.nav_terms}</Link>
           <Link to="/about" className="hover:text-gray-700">{en.footer.nav_about}</Link>
