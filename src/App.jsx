@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
@@ -7,15 +7,18 @@ import Footer from './components/Footer';
 import InlineDisclaimerModal from './components/InlineDisclaimerModal';
 import ClearSessionModal from './components/ClearSessionModal';
 import RiskLevelModal from './components/RiskLevelModal';
-import AboutPage from './pages/AboutPage';
-import PrivacyPage from './pages/PrivacyPage';
-import TermsPage from './pages/TermsPage';
-import KBChangelogPage from './pages/KBChangelogPage';
-import LandingPage from './pages/LandingPage';
-import AssessmentPage from './pages/AssessmentPage';
-import ResultsPage from './pages/ResultsPage';
-import SharedViewPage from './pages/SharedViewPage';
 import kbChangelog from './data/kb-changelog.json';
+
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const KBChangelogPage = lazy(() => import('./pages/KBChangelogPage'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const AssessmentPage = lazy(() => import('./pages/AssessmentPage'));
+const ResultsPage = lazy(() => import('./pages/ResultsPage'));
+const SharedViewPage = lazy(() => import('./pages/SharedViewPage'));
+
+const PageFallback = <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>Loading...</div>;
 
 /**
  * Generates a v4-format UUID using Math.random.
@@ -138,24 +141,26 @@ function App() {
         <DisclaimerBar />
 
         <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/assessment" element={
-              <AssessmentPage
-                key={assessmentKey}
-                onTriggerDisclaimer={triggerInlineDisclaimer}
-                tosAccepted={tosAccepted}
-                onTosAccept={handleTosAccept}
-                onTosExit={handleTosExit}
-              />
-            } />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/kb-changelog" element={<KBChangelogPage />} />
-            <Route path="/results" element={<ResultsPage onShowRiskModal={() => setShowRiskModal(true)} />} />
-            <Route path="/shared/:uuid" element={<SharedViewPage />} />
-          </Routes>
+          <Suspense fallback={PageFallback}>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/assessment" element={
+                <AssessmentPage
+                  key={assessmentKey}
+                  onTriggerDisclaimer={triggerInlineDisclaimer}
+                  tosAccepted={tosAccepted}
+                  onTosAccept={handleTosAccept}
+                  onTosExit={handleTosExit}
+                />
+              } />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/kb-changelog" element={<KBChangelogPage />} />
+              <Route path="/results" element={<ResultsPage onShowRiskModal={() => setShowRiskModal(true)} />} />
+              <Route path="/shared/:uuid" element={<SharedViewPage />} />
+            </Routes>
+          </Suspense>
         </div>
 
         <Footer />

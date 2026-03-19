@@ -1,0 +1,45 @@
+{
+  "profile": {
+    "role": "provider",
+    "gpai_flag": false,
+    "risk_category": "high-risk",
+    "deployment_status": "post-deployment",
+    "frameworks_selected": ["eu_ai_act"]
+  },
+  "inputs": {
+    "accuracy": 0.95,
+    "f1_score": 0.93,
+    "auc_roc": 0.97,
+    "demographic_parity_diff": 0.20,
+    "equalized_odds_diff": 0.03,
+    "disparate_impact_ratio": 0.95,
+    "adversarial_robustness_score": 0.50,
+    "explanation_coverage": 0.85,
+    "test_set_size": 5000,
+    "test_set_representative": "yes",
+    "bias_mitigation_applied": false,
+    "drift_monitoring_active": false,
+    "failsafe_mechanism_documented": true,
+    "last_retrain_date": "2024-01-15",
+    "explainability_method": "SHAP",
+    "explanations_available_to_users": true,
+    "model_card_exists": true,
+    "instructions_for_use_documented": true,
+    "human_oversight": {
+      "q1": "yes",
+      "q2": "no",
+      "q3": "no",
+      "q4": "no",
+      "q5": "no"
+    },
+    "governance": {
+      "risk_management_system": { "status": "yes" },
+      "ai_policy": { "status": "yes" },
+      "technical_documentation": { "status": "yes" },
+      "data_governance_policy": { "status": "yes" },
+      "automated_logging": { "status": "yes" },
+      "quality_management_system": { "status": "yes" },
+      "third_party_vendor_assessment": { "status": "not_applicable" }
+    }
+  }
+}

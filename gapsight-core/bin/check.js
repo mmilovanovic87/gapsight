@@ -91,38 +91,48 @@ function formatResultLine(result) {
   return `  ${icon} ${result.label || result.id}: ${result.status}${valueStr}`;
 }
 
-// Main execution — only runs when invoked directly (not when required for testing)
-if (require.main === module) {
-  const { filePath, failOn, errors } = parseArgs(process.argv.slice(2));
+/**
+ * Core CLI logic: loads, validates, runs compliance check, and returns structured output.
+ * Extracted so it can be tested directly without subprocess invocation.
+ *
+ * @param {string[]} argv - CLI arguments (same as process.argv.slice(2))
+ * @param {{ cwd?: string }} [options] - Optional overrides
+ * @returns {{ exitCode: number, stdout: string, stderr: string }}
+ */
+function runCheck(argv, options = {}) {
+  const stdout = [];
+  const stderr = [];
+
+  const { filePath, failOn, errors } = parseArgs(argv);
 
   if (errors.length > 0) {
-    console.error('Error:', errors.join('\n'));
-    console.error('\nUsage: gapsight-check <assessment.json> [--fail-on CRITICAL|HIGH|MEDIUM|NONE]');
-    process.exit(1);
+    stderr.push('Error: ' + errors.join('\n'));
+    stderr.push('\nUsage: gapsight-check <assessment.json> [--fail-on CRITICAL|HIGH|MEDIUM|NONE]');
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
 
-  const resolvedPath = path.resolve(filePath);
+  const resolvedPath = options.cwd ? path.resolve(options.cwd, filePath) : path.resolve(filePath);
   if (!fs.existsSync(resolvedPath)) {
-    console.error(`Assessment file not found: ${resolvedPath}`);
-    process.exit(1);
+    stderr.push(`Assessment file not found: ${resolvedPath}`);
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
 
   let assessmentData;
   try {
     assessmentData = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
   } catch (e) {
-    console.error(`Failed to parse assessment JSON: ${e.message}`);
-    process.exit(1);
+    stderr.push(`Failed to parse assessment JSON: ${e.message}`);
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
 
   const { profile, inputs } = assessmentData;
   if (!profile) {
-    console.error('Assessment file must contain a "profile" object.');
-    process.exit(1);
+    stderr.push('Assessment file must contain a "profile" object.');
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
   if (!inputs) {
-    console.error('Assessment file must contain an "inputs" object.');
-    process.exit(1);
+    stderr.push('Assessment file must contain an "inputs" object.');
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
 
   // Load knowledge base
@@ -135,88 +145,96 @@ if (require.main === module) {
   const metricsFound = report.metricResults.filter((r) => r.value !== null && r.value !== undefined);
   const metricsMissing = report.metricResults.filter((r) => r.value === null || r.value === undefined);
 
-  console.log('');
-  console.log('\u2500\u2500 Metrics Found in Assessment \u2500\u2500');
+  stdout.push('');
+  stdout.push('\u2500\u2500 Metrics Found in Assessment \u2500\u2500');
   if (metricsFound.length > 0) {
     for (const r of metricsFound) {
-      console.log(`  - ${r.label} (${r.id}): ${r.value}`);
+      stdout.push(`  - ${r.label} (${r.id}): ${r.value}`);
     }
   } else {
-    console.log('  (none)');
+    stdout.push('  (none)');
   }
-  console.log('');
+  stdout.push('');
 
-  console.log('\u2500\u2500 Metrics Missing (defaults applied) \u2500\u2500');
+  stdout.push('\u2500\u2500 Metrics Missing (defaults applied) \u2500\u2500');
   if (metricsMissing.length > 0) {
     for (const r of metricsMissing) {
-      console.log(`  - ${r.label} (${r.id}): not provided, scored as ${r.status}`);
+      stdout.push(`  - ${r.label} (${r.id}): not provided, scored as ${r.status}`);
     }
   } else {
-    console.log('  (none \u2014 all metrics provided)');
+    stdout.push('  (none \u2014 all metrics provided)');
   }
-  console.log('');
+  stdout.push('');
 
-  console.log('\u2500\u2500 Risk Assessment \u2500\u2500');
-  console.log(`  Computed risk level: ${report.riskLevel.level}`);
-  console.log(`  Fail-on threshold:   ${failOn}`);
-  console.log(`  (fail-on: ${failOn} means the check fails if risk level is ${failOn} or above.)`);
-  console.log('');
+  stdout.push('\u2500\u2500 Risk Assessment \u2500\u2500');
+  stdout.push(`  Computed risk level: ${report.riskLevel.level}`);
+  stdout.push(`  Fail-on threshold:   ${failOn}`);
+  stdout.push(`  (fail-on: ${failOn} means the check fails if risk level is ${failOn} or above.)`);
+  stdout.push('');
 
   // Print report
   const levelIcon = report.riskLevel.level === 'LOW' ? '\uD83D\uDFE2' :
     report.riskLevel.level === 'MEDIUM' ? '\uD83D\uDFE1' :
     report.riskLevel.level === 'HIGH' ? '\uD83D\uDFE0' : '\uD83D\uDD34';
 
-  console.log('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557');
-  console.log('\u2551       GapSight Compliance Report             \u2551');
-  console.log('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D');
-  console.log('');
-  console.log(`${levelIcon} Overall Risk Level: ${report.riskLevel.level}`);
-  console.log(`   Result: ${report.passed ? 'PASSED \u2705' : 'FAILED \u274C'}`);
-  console.log('');
+  stdout.push('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557');
+  stdout.push('\u2551       GapSight Compliance Report             \u2551');
+  stdout.push('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D');
+  stdout.push('');
+  stdout.push(`${levelIcon} Overall Risk Level: ${report.riskLevel.level}`);
+  stdout.push(`   Result: ${report.passed ? 'PASSED \u2705' : 'FAILED \u274C'}`);
+  stdout.push('');
 
   if (report.metricResults.length > 0) {
-    console.log('\u2500\u2500 Metrics \u2500\u2500');
+    stdout.push('\u2500\u2500 Metrics \u2500\u2500');
     for (const result of report.metricResults) {
-      console.log(formatResultLine(result));
+      stdout.push(formatResultLine(result));
     }
-    console.log('');
+    stdout.push('');
   }
 
   if (report.processResults.length > 0) {
-    console.log('\u2500\u2500 Governance & Process \u2500\u2500');
+    stdout.push('\u2500\u2500 Governance & Process \u2500\u2500');
     for (const result of report.processResults) {
-      console.log(formatResultLine(result));
+      stdout.push(formatResultLine(result));
     }
-    console.log('');
+    stdout.push('');
   }
 
   if (report.oversightResult) {
-    console.log('\u2500\u2500 Human Oversight \u2500\u2500');
-    console.log(formatResultLine(report.oversightResult));
+    stdout.push('\u2500\u2500 Human Oversight \u2500\u2500');
+    stdout.push(formatResultLine(report.oversightResult));
     if (report.oversightResult.message) {
-      console.log(`     \u21B3 ${report.oversightResult.message}`);
+      stdout.push(`     \u21B3 ${report.oversightResult.message}`);
     }
-    console.log('');
+    stdout.push('');
   }
 
   if (report.crossMetricWarnings.length > 0) {
-    console.log('\u2500\u2500 Cross-Metric Warnings \u2500\u2500');
+    stdout.push('\u2500\u2500 Cross-Metric Warnings \u2500\u2500');
     for (const w of report.crossMetricWarnings) {
       const icon = w.severity === 'CRITICAL' ? '\uD83D\uDEA8' : '\u26A0\uFE0F';
-      console.log(`  ${icon} [${w.severity}] ${w.id}: ${w.message}`);
+      stdout.push(`  ${icon} [${w.severity}] ${w.id}: ${w.message}`);
     }
-    console.log('');
+    stdout.push('');
   }
 
   // Final verdict
   if (shouldFail(report.riskLevel.level, failOn)) {
-    console.log(`\u274C Compliance check failed: risk level ${report.riskLevel.level} meets or exceeds fail-on threshold ${failOn}`);
-    process.exit(1);
+    stdout.push(`\u274C Compliance check failed: risk level ${report.riskLevel.level} meets or exceeds fail-on threshold ${failOn}`);
+    return { exitCode: 1, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   } else {
-    console.log('\u2705 Compliance check passed');
-    process.exit(0);
+    stdout.push('\u2705 Compliance check passed');
+    return { exitCode: 0, stdout: stdout.join('\n'), stderr: stderr.join('\n') };
   }
 }
 
-module.exports = { parseArgs, shouldFail };
+// Main execution — only runs when invoked directly (not when required for testing)
+if (require.main === module) {
+  const result = runCheck(process.argv.slice(2));
+  if (result.stderr) console.error(result.stderr);
+  if (result.stdout) console.log(result.stdout);
+  process.exit(result.exitCode);
+}
+
+module.exports = { parseArgs, shouldFail, formatResultLine, runCheck };
