@@ -369,7 +369,7 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
             onClick={() => { setShowRestoredBanner(false); dismissRestored(); }}
             className="text-xs text-blue-500 hover:text-blue-700"
           >
-            Dismiss
+            {t.dismiss || 'Dismiss'}
           </button>
         </div>
       )}
@@ -435,18 +435,22 @@ export default function AssessmentPage({ onTriggerDisclaimer, tosAccepted, onTos
               const dot = completion === 'complete' ? 'bg-green-400'
                 : completion === 'partial' ? 'bg-yellow-400'
                 : 'bg-gray-300';
+              const completionLabel = completion === 'complete' ? 'complete'
+                : completion === 'partial' ? 'in progress'
+                : 'not started';
               return (
                 <button
                   key={sec}
                   type="button"
                   onClick={() => { setFormSection(i); setErrorBanner(''); }}
+                  aria-current={i === formSection ? 'step' : undefined}
                   className={`px-3 py-1.5 rounded text-xs whitespace-nowrap transition-colors flex items-center gap-1.5 ${
                     i === formSection
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
-                  <span className={`inline-block w-2 h-2 rounded-full ${dot}`} />
+                  <span className={`inline-block w-2 h-2 rounded-full ${dot}`} role="img" aria-label={completionLabel} />
                   {i + 1}. {sec.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                 </button>
               );

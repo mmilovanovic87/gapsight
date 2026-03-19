@@ -185,7 +185,10 @@
     "submit_button": "Submit",
     "success_message": "Thank you. Your feedback has been received.",
     "error_message": "Something went wrong. Please try again or contact us at feedback@gapsight.dev.",
-    "timeout_message": "The request timed out. Please try again or contact us directly at feedback@gapsight.dev."
+    "timeout_message": "The request timed out. Please try again or contact us directly at feedback@gapsight.dev.",
+    "submitting": "Submitting...",
+    "characters_remaining": "{count} characters remaining",
+    "cooldown_message": "Button re-enabled in 30 seconds."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -199,6 +202,7 @@
     "step_form": "Assessment Form",
     "next": "Next",
     "back": "Back",
+    "dismiss": "Dismiss",
     "generate_results": "Generate Results",
     "deployment": {
       "title": "Deployment Context",

@@ -21,7 +21,7 @@ export default function Footer() {
           <Link to="/terms" className="hover:text-gray-700">{en.footer.nav_terms}</Link>
           <Link to="/about" className="hover:text-gray-700">{en.footer.nav_about}</Link>
           <Link to="/kb-changelog" className="hover:text-gray-700">{en.footer.nav_kb_changelog}</Link>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
+          <a href="https://github.com/mmilovanovic87/gapsight/issues" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700" aria-label="Report an issue on GitHub">
             {en.footer.nav_report_issue}
           </a>
         </nav>

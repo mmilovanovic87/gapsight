@@ -109,49 +109,53 @@ export default function ResultsPage({ onShowRiskModal }) {
   const unenteredMetricCount = unenteredMetrics.length;
 
   function triggerCiDownload() {
-    // Build a clean inputs object, omitting unentered (null/undefined) values
-    const cleanInputs = {};
-    for (const [key, val] of Object.entries(inputs)) {
-      if (val === null || val === undefined) continue;
-      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-        // Nested objects (governance, human_oversight) — keep as-is but filter nulls
-        const nested = {};
-        for (const [nk, nv] of Object.entries(val)) {
-          if (nv !== null && nv !== undefined) nested[nk] = nv;
+    try {
+      // Build a clean inputs object, omitting unentered (null/undefined) values
+      const cleanInputs = {};
+      for (const [key, val] of Object.entries(inputs)) {
+        if (val === null || val === undefined) continue;
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          // Nested objects (governance, human_oversight) — keep as-is but filter nulls
+          const nested = {};
+          for (const [nk, nv] of Object.entries(val)) {
+            if (nv !== null && nv !== undefined) nested[nk] = nv;
+          }
+          if (Object.keys(nested).length > 0) cleanInputs[key] = nested;
+        } else {
+          cleanInputs[key] = val;
         }
-        if (Object.keys(nested).length > 0) cleanInputs[key] = nested;
-      } else {
-        cleanInputs[key] = val;
       }
+      const ciAssessment = {
+        _meta: {
+          generated_at: new Date().toISOString(),
+          gapsight_version: pkg.version,
+          kb_version: `v${kbVersion}`,
+          eu_ai_act_reference: 'Regulation (EU) 2024/1689',
+        },
+        profile: {
+          role: profile.role,
+          gpai_flag: profile.gpai_flag,
+          risk_category: profile.risk_category,
+          deployment_status: profile.deployment_status,
+          frameworks_selected: profile.frameworks_selected,
+        },
+        inputs: cleanInputs,
+      };
+      const json = JSON.stringify(ciAssessment, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'assessment.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setCiExportMessage(true);
+      setCiExportWarning(false);
+    } catch {
+      window.alert('Export failed. Please try again.');
     }
-    const ciAssessment = {
-      _meta: {
-        generated_at: new Date().toISOString(),
-        gapsight_version: pkg.version,
-        kb_version: `v${kbVersion}`,
-        eu_ai_act_reference: 'Regulation (EU) 2024/1689',
-      },
-      profile: {
-        role: profile.role,
-        gpai_flag: profile.gpai_flag,
-        risk_category: profile.risk_category,
-        deployment_status: profile.deployment_status,
-        frameworks_selected: profile.frameworks_selected,
-      },
-      inputs: cleanInputs,
-    };
-    const json = JSON.stringify(ciAssessment, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'assessment.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setCiExportMessage(true);
-    setCiExportWarning(false);
   }
 
   const kbVersion = kbChangelog.current_version;

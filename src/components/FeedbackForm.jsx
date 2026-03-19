@@ -113,7 +113,7 @@ export default function FeedbackForm() {
               className="block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {description.length > 0 && description.length < FEEDBACK_MIN_LENGTH && (
-              <p className="text-xs text-gray-400 mt-1">{FEEDBACK_MIN_LENGTH - description.length} characters remaining</p>
+              <p className="text-xs text-gray-400 mt-1">{(t.characters_remaining || '{count} characters remaining').replace('{count}', FEEDBACK_MIN_LENGTH - description.length)}</p>
             )}
           </div>
 
@@ -130,11 +130,11 @@ export default function FeedbackForm() {
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
-            {status === 'loading' ? 'Submitting...' : t.submit_button}
+            {status === 'loading' ? (t.submitting || 'Submitting...') : t.submit_button}
           </button>
 
           {disabled && status !== 'loading' && (
-            <p className="text-xs text-gray-400">Button re-enabled in 30 seconds.</p>
+            <p className="text-xs text-gray-400">{t.cooldown_message || 'Button re-enabled in 30 seconds.'}</p>
           )}
         </form>
       )}
