@@ -38,7 +38,7 @@ test.describe('S1: Landing page', () => {
   });
 
   test('1.2 social proof bar', async ({ page }) => {
-    await expect(page.getByText('Free forever').first()).toBeVisible();
+    await expect(page.getByText('Free and open-source').first()).toBeVisible();
     await expect(page.getByText(/NIST AI RMF/).first()).toBeVisible();
     await expect(page.getByText(/Open source/i).first()).toBeVisible();
   });

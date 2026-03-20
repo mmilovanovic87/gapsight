@@ -64,7 +64,7 @@ export default function LandingPage() {
       <section className="bg-slate-50 border-y border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <span className="text-sm text-slate-500">Free forever &middot; no credit card</span>
+            <span className="text-sm text-slate-500">Free and open-source &middot; no credit card</span>
             <span className="text-sm text-slate-500">EU AI Act &middot; NIST AI RMF &middot; ISO 42001</span>
             <span className="text-sm text-slate-500">Open source &middot; MIT License</span>
           </div>
