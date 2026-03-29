@@ -1,8 +1,34 @@
-# GapSight
+# GapSight — EU AI Act compliance as a CI/CD artifact
 
-**AI regulatory self-assessment for ML teams.**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub Action](https://img.shields.io/badge/GitHub%20Action-v1-blue)](https://github.com/mmilovanovic87/gapsight/tree/main/.github/actions/compliance-check)
 
-GapSight is a free, open-source tool that helps AI teams identify potential compliance gaps relative to **EU AI Act**, **NIST AI RMF**, and **ISO/IEC 42001**. It is an informative self-assessment tool — not a compliance platform, not legal advice, and not a certification system.
+The first open-source tool that treats EU AI Act compliance as a test suite,
+not a document. Define your ML evaluation coverage in `assessment.json`.
+Run on every push. Get a structured gap report mapped to specific articles
+of EU AI Act, NIST AI RMF, and ISO/IEC 42001.
+
+**Free. Open-source. No login. No vendor lock-in.**
+
+→ [Live demo](https://gapsight.vercel.app) · [Quick start](#recommended-workflow) · [GitHub Action docs](.github/actions/compliance-check/README.md)
+
+---
+
+## Why GapSight?
+
+- **Works in your existing CI/CD pipeline** — no new platform, no procurement, no onboarding
+- **Maps to specific regulatory articles** — Article 9 risk management, Annex IV documentation, NIST AI RMF govern function
+- **Generates structured compliance artifacts** on every push, alongside your test results
+- **100% free, MIT license** — not a freemium trap
+```yaml
+# Add to your CI pipeline in 3 lines:
+- uses: mmilovanovic87/gapsight/.github/actions/compliance-check@v1
+  with:
+    assessment-path: '.gapsight/assessment.json'
+    fail-on: 'HIGH'
+```
+
+---
 
 ## Architecture
 
@@ -132,6 +158,11 @@ See [`gapsight-core/README.md`](gapsight-core/README.md) for full CLI documentat
 ### Metric-to-regulation mapping
 
 For a detailed explanation of why each metric maps to specific regulatory articles, see [`docs/metric-mapping-rationale.md`](docs/metric-mapping-rationale.md).
+
+---
+
+⭐ If GapSight saves you time, a GitHub star helps others find it.
+
 
 ## License
 
