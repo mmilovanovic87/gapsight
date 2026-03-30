@@ -1,5 +1,5 @@
-name: 'GapSight Compliance Check'
-description: 'Run AI compliance self-assessment checks against your project using the GapSight scoring engine.'
+name: 'ML Model Compliance Scanner — EU AI Act, NIST AI RMF & ISO 42001'
+description: 'Scan your ML evaluation setup against EU AI Act Annex IV, NIST AI RMF, and ISO 42001. Generates a structured compliance gap report as a pipeline artifact on every push.'
 
 inputs:
   assessment-path:
